@@ -1,3 +1,10 @@
+<%-- 
+    Document   : index
+    Created on : Jun 30, 2024, 10:51:42 AM
+    Author     : AnhNLCE181837
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,7 +23,7 @@
                     <a href="products.html" class="text-gray-800 hover:text-gray-600">Products</a>
                     <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <a href="login.html" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                 </div>
             </div>
         </header>

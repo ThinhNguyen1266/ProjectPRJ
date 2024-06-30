@@ -1,3 +1,10 @@
+<%-- 
+    Document   : login
+    Created on : Jun 30, 2024, 10:48:25 AM
+    Author     : AnhNLCE181837
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -23,14 +30,14 @@
             <div class="container mx-auto px-4 max-w-md">
                 <h2
                     class="text-2xl font-bold text-gray-800 text-center">Login</h2>
-                <form class="bg-white shadow-md rounded-lg p-8 mt-8">
+                <form action="AccountController" method="post" class="bg-white shadow-md rounded-lg p-8 mt-8">
                     <div class="mb-4">
                         <label
                             class="block text-gray-700 text-sm font-bold mb-2"
                             for="Username">Username</label>
                         <input
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="Username" type="Username" placeholder="Username">
+                            id="Username" type="text" placeholder="Username" name="txtUsername"/>
                     </div>
                     <div class="mb-6">
                         <label
@@ -39,14 +46,13 @@
                         <input
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                             id="password" type="password"
-                            placeholder="Password">
+                            placeholder="Password" name="txtPassword"/>
                     </div>
                     <div class="flex items-center justify-between">
-                        <button
+                        <input
                             class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="button">
-                            Login
-                        </button>
+                            id="btnLogin" type="submit" name="btnLogin" value="Login"
+                            />
                         <a href="create-account.html"
                             class="inline-block align-baseline font-bold text-sm text-gray-800 hover:text-gray-600">Create
                             Account</a>
