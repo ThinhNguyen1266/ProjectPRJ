@@ -20,7 +20,7 @@
         <header class="bg-white shadow-md">
             <div
                 class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="index.html"
+                <a href="/Index"
                     class="text-xl font-bold text-gray-800">ShopName</a>
             </div>
         </header>
@@ -53,7 +53,7 @@
                             class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             id="btnLogin" type="submit" name="btnLogin" value="Login"
                             />
-                        <a href="create-account.html"
+                        <a href="/Create_account"
                             class="inline-block align-baseline font-bold text-sm text-gray-800 hover:text-gray-600">Create
                             Account</a>
                     </div>

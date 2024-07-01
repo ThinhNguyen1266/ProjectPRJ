@@ -17,9 +17,8 @@
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="index.html" class="text-xl font-bold text-gray-800">ShopName</a>
+                <a href="/Index" class="text-xl font-bold text-gray-800">ShopName</a>
                 <div class="flex space-x-4">
-                    <a href="index.html" class="text-gray-800 hover:text-gray-600">Home</a>
                     <a href="products.html" class="text-gray-800 hover:text-gray-600">Products</a>
                     <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
