@@ -17,10 +17,10 @@
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/Index" class="text-xl font-bold text-gray-800">ShopName</a>
+                <a href="/ProductController/List" class="text-xl font-bold text-gray-800">ShopName</a>
                 <div class="flex space-x-4">
-                    <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                    <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
+                    <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
+                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                 </div>
             </div>
@@ -46,42 +46,42 @@
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="Category.html">Category Name</a>
+                                <a href="/ProductController/Category">Category Name</a>
                             </h3>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="Category.html">Category Name</a>
+                                <a href="/ProductController/Category">Category Name</a>
                             </h3>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="Category.html">Category Name</a>
+                                <a href="/ProductController/Category">Category Name</a>
                             </h3>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="Category.html">Category Name</a>
+                                <a href="/ProductController/Category">Category Name</a>
                             </h3>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="Category.html">Category Name</a>
+                                <a href="/ProductController/Category">Category Name</a>
                             </h3>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="Category.html">Category Name</a>
+                                <a href="/ProductController/Category">Category Name</a>
                             </h3>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                         <div class="p-4">
                             <h3 class="text-lg font-semibold text-gray-800">Product 1</h3>
                             <p class="text-gray-600 mt-2">$10.00</p>
-                            <a href="cart.html" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
@@ -107,7 +107,7 @@
                         <div class="p-4">
                             <h3 class="text-lg font-semibold text-gray-800">Product 2</h3>
                             <p class="text-gray-600 mt-2">$20.00</p>
-                            <a href="cart.html" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
@@ -115,7 +115,7 @@
                         <div class="p-4">
                             <h3 class="text-lg font-semibold text-gray-800">Product 3</h3>
                             <p class="text-gray-600 mt-2">$30.00</p>
-                            <a href="cart.html" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
@@ -123,7 +123,7 @@
                         <div class="p-4">
                             <h3 class="text-lg font-semibold text-gray-800">Product 4</h3>
                             <p class="text-gray-600 mt-2">$40.00</p>
-                            <a href="cart.html" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                         </div>
                     </div>
                 </div>

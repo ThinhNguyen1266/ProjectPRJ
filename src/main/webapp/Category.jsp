@@ -1,3 +1,10 @@
+<%-- 
+    Document   : Category
+    Created on : Jul 1, 2024, 9:30:50 PM
+    Author     : AnhNLCE181837
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,18 +17,18 @@
     </head>
     <body class="bg-gray-100">
         <!-- Header -->
-        <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+        <header class="bg-white shadow-md fixed top-0 left-0 w-full z-40">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="index.html"
+                <a href="/ProductController/List"
                     class="text-xl font-bold text-gray-800">ShopName</a>
                 <div class="flex space-x-4">
-                    <a href="index.html"
+                    <a href="/ProductController/List"
                         class="text-gray-800 hover:text-gray-600">Home</a>
-                    <a href="about-contact.html"
+                    <a href="/ProductController/About-Contact"
                         class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                    <a href="cart.html"
+                    <a href="/ProductController/Cart"
                         class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <a href="login.html"
+                    <a href="/AccountController/Login"
                         class="text-gray-800 hover:text-gray-600">Login</a>
                 </div>
             </div>
@@ -44,7 +51,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 1</h3>
                             <p class="text-gray-600 mt-2">$10.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
@@ -58,7 +65,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 2</h3>
                             <p class="text-gray-600 mt-2">$20.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
@@ -72,7 +79,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 3</h3>
                             <p class="text-gray-600 mt-2">$30.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
@@ -86,7 +93,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 4</h3>
                             <p class="text-gray-600 mt-2">$40.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
@@ -108,7 +115,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 5</h3>
                             <p class="text-gray-600 mt-2">$50.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
@@ -122,7 +129,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 6</h3>
                             <p class="text-gray-600 mt-2">$60.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
@@ -136,7 +143,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 7</h3>
                             <p class="text-gray-600 mt-2">$70.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
@@ -150,7 +157,7 @@
                                 class="text-lg font-semibold text-gray-800">Product
                                 8</h3>
                             <p class="text-gray-600 mt-2">$80.00</p>
-                            <a href="cart.html"
+                            <a href="/ProductController/Cart"
                                 class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
                                 to Cart</a>
                         </div>
