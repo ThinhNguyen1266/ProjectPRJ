@@ -8,10 +8,69 @@ package Models;
  *
  * @author DucNHCE180015
  */
-public class User {
-    private int user_id;
+public class User extends Account {
+    private int id;
     private String name;
-    private int account_id;
-    private int phone_number;
-  
+    private String phoneNumber;
+    private Address Address;
+    
+    public User() {
+    }
+
+    public User(int id, String name, String phoneNumber, Address Address, String username, String password, int account_id, String emails) {
+        super(username, password, account_id, emails);
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.Address = Address;
+    }
+
+    public User(int id, String name, String phoneNumber, Address Address, String username, String password) {
+        super(username, password);
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.Address = Address;
+    }
+
+    public User(int id, String name, String phoneNumber, Address Address) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.Address = Address;
+    }
+    
+    
+    public Address getAddress() {
+        return Address;
+    }
+
+    public void setAddress(Address Address) {
+        this.Address = Address;
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }
+
