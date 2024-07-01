@@ -67,7 +67,6 @@ public class AccountController extends HttpServlet {
             request.getRequestDispatcher("/create-account.jsp").forward(request, response);
         } else if (path.equals("/Create_profile") || path.equals("/AccountController/Create_profile")) {
             request.getRequestDispatcher("/create-account-profile.jsp").forward(request, response);
-
         }
     }
 
