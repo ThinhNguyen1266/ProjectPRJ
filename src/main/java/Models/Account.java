@@ -4,7 +4,7 @@
  */
 package Models;
 
-import java.sql.Date;
+
 
 /**
  *
@@ -13,19 +13,32 @@ import java.sql.Date;
 public class Account {
      private String username;
     private String password;
-    private String fullname;
-    private String gender;
-    private Date birthday;
-    private String department;
+    private int account_id;
+    private String emails;
 
-    public Account(String username, String password, String fullname, String gender, Date birthday, String department) {
+    public int getAccount_id() {
+        return account_id;
+    }
+
+    public void setAccount_id(int account_id) {
+        this.account_id = account_id;
+    }
+
+    public String getEmails() {
+        return emails;
+    }
+
+    public void setEmails(String emails) {
+        this.emails = emails;
+    }
+
+    public Account(String username, String password, int account_id, String emails) {
         this.username = username;
         this.password = password;
-        this.fullname = fullname;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.department = department;
+        this.account_id = account_id;
+        this.emails = emails;
     }
+
     
     public Account(String username, String password){
         this.username = username;
@@ -49,37 +62,5 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
+    } 
 }
