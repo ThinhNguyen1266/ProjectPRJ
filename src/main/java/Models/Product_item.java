@@ -12,20 +12,24 @@ public class Product_item extends Product{
     private int item_id;
     private int item_quan;
     private long price;
+    private Variation_option Variation_option;
 
-    public Product_item(int item_id, int item_quan, long price, int pro_id, String pro_name, String pro_des, String pro_img, int pro_quan, Models.Category Category) {
+    public Product_item(int item_id, int item_quan, long price, Variation_option Variation_option, int pro_id, String pro_name, String pro_des, String pro_img, int pro_quan, Models.Category Category) {
         super(pro_id, pro_name, pro_des, pro_img, pro_quan, Category);
         this.item_id = item_id;
         this.item_quan = item_quan;
         this.price = price;
+        this.Variation_option = Variation_option;
     }
 
-    public Product_item(int item_id, int item_quan, long price) {
+    public Product_item(int item_id, int item_quan, long price, Variation_option Variation_option) {
         this.item_id = item_id;
         this.item_quan = item_quan;
         this.price = price;
+        this.Variation_option = Variation_option;
     }
 
+  
     public Product_item() {
     }
     
@@ -52,6 +56,14 @@ public class Product_item extends Product{
 
     public void setPrice(long price) {
         this.price = price;
+    }
+
+    public Variation_option getVariation_option() {
+        return Variation_option;
+    }
+
+    public void setVariation_option(Variation_option Variation_option) {
+        this.Variation_option = Variation_option;
     }
     
     
