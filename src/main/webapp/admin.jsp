@@ -1,3 +1,10 @@
+<%-- 
+    Document   : admin
+    Created on : Jul 1, 2024, 9:48:25 PM
+    Author     : AnhNLCE181837
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>

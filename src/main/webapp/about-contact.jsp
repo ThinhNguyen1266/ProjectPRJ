@@ -1,3 +1,10 @@
+<%-- 
+    Document   : about-contact
+    Created on : Jul 1, 2024, 9:31:20 PM
+    Author     : AnhNLCE181837
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,14 +15,19 @@
     </head>
     <body class="bg-gray-100">
         <!-- Header -->
-        <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-40">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="index.html" class="text-xl font-bold text-gray-800">ShopName</a>
+                <a href="/ProductController/List"
+                    class="text-xl font-bold text-gray-800">ShopName</a>
                 <div class="flex space-x-4">
-                    <a href="index.html" class="text-gray-800 hover:text-gray-600">Home</a>
-                    <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                    <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <a href="login.html" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <a href="/ProductController/List"
+                        class="text-gray-800 hover:text-gray-600">Home</a>
+                    <a href="/ProductController/About-Contact"
+                        class="text-gray-800 hover:text-gray-600">About/Contact</a>
+                    <a href="/ProductController/Cart"
+                        class="text-gray-800 hover:text-gray-600">Cart</a>
+                    <a href="/AccountController/Login"
+                        class="text-gray-800 hover:text-gray-600">Login</a>
                 </div>
             </div>
         </header>

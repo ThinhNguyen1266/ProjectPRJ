@@ -56,6 +56,14 @@ public class ProductController extends HttpServlet {
         String path = request.getRequestURI();
         if(path.equals("/ProductController/List")){
             request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }else if(path.equals("/ProductController/About-Contact")){
+            request.getRequestDispatcher("/about-contact.jsp").forward(request, response);
+        }else if(path.equals("/ProductController/Cart")){
+            request.getRequestDispatcher("/cart.jsp").forward(request, response);
+        }else if(path.equals("/ProductController/Checkout")){
+            request.getRequestDispatcher("/checkout.jsp").forward(request, response);
+        }else if(path.equals("/ProductController/Category")){
+            request.getRequestDispatcher("/Category.jsp").forward(request, response);
         }
     } 
 
