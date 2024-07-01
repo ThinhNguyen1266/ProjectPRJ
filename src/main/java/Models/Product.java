@@ -12,20 +12,40 @@ public class Product {
     private int pro_id;
     private String pro_name;
     private String pro_des;
-    private int cat_id;
     private String pro_img;
+    private int pro_quan;
+    private Category Category;
+
+    public Product(int pro_id, String pro_name, String pro_des, String pro_img, int pro_quan, Category Category) {
+        this.pro_id = pro_id;
+        this.pro_name = pro_name;
+        this.pro_des = pro_des;
+        this.pro_img = pro_img;
+        this.pro_quan = pro_quan;
+        this.Category = Category;
+    }
 
     public Product() {
     }
 
-    public Product(int pro_id, String pro_name, String pro_des, int cat_id, String pro_img) {
-        this.pro_id = pro_id;
-        this.pro_name = pro_name;
-        this.pro_des = pro_des;
-        this.cat_id = cat_id;
-        this.pro_img = pro_img;
+    public long getPro_quan() {
+        return pro_quan;
     }
 
+    public void setPro_quan(int pro_quan) {
+        this.pro_quan = pro_quan;
+    }
+
+    public Category getCategory() {
+        return Category;
+    }
+
+    public void setCategory(Category Category) {
+        this.Category = Category;
+    }
+    
+    
+    
     public int getPro_id() {
         return pro_id;
     }
@@ -50,13 +70,7 @@ public class Product {
         this.pro_des = pro_des;
     }
 
-    public int getCat_id() {
-        return cat_id;
-    }
-
-    public void setCat_id(int cat_id) {
-        this.cat_id = cat_id;
-    }
+    
 
     public String getPro_img() {
         return pro_img;
