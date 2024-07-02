@@ -1,10 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : Jun 30, 2024, 10:51:42 AM
-    Author     : AnhNLCE181837
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,7 +14,14 @@
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <% 
+                        String customerName = (String) session.getAttribute("customername");
+                        if (customerName != null) {
+                    %>
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName %></a>
+                    <% } else { %>
+                        <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <% } %>
                 </div>
             </div>
         </header>

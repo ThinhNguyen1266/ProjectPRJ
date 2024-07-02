@@ -54,7 +54,7 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String path = request.getRequestURI();
-        if(path.equals("/ProductController/List")){
+        if(path.equals("/") || path.equals("/ProductController/List")){
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }else if(path.equals("/ProductController/About-Contact")){
             request.getRequestDispatcher("/about-contact.jsp").forward(request, response);
