@@ -5,20 +5,25 @@
 package Controllers;
 
 import DAOs.AccountDAO;
+import DAOs.CreateAccountDAO;
+import DAOs.ProvinceDAO;
 import Models.Account;
+import Models.Address;
+import Models.Province;
+import Models.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author AnhNLCE181837
  */
-public class AccountController extends HttpServlet {
+public class CreateAccountController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,10 +42,10 @@ public class AccountController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AccountController</title>");
+            out.println("<title>Servlet CreateAccount</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AccountController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CreateAccount at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,21 +63,7 @@ public class AccountController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if(path.equals("/")){
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-        }
-        if (path.equals("/Login") || path.equals("/AccountController/Login")) {
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
-        } else if (path.equals("/Index") || path.equals("/AccountController/Index")) {
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-        } else if (path.equals("/Create_account") || path.equals("/AccountController/Create_account")) {
-            request.getRequestDispatcher("/create-account.jsp").forward(request, response);
-        } else if (path.equals("/Create_profile") || path.equals("/AccountController/Create_profile")) {
-            request.getRequestDispatcher("/create-account-profile.jsp").forward(request, response);
-        }else if (path.equals("/Admin_profile") || path.equals("/AccountController/Admin_profile")) {
-            request.getRequestDispatcher("/admin.jsp").forward(request, response);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -86,32 +77,44 @@ public class AccountController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (request.getParameter("btnLogin") != null) {
+
+        if (request.getParameter("btnSignin") != null) {
+
             String username = request.getParameter("txtUsername");
             String password = request.getParameter("txtPassword");
+            String confirmpassword = request.getParameter("txtConfirmPassword");
+            String email = request.getParameter("txtEmail");
 
-            Account acc = new Account();
-            acc.setUsername(username);
-            acc.setPassword(password);
-            AccountDAO dao = new AccountDAO();
-            if(dao.loginAdmin(acc)){
-                Cookie usernameCookie = new Cookie("username", username);
-                usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
-                response.addCookie(usernameCookie);
-                response.sendRedirect("/Admin_profile");
-            }else{
-                if (dao.login(acc)) {
-                // Tạo cookie cho username
-                Cookie usernameCookie = new Cookie("username", username);
-                usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
-                response.addCookie(usernameCookie);
+            if (password.equals(confirmpassword)) {
+                CreateAccountDAO caDAO = new CreateAccountDAO();
+                String id = caDAO.getAccountID();
+                AccountDAO accDAO = new AccountDAO();
+                Account acc = new Account(username, accDAO.getMD5Hash(password), (Integer.parseInt(id) + 1), email);
+                String name = request.getParameter("txtName");
+                String phoneNumber = request.getParameter("txtPhonenumber");
+                String addressDraw = request.getParameter("txtAddress");
+                String provinceDraw = request.getParameter("txtProvince");
 
-                response.sendRedirect("/ProductController/List");
-            } else {
-                request.setAttribute("error", "invalid username or password");
-                response.sendRedirect("/AccountController/Index");
+                String userId = caDAO.getUserID();
+
+                ProvinceDAO provinceDAO = new ProvinceDAO();
+                int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
+                Province province = new Province(provinceID, provinceDraw);
+                String addressIDDraw = caDAO.getAddressID();
+                int addressID = Integer.parseInt(addressIDDraw)+1;
+
+                Address address = new Address(addressID, provinceID, addressDraw, province);
+
+                User user = new User(Integer.parseInt(userId) + 1, name, phoneNumber, address, acc.getUsername(), acc.getPassword(), acc.getAccount_id(), acc.getEmails());
+                // Add code to save user or further processing
+
+                int count = caDAO.addNewAccount(acc);
+                count = caDAO.addNewUser(user);
+                count = caDAO.addNewAddress(address);
+                count = caDAO.addNewUserAddress(address, acc);
+
+                response.sendRedirect("/AccountController/Login");
             }
-            }  
         }
     }
 
