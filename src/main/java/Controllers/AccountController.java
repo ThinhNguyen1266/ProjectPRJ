@@ -59,7 +59,10 @@ public class AccountController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (path.equals("/") || path.equals("/Login") || path.equals("/AccountController/Login")) {
+        if(path.equals("/")){
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+        }
+        if (path.equals("/Login") || path.equals("/AccountController/Login")) {
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else if (path.equals("/Index") || path.equals("/AccountController/Index")) {
             request.getRequestDispatcher("/index.jsp").forward(request, response);
@@ -67,7 +70,6 @@ public class AccountController extends HttpServlet {
             request.getRequestDispatcher("/create-account.jsp").forward(request, response);
         } else if (path.equals("/Create_profile") || path.equals("/AccountController/Create_profile")) {
             request.getRequestDispatcher("/create-account-profile.jsp").forward(request, response);
-
         }
     }
 

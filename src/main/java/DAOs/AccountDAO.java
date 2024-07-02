@@ -22,11 +22,10 @@ public class AccountDAO {
         Connection conn = DB.DBConnection.getConnection();
         try {
             String hashedPassword = getMD5Hash(acc.getPassword());
-           String sql = "SELECT * FROM ACCOUNT WHERE UserName = ? AND Password = ?";
+           String sql = "SELECT * FROM account WHERE name = ? AND password = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, acc.getUsername());
-            pst.setString(2,hashedPassword); 
-            System.out.println(hashedPassword);
+            pst.setString(2,acc.getPassword()); 
             ResultSet rs = pst.executeQuery();
             if(rs.next()) {
                 return true;
