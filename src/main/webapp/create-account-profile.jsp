@@ -1,3 +1,5 @@
+<%@page import="java.sql.ResultSet"%>
+<%@page import="DAOs.ProvinceDAO"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,7 +23,7 @@
             <div class="container mx-auto px-4 max-w-md">
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Create
                     Account</h2>
-                <form class="bg-white shadow-md rounded-lg p-8 mt-8">
+                <form action="CreateAccountController" method="post" class="bg-white shadow-md rounded-lg p-8 mt-8">
                     <div class="mb-4">
 
                         <label
@@ -29,24 +31,17 @@
                             for="name">Name</label>
                         <input
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="name" type="text" placeholder="Name">
+                            id="name" type="text" placeholder="Name" name="txtName">
                     </div>
-                    <div class="mb-4">
-                        <label
-                            class="block text-gray-700 text-sm font-bold mb-2"
-                            for="email">Email</label>
-                        <input
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="email" type="email" placeholder="Email">
-                    </div>
+                    
                     <div class="mb-4">
                         <label
                             class="block text-gray-700 text-sm font-bold mb-2"
                             for="Phone number">Phone number</label>
                         <input
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="Phone number" type="email"
-                            placeholder="Phone number">
+                            id="Phone number" type="text"
+                            placeholder="Phone number" name="txtPhonenumber">
                     </div>
                     <div class="mb-4">
                         <label
@@ -54,16 +49,27 @@
                             for="Address">Address</label>
                         <input
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="Address" type="Address" placeholder="Address">
+                            id="Address" type="Address" placeholder="Address" name="txtAddress">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Province</label>
+                        <select name="txtProvince" id="province">
+                            <%
+                                ProvinceDAO provinceDao = new ProvinceDAO();
+                                ResultSet rs = provinceDao.getAll();
+                                while (rs.next()) {
+                                    String provinceName = rs.getString("name");
+                            %>
+                            <option value="<%= provinceName%>"><%= provinceName%></option>
+                            <% }%>
+                        </select>
+
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <a href="/Index" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block text-center">
-                            sign-in</a>
-                        </a>
-                        <a href="/Login" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block text-center">
-                            have an account? Login
-                        </a>
+                        <a href="/AccountController/Create_account" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block text-center">
+                            Back</a>
+                        <button class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block text-center" name="btnSignin">sign-in</button>
 
                     </div>
                 </form>

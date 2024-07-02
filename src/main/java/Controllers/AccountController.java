@@ -105,6 +105,10 @@ public class AccountController extends HttpServlet {
                 session.setAttribute("adminname", username);
                 response.sendRedirect("/Admin_profile");
             } else {
+
+                request.setAttribute("error", "invalid username or password");
+                response.sendRedirect("/AccountController/Index");
+
                 if (dao.login(acc)) {
                     // Tạo cookie cho username
                     Cookie usernameCookie = new Cookie("username", username);
@@ -116,6 +120,7 @@ public class AccountController extends HttpServlet {
                     request.setAttribute("error", "invalid username or password");
                     response.sendRedirect("/Create_profile");
                 }
+
             }
         }
     }
