@@ -29,7 +29,7 @@
                 <a href="index.html" class="text-gray-800 hover:text-gray-600">Home</a>
                 <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                 <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
-                <a href="login.html" class="text-gray-800 hover:text-gray-600">Login</a>
+                <h1>Hello: <%= session.getAttribute("adminname") %></h1>
             </div>
         </div>
     </header>

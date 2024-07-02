@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -86,6 +87,7 @@ public class AccountController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         HttpSession session=request.getSession();
         if (request.getParameter("btnLogin") != null) {
             String username = request.getParameter("txtUsername");
             String password = request.getParameter("txtPassword");
@@ -95,9 +97,10 @@ public class AccountController extends HttpServlet {
             acc.setPassword(password);
             AccountDAO dao = new AccountDAO();
             if(dao.loginAdmin(acc)){
-                Cookie usernameCookie = new Cookie("username", username);
-                usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
-                response.addCookie(usernameCookie);
+                Cookie adminCookie = new Cookie("username", username);
+                adminCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
+                response.addCookie(adminCookie);
+                session.setAttribute("adminname", username);
                 response.sendRedirect("/Admin_profile");
             }else{
                 if (dao.login(acc)) {
@@ -105,7 +108,7 @@ public class AccountController extends HttpServlet {
                 Cookie usernameCookie = new Cookie("username", username);
                 usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
                 response.addCookie(usernameCookie);
-
+                session.setAttribute("customername", username);
                 response.sendRedirect("/ProductController/List");
             } else {
                 request.setAttribute("error", "invalid username or password");
