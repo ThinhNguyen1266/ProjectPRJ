@@ -25,7 +25,7 @@ public class AccountDAO {
            String sql = "SELECT * FROM account WHERE name = ? AND password = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, acc.getUsername());
-            pst.setString(2,acc.getPassword()); 
+            pst.setString(2,hashedPassword); 
             ResultSet rs = pst.executeQuery();
             if(rs.next()) {
                 return true;
@@ -35,6 +35,30 @@ public class AccountDAO {
         }
         return false;
     }
+   public boolean loginAdmin(Account acc) {
+    Connection conn = DB.DBConnection.getConnection();
+    try {
+        String hashedPassword = getMD5Hash(acc.getPassword());
+        String sql = "SELECT * FROM account WHERE name = ? AND password = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, acc.getUsername());
+        pst.setString(2, hashedPassword);
+        System.out.println(hashedPassword);
+        ResultSet rs = pst.executeQuery();
+        
+        if (rs.next()) {
+            
+            if (acc.getPassword().equals("admin")) {
+                return true;
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+    return false;
+}
+
     
     public String getMD5Hash(String input) {
         try {

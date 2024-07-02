@@ -70,6 +70,8 @@ public class AccountController extends HttpServlet {
             request.getRequestDispatcher("/create-account.jsp").forward(request, response);
         } else if (path.equals("/Create_profile") || path.equals("/AccountController/Create_profile")) {
             request.getRequestDispatcher("/create-account-profile.jsp").forward(request, response);
+        }else if (path.equals("/Admin_profile") || path.equals("/AccountController/Admin_profile")) {
+            request.getRequestDispatcher("/admin.jsp").forward(request, response);
         }
     }
 
@@ -92,7 +94,13 @@ public class AccountController extends HttpServlet {
             acc.setUsername(username);
             acc.setPassword(password);
             AccountDAO dao = new AccountDAO();
-            if (dao.login(acc)) {
+            if(dao.loginAdmin(acc)){
+                Cookie usernameCookie = new Cookie("username", username);
+                usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
+                response.addCookie(usernameCookie);
+                response.sendRedirect("/Admin_profile");
+            }else{
+                if (dao.login(acc)) {
                 // Tạo cookie cho username
                 Cookie usernameCookie = new Cookie("username", username);
                 usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
@@ -101,8 +109,9 @@ public class AccountController extends HttpServlet {
                 response.sendRedirect("/ProductController/List");
             } else {
                 request.setAttribute("error", "invalid username or password");
-                response.sendRedirect("/");
+                response.sendRedirect("/Create_profile");
             }
+            }  
         }
     }
 
