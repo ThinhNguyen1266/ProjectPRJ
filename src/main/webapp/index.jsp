@@ -21,7 +21,14 @@
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                   <% 
+                        Cookie[] cookies = request.getCookies();
+                        if (cookies != null) {
+                    %>
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= session.getAttribute("customername") %></a>
+                    <% } else { %>
+                        <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <% } %>
                 </div>
             </div>
         </header>
