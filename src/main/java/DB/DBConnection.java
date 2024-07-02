@@ -16,7 +16,7 @@ public class DBConnection {
         Connection conn;
         try{
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://ANHNGUYEN:1433;databaseName=lab03;user=sa;password=123456;encrypt=true;trustServerCertificate=true";
+            String url = "jdbc:sqlserver://demoazurethinh.database.windows.net:1433;databaseName=ProjectPRJ;user=thinhadmin;password=Thinh123;encrypt=true;trustServerCertificate=true";
             conn = DriverManager.getConnection(url);
         }catch(Exception ex){
             conn = null;
