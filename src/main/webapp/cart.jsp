@@ -14,22 +14,40 @@
         <link
             href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
             rel="stylesheet">
+        <style>
+            input[type=text] {
+                width: 500px;
+                box-sizing: border-box;
+                border: 2px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+                background-color: white;
+                background-image: url('https://www.w3schools.com/howto/searchicon.png');
+                background-position: 10px 10px;
+                background-repeat: no-repeat;
+                padding: 12px 20px 12px 40px;
+            }
+        </style>
     </head>
     <body class="bg-gray-100">
         <!-- Header -->
-        <header class="bg-white shadow-md fixed top-0 left-0 w-full z-40">
+        <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/ProductController/List"
-                    class="text-xl font-bold text-gray-800">ShopName</a>
+                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
+                <form class="flex-grow mx-2">
+                    <input type="text" name="search" placeholder="Search..">
+                </form>
                 <div class="flex space-x-4">
-                    <a href="/ProductController/List"
-                        class="text-gray-800 hover:text-gray-600">Home</a>
-                    <a href="/ProductController/About-Contact"
-                        class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                    <a href="/ProductController/Cart"
-                        class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <a href="/AccountController/Login"
-                        class="text-gray-800 hover:text-gray-600">Login</a>
+                    <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
+                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
+                    <%
+                        String customerName = (String) session.getAttribute("customername");
+                        if (customerName != null) {
+                    %>
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName%></a>
+                    <% } else { %>
+                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <% }%>
                 </div>
             </div>
         </header>
@@ -76,7 +94,7 @@
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <input type="number" value="1"
-                                        class="w-16 py-2 px-3 border rounded text-gray-700">
+                                           class="w-16 py-2 px-3 border rounded text-gray-700">
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -100,11 +118,12 @@
                 </div>
                 <div class="mt-8 flex justify-end">
                     <a href="/ProductController/Checkout"
-                        class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
+                       class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
                         to Checkout</a>
                 </div>
             </div>
         </section>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white py-8">

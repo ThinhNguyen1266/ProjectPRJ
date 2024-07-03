@@ -20,7 +20,7 @@
         <header class="bg-white shadow-md">
             <div
                 class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/Index"
+                <a href="/ProductController/List"
                     class="text-xl font-bold text-gray-800">ShopName</a>
             </div>
         </header>
