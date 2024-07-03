@@ -1,3 +1,5 @@
+<%@page import="java.sql.ResultSet"%>
+<%@page import="DAOs.CategoryDAO"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -35,7 +37,7 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
-                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName %></a>
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName %></a>
                     <% } else { %>
                         <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% } %>
@@ -60,48 +62,21 @@
                 <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Shop by Category</h2>
                 <div class="flex flex-wrap justify-center gap-6">
                     <!-- Category Item -->
+                    <% 
+                        CategoryDAO dao = new CategoryDAO();
+                        ResultSet rs = dao.getAllCategoriesNull();
+                        while(rs.next()){
+                    %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
+                                <a href="/ProductController/Category"><%=rs.getString("name")%></a>
                             </h3>
                         </div>
                     </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
+                    <%
+                                                }
+                        %>
                 </div>
             </div>
         </section>
