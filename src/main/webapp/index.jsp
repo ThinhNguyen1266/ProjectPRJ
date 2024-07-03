@@ -1,3 +1,6 @@
+<%@page import="java.sql.ResultSet"%>
+<%@page import="DAOs.ProductDAO"%>
+<%@page import="DAOs.CategoryDAO"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -18,6 +21,33 @@
                 background-repeat: no-repeat;
                 padding: 12px 20px 12px 40px;
             }
+            .product-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center content vertically */
+                height: 100%;
+            }
+
+            .product-name {
+                height: 2.5em; /* Adjust as needed */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .product-details {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center product details vertically */
+                text-align: center; /* Center text horizontally */
+            }
+
+            .add-to-cart {
+                align-self: center; /* Center button horizontally */
+                margin-top: 1em; /* Add some margin to separate it from details */
+            }
+
         </style>
     </head>
     <body class="bg-gray-100">
@@ -91,6 +121,11 @@
                 <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Shop by Category</h2>
                 <div class="flex flex-wrap justify-center gap-6">
                     <!-- Category Item -->
+                    <%
+                        CategoryDAO dao = new CategoryDAO();
+                        ResultSet rs = dao.getAllCategoriesNull();
+                        while (rs.next()) {
+                    %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
@@ -103,8 +138,8 @@
                             <h3 class="text-lg font-semibold text-gray-800">
                                 <a href="/ProductController/Category">Category Name</a>
                             </h3>
-                        </div>
-                    </div>
+                </div>
+            </div>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
@@ -173,8 +208,13 @@
                             <p class="text-gray-600 mt-2">$40.00</p>
                             <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                         </div>
+                        <a href="/ProductController/Cart" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
+                    <%
+                        }
+                    %>
                 </div>
+
             </div>
         </section>
 
