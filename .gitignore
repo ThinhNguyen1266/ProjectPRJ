@@ -1,5 +1,5 @@
 target/
-
+src/main/resources/*
 *.jar
 *.war
 *.nar
