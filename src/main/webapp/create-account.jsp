@@ -14,7 +14,7 @@
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-40">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/Index"
+                <a href="/ProductController/List"
                    class="text-xl font-bold text-gray-800">ShopName</a>
             </div>
         </header>
