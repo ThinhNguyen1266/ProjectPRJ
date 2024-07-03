@@ -1,9 +1,6 @@
 <%@page import="java.sql.ResultSet"%>
-<<<<<<< HEAD
 <%@page import="DAOs.ProductDAO"%>
-=======
 <%@page import="DAOs.CategoryDAO"%>
->>>>>>> e8595650563df01a676cd4175089ecd217467dd0
 <!DOCTYPE html>
 <html lang="en">
     <head>
