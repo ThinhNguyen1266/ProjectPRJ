@@ -1,6 +1,6 @@
 <%@page import="java.sql.ResultSet"%>
-<%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.CategoryDAO"%>
+<%@page import="DAOs.ProductDAO"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,33 +21,6 @@
                 background-repeat: no-repeat;
                 padding: 12px 20px 12px 40px;
             }
-            .product-card {
-                display: flex;
-                flex-direction: column;
-                justify-content: center; /* Center content vertically */
-                height: 100%;
-            }
-
-            .product-name {
-                height: 2.5em; /* Adjust as needed */
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-            .product-details {
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: center; /* Center product details vertically */
-                text-align: center; /* Center text horizontally */
-            }
-
-            .add-to-cart {
-                align-self: center; /* Center button horizontally */
-                margin-top: 1em; /* Add some margin to separate it from details */
-            }
-
         </style>
     </head>
     <body class="bg-gray-100">
@@ -129,45 +102,13 @@
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
+                                <a href="/ProductController/Category"><%=rs.getString("name")%></a>
                             </h3>
                         </div>
                     </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                </div>
-            </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
+                    <%
+                        }
+                    %>
                 </div>
             </div>
         </section>
@@ -177,36 +118,16 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-800">Product 1</h3>
-                            <p class="text-gray-600 mt-2">$10.00</p>
-                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-800">Product 2</h3>
-                            <p class="text-gray-600 mt-2">$20.00</p>
-                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-800">Product 3</h3>
-                            <p class="text-gray-600 mt-2">$30.00</p>
-                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-800">Product 4</h3>
+                    <%
+                        ProductDAO pDAO = new ProductDAO();
+                        rs = pDAO.getAll();
+                        while (rs.next()) {
+                    %>
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
+                        <img style="width: 300px; height: 200px" src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
+                        <div class="p-4 product-details">
+                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%=rs.getString("name")%></h3>
                             <p class="text-gray-600 mt-2">$40.00</p>
-                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                         </div>
                         <a href="/ProductController/Cart" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
