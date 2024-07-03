@@ -105,7 +105,6 @@ public class AccountController extends HttpServlet {
                 session.setAttribute("adminname", username);
                 response.sendRedirect("/Admin_profile");
             } else {
-
                 if (dao.login(acc)) {
                     // Tạo cookie cho username
                     Cookie usernameCookie = new Cookie("username", username);

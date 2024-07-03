@@ -1,5 +1,9 @@
 <%@page import="java.sql.ResultSet"%>
+<<<<<<< HEAD
 <%@page import="DAOs.ProductDAO"%>
+=======
+<%@page import="DAOs.CategoryDAO"%>
+>>>>>>> e8595650563df01a676cd4175089ecd217467dd0
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,12 +11,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shopping Website Group1</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+                input[type=text] {
+                    width: 500px;
+                    box-sizing: border-box;
+                    border: 2px solid #ccc;
+                    border-radius: 4px;
+                    font-size: 16px;
+                    background-color: white;
+                    background-image: url('https://www.w3schools.com/howto/searchicon.png');
+                    background-position: 10px 10px;
+                    background-repeat: no-repeat;
+                    padding: 12px 20px 12px 40px;
+                }
+            </style>
     </head>
     <body class="bg-gray-100">
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/ProductController/List" class="text-xl font-bold text-gray-800">ShopName</a>
+                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
+                    <form class="flex-grow mx-2">
+                        <input type="text" name="search" placeholder="Search..">
+                    </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -20,7 +41,7 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
-                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName %></a>
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName %></a>
                     <% } else { %>
                         <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% } %>
@@ -45,48 +66,21 @@
                 <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Shop by Category</h2>
                 <div class="flex flex-wrap justify-center gap-6">
                     <!-- Category Item -->
+                    <% 
+                        CategoryDAO dao = new CategoryDAO();
+                        ResultSet rs = dao.getAllCategoriesNull();
+                        while(rs.next()){
+                    %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
+                                <a href="/ProductController/Category"><%=rs.getString("name")%></a>
                             </h3>
                         </div>
                     </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="p-6 text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category">Category Name</a>
-                            </h3>
-                        </div>
-                    </div>
+                    <%
+                                                }
+                        %>
                 </div>
             </div>
         </section>
@@ -98,7 +92,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
                     ProductDAO pDAO = new ProductDAO();
-                    ResultSet rs = pDAO.getAll();
+                    rs = pDAO.getAll();
                     while(rs.next()){
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
