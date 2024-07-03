@@ -5,7 +5,9 @@
 package DAOs;
 
 import DB.DBConnection;
+import Models.Product;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -34,5 +36,25 @@ public class ProductDAO {
             rs = null;
         }
         return rs;
+    }
+    
+    public Product getProduct(String id) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs=null;
+        Product obj = null;
+        try{
+            String sql = "Select * FROM product where id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, id);
+            rs = pst.executeQuery();
+            if(rs.next()){
+                obj = new Product();
+                obj.setPro_name(rs.getString("name"));
+            }else 
+                obj = null;
+        }catch(Exception e){
+            obj = null;
+        }
+        return obj;
     }
 }

@@ -4,6 +4,7 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -116,9 +117,14 @@
                                                 alt="Product Image">
                                         </div>
                                         <div class="ml-3">
+                                            <%
+                                            Product obj = null;
+                                            if(session.getAttribute("product")!=null){
+                                            obj = (Product) session.getAttribute("product");
+                                                }
+                                            %>
                                             <p
-                                                class="text-gray-900 whitespace-no-wrap">Product
-                                                Name</p>
+                                                class="text-gray-900 whitespace-no-wrap"><%= (obj==null)? "Product name" :  obj.getPro_name() %></p>
                                         </div>
                                     </div>
                                 </td>
@@ -148,6 +154,13 @@
                     </table>
                 </div>
                 <div class="mt-8 flex justify-end">
+                    <%
+                        if (obj != null) {
+                    %>
+                    <a href="/ProductController/List"
+                       style="margin-right: 10px"
+                       class="bg-blue-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Add to cart</a>
+                    <%}%>
                     <a href="/ProductController/Checkout"
                        class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
                         to Checkout</a>

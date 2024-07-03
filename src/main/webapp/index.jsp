@@ -136,7 +136,7 @@
                             <h3 class="text-lg font-semibold text-gray-800 product-name"><%=rs.getString("name")%></h3>
                             <p class="text-gray-600 mt-2">$40.00</p>
                         </div>
-                        <a href="/ProductController/Cart" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
+                        <a href="/ProductController/Cart/<%=rs.getString("id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
                     <%
                         }

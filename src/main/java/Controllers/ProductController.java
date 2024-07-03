@@ -5,7 +5,9 @@
 package Controllers;
 
 import DAOs.CategoryDAO;
+import DAOs.ProductDAO;
 import Models.Category;
+import Models.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -38,6 +40,7 @@ public class ProductController extends HttpServlet {
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet ProductController</title>");
+            out.println("<title>Servlet ProductController</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ProductController at " + request.getContextPath() + "</h1>");
@@ -60,7 +63,6 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
-
         if (path.equals("/") || path.equals("/ProductController/List")) {
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         } else if (path.equals("/ProductController/About-Contact")) {
@@ -94,6 +96,7 @@ public class ProductController extends HttpServlet {
         } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
+   
     }
 
     /**
