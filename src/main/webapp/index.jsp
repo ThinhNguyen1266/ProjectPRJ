@@ -12,38 +12,65 @@
         <title>Shopping Website Group1</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <style>
-                input[type=text] {
-                    width: 500px;
-                    box-sizing: border-box;
-                    border: 2px solid #ccc;
-                    border-radius: 4px;
-                    font-size: 16px;
-                    background-color: white;
-                    background-image: url('https://www.w3schools.com/howto/searchicon.png');
-                    background-position: 10px 10px;
-                    background-repeat: no-repeat;
-                    padding: 12px 20px 12px 40px;
-                }
-            </style>
+            input[type=text] {
+                width: 500px;
+                box-sizing: border-box;
+                border: 2px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+                background-color: white;
+                background-image: url('https://www.w3schools.com/howto/searchicon.png');
+                background-position: 10px 10px;
+                background-repeat: no-repeat;
+                padding: 12px 20px 12px 40px;
+            }
+            .product-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center content vertically */
+                height: 100%;
+            }
+
+            .product-name {
+                height: 2.5em; /* Adjust as needed */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .product-details {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center product details vertically */
+                text-align: center; /* Center text horizontally */
+            }
+
+            .add-to-cart {
+                align-self: center; /* Center button horizontally */
+                margin-top: 1em; /* Add some margin to separate it from details */
+            }
+
+        </style>
     </head>
     <body class="bg-gray-100">
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
-                    <form class="flex-grow mx-2">
-                        <input type="text" name="search" placeholder="Search..">
-                    </form>
+                <form class="flex-grow mx-2">
+                    <input type="text" name="search" placeholder="Search..">
+                </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <% 
+                    <%
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
-                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName %></a>
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName%></a>
                     <% } else { %>
-                        <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% } %>
                 </div>
             </div>
@@ -66,10 +93,10 @@
                 <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Shop by Category</h2>
                 <div class="flex flex-wrap justify-center gap-6">
                     <!-- Category Item -->
-                    <% 
+                    <%
                         CategoryDAO dao = new CategoryDAO();
                         ResultSet rs = dao.getAllCategoriesNull();
-                        while(rs.next()){
+                        while (rs.next()) {
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
@@ -79,8 +106,8 @@
                         </div>
                     </div>
                     <%
-                                                }
-                        %>
+                        }
+                    %>
                 </div>
             </div>
         </section>
@@ -91,29 +118,23 @@
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
-                    ProductDAO pDAO = new ProductDAO();
-                    rs = pDAO.getAll();
-                    while(rs.next()){
+                        ProductDAO pDAO = new ProductDAO();
+                        rs = pDAO.getAll();
+                        while (rs.next()) {
                     %>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
                         <img style="width: 300px; height: 200px" src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-800"><% rs.getString("name"); %></h3>
-                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                        <div class="p-4 product-details">
+                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%=rs.getString("name")%></h3>
+                            <p class="text-gray-600 mt-2">$40.00</p>
                         </div>
+                        <a href="/ProductController/Cart" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
                     <%
                         }
                     %>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-800">Product 4</h3>
-                            <p class="text-gray-600 mt-2">$40.00</p>
-                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
-                        </div>
-                    </div>
                 </div>
+
             </div>
         </section>
 
