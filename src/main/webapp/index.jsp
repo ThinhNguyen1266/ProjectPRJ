@@ -120,7 +120,7 @@
                         while (rs.next()) {
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
-                        <img style="width: 300px; height: 200px" src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
+                        <img style="width: 300px; height: 200px" src="<%= rs.getString("image") %>" alt="Product Image" class="w-full h-48 object-cover">
                         <div class="p-4 product-details">
                             <h3 class="text-lg font-semibold text-gray-800 product-name"><%=rs.getString("name")%></h3>
                             <p class="text-gray-600 mt-2">$40.00</p>
