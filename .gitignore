@@ -1,6 +1,4 @@
 target/
-/src/main/resources/*
-src/main/resources/
 src/main/resources/database.properties
 *.jar
 *.war
