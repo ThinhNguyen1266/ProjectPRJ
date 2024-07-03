@@ -5,12 +5,15 @@
 
 package Controllers;
 
+import DAOs.CategoryDAO;
+import Models.Category;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -54,6 +57,7 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String path = request.getRequestURI();
+         HttpSession session = request.getSession();
         if(path.equals("/") || path.equals("/ProductController/List")){
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }else if(path.equals("/ProductController/About-Contact")){
@@ -62,7 +66,14 @@ public class ProductController extends HttpServlet {
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
         }else if(path.equals("/ProductController/Checkout")){
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
-        }else if(path.equals("/ProductController/Category")){
+        }else if(path.startsWith("/ProductController/Category")){
+             String[] s = path.split("/");
+             String id = s[s.length - 1];
+             CategoryDAO dao = new CategoryDAO();
+             Category obj=dao.getCatName(Integer.parseInt(id));
+             String name=obj.getCat_name();
+             session.setAttribute("category", name);
+             session.setAttribute("categoryid", id);
             request.getRequestDispatcher("/Category.jsp").forward(request, response);
         }else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);

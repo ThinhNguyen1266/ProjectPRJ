@@ -4,6 +4,8 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="java.sql.ResultSet"%>
+<%@page import="DAOs.CategoryDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -126,146 +128,47 @@
         </style>
         <!-- Products Section -->
         <section class="py-12 mt-16">
-            <div class="container mx-auto px-4">
-
-                <h2
-                    class="text-2xl font-bold text-gray-800 text-center">Category
-                    Name</h2>
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                1</h3>
-                            <p class="text-gray-600 mt-2">$10.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                2</h3>
-                            <p class="text-gray-600 mt-2">$20.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                3</h3>
-                            <p class="text-gray-600 mt-2">$30.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                4</h3>
-                            <p class="text-gray-600 mt-2">$40.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold text-gray-800 text-center">
+            <%= session.getAttribute("category") %>
+        </h2>
+        <div class="flex flex-wrap justify-center gap-6">
+            <%
+                CategoryDAO dao = new CategoryDAO();
+                String name = (String) session.getAttribute("category");
+                ResultSet rs = dao.getAllProductCat(name); // Corrected to use category ID
+                while (rs.next()) {
+            %>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden w-64"> <!-- Adjust width as needed -->
+                <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-800"><%= rs.getString("name") %></h3>
+                    <p class="text-gray-600 mt-2">$10.00</p>
+                    <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                 </div>
             </div>
-        </section>
+            <%
+                }
+            %>
+        </div>
+    </div>
+</section>
 
-        <section class="py-12">
-            <div class="container mx-auto px-4">
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                5</h3>
-                            <p class="text-gray-600 mt-2">$50.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                6</h3>
-                            <p class="text-gray-600 mt-2">$60.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                7</h3>
-                            <p class="text-gray-600 mt-2">$70.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                             alt="Product Image"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                8</h3>
-                            <p class="text-gray-600 mt-2">$80.00</p>
-                            <a href="/ProductController/Cart"
-                               class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
-            <div class="container mx-auto px-4 text-center">
-                <p>&copy; 2024 ShopName. All rights reserved.</p>
-                <div class="mt-4 space-x-4">
-                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
-                </div>
-            </div>
-        </footer>
-    </body>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2024 ShopName. All rights reserved.</p>
+        <div class="mt-4 space-x-4">
+            <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+            <a href="#" class="hover:text-gray-400">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+</body>
 </html>
