@@ -93,20 +93,27 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Shop by Category</h2>
                 <div class="flex flex-wrap justify-center gap-6">
-                    <!-- Category Item -->
+                    <!-- Fetching categories -->
                     <%
                         CategoryDAO dao = new CategoryDAO();
                         ResultSet rs = dao.getAllCategoriesNull();
-                        while (rs.next()) {
-                    %>
+                        if (rs != null) {
+                            while (rs.next()) {
+                                String categoryId = rs.getString("id"); // Assuming "id" is the column name for the category ID
+                                String categoryName = rs.getString("name"); // Assuming "name" is the column name for the category name
+%>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category"><%=rs.getString("name")%></a>
+                                <a href="/ProductController/Category/<%=categoryId%>"><%=categoryName%></a>
                             </h3>
                         </div>
                     </div>
                     <%
+                            }
+                        } else {
+                            // Handle case where rs is null or empty
+                            out.println("No categories found.");
                         }
                     %>
                 </div>
@@ -117,7 +124,7 @@
         <section class="py-12">
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+                <div class="grid grid-cols-1 sm:grid-csols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
                         ProductDAO pDAO = new ProductDAO();
                         rs = pDAO.getAll();

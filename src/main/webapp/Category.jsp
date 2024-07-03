@@ -4,6 +4,7 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.ProductDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.CategoryDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -128,47 +129,40 @@
         </style>
         <!-- Products Section -->
         <section class="py-12 mt-16">
-    <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-gray-800 text-center">
-            <%= session.getAttribute("category") %>
-        </h2>
-        <div class="flex flex-wrap justify-center gap-6">
-            <%
-                CategoryDAO dao = new CategoryDAO();
-                String name = (String) session.getAttribute("category");
-                ResultSet rs = dao.getAllProductCat(name); // Corrected to use category ID
-                while (rs.next()) {
-            %>
-            <div class="bg-white shadow-md rounded-lg overflow-hidden w-64"> <!-- Adjust width as needed -->
-                <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800"><%= rs.getString("name") %></h3>
-                    <p class="text-gray-600 mt-2">$10.00</p>
-                    <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl font-bold text-gray-800 text-center">
+                    <%= session.getAttribute("category")%>
+                </h2>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <%
+                        CategoryDAO dao = new CategoryDAO();
+                        String name = (String) session.getAttribute("category");
+                        ResultSet rs = dao.getAllProductCat(name); // Corrected to use category ID
+                        while (rs.next()) {
+                    %>
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden w-64"> <!-- Adjust width as needed -->
+                        <img src="https://via.placeholder.com/300" alt="Product Image" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800"><%= rs.getString("name")%></h3>
+                            <p class="text-gray-600 mt-2">$10.00</p>
+                            <a href="/ProductController/Cart" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                        </div>
+                    </div>
+                    <%
+                        }
+                    %>
                 </div>
             </div>
-            <%
-                }
-            %>
-        </div>
-    </div>
-</section>
-
-
-</div>
-</div>
-</div>
-</section>
-
-<!-- Footer -->
-<footer class="bg-gray-800 text-white py-8">
-    <div class="container mx-auto px-4 text-center">
-        <p>&copy; 2024 ShopName. All rights reserved.</p>
-        <div class="mt-4 space-x-4">
-            <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-            <a href="#" class="hover:text-gray-400">Terms of Service</a>
-        </div>
-    </div>
-</footer>
-</body>
+        </section>
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2024 ShopName. All rights reserved.</p>
+                <div class="mt-4 space-x-4">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+                </div>
+            </div>
+        </footer>
+    </body>
 </html>
