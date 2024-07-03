@@ -70,7 +70,7 @@
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category"><%=rs.getString("name")%></a>
+                                <a href="/ProductController/Category/<%=rs.getInt("id")%>"><%=rs.getString("name")%></a>
                             </h3>
                         </div>
                     </div>
