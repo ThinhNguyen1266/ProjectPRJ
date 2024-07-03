@@ -6,39 +6,70 @@
         <title>Shopping Website Group1</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <style>
-                input[type=text] {
-                    width: 500px;
-                    box-sizing: border-box;
-                    border: 2px solid #ccc;
-                    border-radius: 4px;
-                    font-size: 16px;
-                    background-color: white;
-                    background-image: url('https://www.w3schools.com/howto/searchicon.png');
-                    background-position: 10px 10px;
-                    background-repeat: no-repeat;
-                    padding: 12px 20px 12px 40px;
-                }
-            </style>
+            input[type=text] {
+                width: 500px;
+                box-sizing: border-box;
+                border: 2px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+                background-color: white;
+                background-image: url('https://www.w3schools.com/howto/searchicon.png');
+                background-position: 10px 10px;
+                background-repeat: no-repeat;
+                padding: 12px 20px 12px 40px;
+            }
+        </style>
     </head>
     <body class="bg-gray-100">
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
-                    <form class="flex-grow mx-2">
-                        <input type="text" name="search" placeholder="Search..">
-                    </form>
+                <form class="flex-grow mx-2">
+                    <input type="text" name="search" placeholder="Search..">
+                </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <% 
+                    <%
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
-                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName %></a>
+                    <select name="profileOptions" id="profileOptions" class="text-gray-800 hover:text-gray-600">
+                        <option value="view" id="customerNameOption" selected><%= customerName%></option>
+                        <option value="Profile">Profile</option>
+                        <option value="logout">Logout</option>
+                    </select>
+
+                    <script>
+                        document.getElementById('profileOptions').addEventListener('focus', function () {
+                            document.getElementById('customerNameOption').style.display = 'none';
+                        });
+                        document.getElementById('profileOptions').addEventListener('blur', function () {
+                            document.getElementById('customerNameOption').style.display = 'block';
+                        });
+                        const profileOptions = document.getElementById('profileOptions');
+                        const customerNameOption = document.getElementById('customerNameOption');
+
+                        profileOptions.addEventListener('change', function () {
+                            const selectedValue = profileOptions.value;
+
+                            // Reset the selected value to the customer's name
+                            customerNameOption.selected = true;
+
+                            // Perform the desired action based on the selected value
+                            if (selectedValue === 'Profile') {
+                                // Redirect to edit profile page or perform edit profile action
+                                window.location.href = '/AccountController/Profile';
+                            } else if (selectedValue === 'logout') {
+                                // Perform logout action
+                                window.location.href = '/logout';
+                            }
+                        });
+                    </script>
                     <% } else { %>
-                        <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
-                    <% } %>
+                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <% }%>
                 </div>
             </div>
         </header>

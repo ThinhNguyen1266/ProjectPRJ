@@ -44,7 +44,38 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
-                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName%></a>
+                    <select name="profileOptions" id="profileOptions" class="text-gray-800 hover:text-gray-600">
+                        <option value="view" id="customerNameOption" selected><%= customerName%></option>
+                        <option value="Profile">Profile</option>
+                        <option value="logout">Logout</option>
+                    </select>
+
+                    <script>
+                        document.getElementById('profileOptions').addEventListener('focus', function () {
+                            document.getElementById('customerNameOption').style.display = 'none';
+                        });
+                        document.getElementById('profileOptions').addEventListener('blur', function () {
+                            document.getElementById('customerNameOption').style.display = 'block';
+                        });
+                        const profileOptions = document.getElementById('profileOptions');
+                        const customerNameOption = document.getElementById('customerNameOption');
+
+                        profileOptions.addEventListener('change', function () {
+                            const selectedValue = profileOptions.value;
+
+                            // Reset the selected value to the customer's name
+                            customerNameOption.selected = true;
+
+                            // Perform the desired action based on the selected value
+                            if (selectedValue === 'Profile') {
+                                // Redirect to edit profile page or perform edit profile action
+                                window.location.href = '/AccountController/Profile';
+                            } else if (selectedValue === 'logout') {
+                                // Perform logout action
+                                window.location.href = '/logout';
+                            }
+                        });
+                    </script>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% }%>

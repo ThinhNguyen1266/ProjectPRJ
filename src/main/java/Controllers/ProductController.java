@@ -64,6 +64,8 @@ public class ProductController extends HttpServlet {
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
         }else if(path.equals("/ProductController/Category")){
             request.getRequestDispatcher("/Category.jsp").forward(request, response);
+        }else {
+            request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
     } 
 
