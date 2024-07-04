@@ -60,10 +60,11 @@ public class AccountController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getRequestURI();
+        Cookie[] cookies = request.getCookies();
+        HttpSession session = request.getSession();
         if (path.equals("/")) {
             request.getRequestDispatcher("/index.jsp").forward(request, response);
-        }
-        if (path.equals("/Login") || path.equals("/AccountController/Login")) {
+        } else if (path.equals("/Login") || path.equals("/AccountController/Login")) {
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else if (path.equals("/Index") || path.equals("/AccountController/Index")) {
             request.getRequestDispatcher("/index.jsp").forward(request, response);
@@ -74,7 +75,14 @@ public class AccountController extends HttpServlet {
         } else if (path.equals("/profile") || path.equals("/AccountController/Profile")) {
             request.getRequestDispatcher("/profile.jsp").forward(request, response);
         } else if (path.equals("/Admin_profile") || path.equals("/AccountController/Admin_profile")) {
-            request.getRequestDispatcher("/admin.jsp").forward(request, response);
+            if (cookies != null) {
+                for (Cookie c : cookies) {
+                    if (c.getName().equals("adminName")) {
+                        session.setAttribute("adminName", c.getValue());
+                        request.getRequestDispatcher("/admin.jsp").forward(request, response);
+                    }
+                }
+            }
         }
     }
 
@@ -99,10 +107,11 @@ public class AccountController extends HttpServlet {
             acc.setPassword(password);
             AccountDAO dao = new AccountDAO();
             if (dao.loginAdmin(acc)) {
-                Cookie adminCookie = new Cookie("username", username);
+                Cookie adminCookie = new Cookie("adminName", username);
                 adminCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
+                adminCookie.setPath("/");
                 response.addCookie(adminCookie);
-                session.setAttribute("adminname", username);
+                session.setAttribute("adminName", username);
                 response.sendRedirect("/Admin_profile");
             } else {
                 if (dao.login(acc)) {

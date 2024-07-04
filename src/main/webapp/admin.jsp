@@ -7,6 +7,7 @@
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,6 +24,7 @@
 </head>
 
 <body class="bg-gray-100">
+    <c:if test="${sessionScope.adminName ==null}"> <c:redirect url="/Admin_profile"></c:redirect> </c:if>
     <!-- Header -->
     <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
         <div class="mx-auto px-4 py-4 flex justify-between items-center">
@@ -31,7 +33,7 @@
                 <a href="index.html" class="text-gray-800 hover:text-gray-600">Home</a>
                 <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                 <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
-                <h1>Hello: <%= session.getAttribute("adminname") %></h1>
+                <h1>${sessionScope.adminName}</h1>
             </div>
         </div>
     </header>
