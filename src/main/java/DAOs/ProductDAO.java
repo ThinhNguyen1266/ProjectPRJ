@@ -71,4 +71,20 @@ public class ProductDAO {
         return obj;
     }
 
+      public ResultSet getAllProductByName(String name) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        if (conn != null) {
+            try {
+                String query = "SELECT * FROM product WHERE name LIKE ?";
+                PreparedStatement ps = conn.prepareStatement(query);
+                 ps.setString(1, "%" + name + "%");
+                rs = ps.executeQuery();
+            } catch (Exception e) {
+                e.printStackTrace();
+                rs = null;
+            }
+        }
+        return rs;
+    }
 }

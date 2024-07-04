@@ -83,8 +83,10 @@ public class ProductController extends HttpServlet {
             String name = obj.getCat_name();
             session.setAttribute("category", name);
             session.setAttribute("categoryid", id);
-            request.getRequestDispatcher("/Category.jsp").forward(request, response);
-        }
+            request.getRequestDispatcher("/category.jsp").forward(request, response);
+        }else if (path.equals("/ProductController/Search")) {
+            request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
+        } 
     }
 
     /**
@@ -97,8 +99,14 @@ public class ProductController extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+          if (request.getParameter("btnSearch") != null) {
+              String name = request.getParameter("txtSearchName");
+              session.setAttribute("Searchname", name);
+              response.sendRedirect("/ProductController/Search");
+        }
     }
 
     /**
