@@ -8,6 +8,7 @@ import Models.Category;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
@@ -15,21 +16,23 @@ import java.sql.Statement;
  * @author DucNHCE180015
  */
 public class CategoryDAO {
-     public ResultSet getAllCategoriesNull(){
-       Connection conn = DB.DBConnection.getConnection();
-        ResultSet rs=null;
-        if(conn !=null){
-            try {
-                Statement st= conn.createStatement();
-                rs=st.executeQuery("SELECT * FROM category WHERE parent IS NULL");
-            } catch (Exception e) {
-                rs=null;
+
+    public ResultSet getAllCategoriesNull() {
+        Connection conn = null;
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            conn = DB.DBConnection.getConnection();
+            if (conn != null) {
+                st = conn.createStatement();
+                rs = st.executeQuery("SELECT * FROM category WHERE parent IS NULL");
             }
-            
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return rs;
     }
-     
+
     public ResultSet getAllProductCat(String name) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
@@ -46,24 +49,24 @@ public class CategoryDAO {
         }
         return rs;
     }
-    public Category getCatName(int id){
+
+    public Category getCatName(int id) {
         Connection conn = DB.DBConnection.getConnection();
         Category obj;
         try {
-            String sql="select * from category where id=?";
-            PreparedStatement pst=conn.prepareStatement(sql);
-            pst.setInt(1,id);
-            ResultSet rs=pst.executeQuery();
-            if(rs.next()){
+            String sql = "select * from category where id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
                 obj = new Category();
                 obj.setCat_name(rs.getString("name"));
-            }else{
-                obj=null;
+            } else {
+                obj = null;
             }
-       } catch (Exception e) {
-           obj=null;
-       }
-       return obj;
+        } catch (Exception e) {
+            obj = null;
+        }
+        return obj;
     }
-
 }
