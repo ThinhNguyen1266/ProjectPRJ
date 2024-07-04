@@ -22,18 +22,25 @@ public class UserDAO {
         PreparedStatement pst = null;
         ResultSet rs = null;
         User obj = null;
-        Account acc = null;
+        Address addressDraw = null;
 
         try {
             conn = DB.DBConnection.getConnection();
-            String sql = "select * from account where name = ?";
+            String sql = "SELECT u.name AS user_name, u.phone_number AS phone_number, acc.email AS email, a.address AS address\n"
+                    + "	FROM account acc \n"
+                    + "    JOIN [user] u ON acc.id = u.account_id\n"
+                    + "                    JOIN user_address ua ON u.account_id = ua.user_id\n"
+                    + "                    JOIN [address] a ON ua.address_id = a.id \n"
+                    + "                    WHERE acc.name = ?";
             pst = conn.prepareStatement(sql);
             pst.setString(1, name);
             rs = pst.executeQuery();
 
             if (rs.next()) {
-                acc = new Account();
-                acc.setEmails(rs.getString("email"));
+                addressDraw = new Address();
+                addressDraw.setAddress(rs.getString("address"));
+                obj = new User(rs.getString("email"), rs.getString("user_name"), rs.getString("phone_number"), addressDraw);
+                
             }
         } catch (Exception e) {
             // Log the exception

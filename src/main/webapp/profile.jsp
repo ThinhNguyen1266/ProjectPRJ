@@ -80,7 +80,7 @@
             <div class="profile-section">
                 <div class="section-header">Profile Information</div>
                 <p><strong>Name:<%= (user==null) ? "": user.getName() %></strong> <!-- User Name --></p>
-                <p><strong>Email: :<%= (user==null) ? "": user.getEmails()%></strong> <!-- User Email --></p>
+                <p><strong>Email: :<%= (user==null) ? "": user.getEmails() %></strong> <!-- User Email --></p>
                 <p><strong>Phone Number: :<%= (user==null) ? "": user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
                 <p><strong>Default Address: :<%= (user==null) ? "": user.getAddress().getAddress() %></strong>
                     <!-- User Default Address --></p>
