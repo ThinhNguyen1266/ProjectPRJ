@@ -4,8 +4,11 @@
  */
 package DB;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Properties;
 
 /**
  *
@@ -15,8 +18,20 @@ public class DBConnection {
     public static Connection getConnection(){
         Connection conn;
         try{
+            Properties prop = new Properties();
+
+            InputStream fi = DBConnection.class.getResourceAsStream("/database.properties");
+            prop.load(fi);
+            System.out.println(prop.getProperty("DATA_SERVER_NAME"));
+            System.out.println(prop.getProperty("DATABASE_NAME"));
+            System.out.println(prop.getProperty("USERNAME"));
+            System.out.println(prop.getProperty("PASSWORD"));
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://demoazurethinh.database.windows.net:1433;databaseName=ProjectPRJ;user=thinhadmin;password=Thinh123;encrypt=true;trustServerCertificate=true";
+            String url = "jdbc:sqlserver://"+prop.getProperty("DATA_SERVER_NAME") +":1433;"
+                    + "databaseName="+prop.getProperty("DATABASE_NAME")+";"
+                    + "user="+prop.getProperty("USERNAME")+";"
+                    + "password="+prop.getProperty("PASSWORD")+";"
+                    + "encrypt=true;trustServerCertificate=true";
             conn = DriverManager.getConnection(url);
         }catch(Exception ex){
             conn = null;
