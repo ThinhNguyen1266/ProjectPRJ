@@ -11,10 +11,13 @@ import Models.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -39,7 +42,7 @@ public class ProductController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ProductController</title>");            
+            out.println("<title>Servlet ProductController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ProductController at " + request.getContextPath() + "</h1>");
@@ -73,7 +76,7 @@ public class ProductController extends HttpServlet {
             Product obj = pdao.getProduct(id);
             session.setAttribute("product", obj);
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
-        } else if (path.equals("/ProductController/Checkout")) {
+        }  else if (path.equals("/ProductController/Checkout")) {
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Category")) {
             String[] s = path.split("/");
@@ -84,6 +87,10 @@ public class ProductController extends HttpServlet {
             session.setAttribute("category", name);
             session.setAttribute("categoryid", id);
             request.getRequestDispatcher("/Category.jsp").forward(request, response);
+        } else if (path.startsWith("/ProductController/AddToCart")) {
+            String[] url = path.split("/");
+            String id = url[url.length - 1];
+            response.sendRedirect("/ProductController/Cart/" + id);
         }
     }
 
@@ -98,7 +105,26 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        if (request.getParameter("btnAddToCart") != null) {
+            HttpSession session = request.getSession();
+
+            List<Product> cart = new ArrayList<Product>();
+
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            Product p = new Product(productId, quantity);
+            if (session.getAttribute("cart") != null) {
+                cart = (List<Product>) session.getAttribute("cart");
+                cart.add(p);
+                int p2 = cart.get(0).getPro_id();
+                String a = "";
+            } else {
+                cart.add(p);
+                session.setAttribute("cart", cart);
+            }
+            response.sendRedirect("/ProductController/List");
+
+        }
     }
 
     /**
