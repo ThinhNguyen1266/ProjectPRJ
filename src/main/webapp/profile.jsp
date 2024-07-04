@@ -1,3 +1,12 @@
+<%-- 
+    Document   : profile
+    Created on : Jul 3, 2024, 9:27:35 PM
+    Author     : AnhNLCE181837
+--%>
+
+<%@page import="DAOs.UserDAO"%>
+<%@page import="Models.User"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,19 +50,24 @@
     </style>
     </head>
     <body class="bg-gray-100">
-        <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+       <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="index.html"
-                    class="text-xl font-bold text-gray-800">ShopName</a>
+                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
                 <div class="flex space-x-4">
-                    <a href="index.html"
-                        class="text-gray-800 hover:text-gray-600">Home</a>
-                    <a href="about-contact.html"
-                        class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                    <a href="cart.html"
-                        class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <a href="login.html"
-                        class="text-gray-800 hover:text-gray-600">Login</a>
+                    <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
+                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
+                    <%
+                        String customerName = (String) session.getAttribute("customername");
+                        User user = null;
+                        if (customerName != null) {
+                        user = new User();
+                        UserDAO userDAO = new UserDAO();
+                        user = userDAO.getUser(customerName);
+                    %>
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName%></a>
+                    <% } else { %>
+                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <% }%>
                 </div>
             </div>
         </header>
@@ -65,10 +79,10 @@
             <!-- User Information Section -->
             <div class="profile-section">
                 <div class="section-header">Profile Information</div>
-                <p><strong>Name:</strong> <!-- User Name --></p>
-                <p><strong>Email:</strong> <!-- User Email --></p>
-                <p><strong>Phone Number:</strong> <!-- User Phone Number --></p>
-                <p><strong>Default Address:</strong>
+                <p><strong>Name:<%= (user==null) ? "": user.getName() %></strong> <!-- User Name --></p>
+                <p><strong>Email: :<%= (user==null) ? "": user.getEmails() %></strong> <!-- User Email --></p>
+                <p><strong>Phone Number: :<%= (user==null) ? "": user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
+                <p><strong>Default Address: :<%= (user==null) ? "": user.getAddress().getAddress() %></strong>
                     <!-- User Default Address --></p>
             </div>
 

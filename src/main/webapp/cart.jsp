@@ -76,6 +76,14 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <%
+                                            Product obj = null;
+                                            String imgSrc = "https://via.placeholder.com/300";
+                                            if(session.getAttribute("product")!=null){
+                                            obj = (Product) session.getAttribute("product");
+                                            imgSrc = obj.getPro_img();
+                                                }
+                                            %>
                             <tr>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -83,16 +91,11 @@
                                         <div class="flex-shrink-0 w-10 h-10">
                                             <img
                                                 class="w-full h-full rounded-full"
-                                                src="https://via.placeholder.com/150"
+                                                src="<%= imgSrc %>"
                                                 alt="Product Image">
                                         </div>
                                         <div class="ml-3">
-                                            <%
-                                            Product obj = null;
-                                            if(session.getAttribute("product")!=null){
-                                            obj = (Product) session.getAttribute("product");
-                                                }
-                                            %>
+                                            
                                             <p
                                                 class="text-gray-900 whitespace-no-wrap"><%= (obj==null)? "Product name" :  obj.getPro_name() %></p>
                                         </div>

@@ -19,13 +19,8 @@ public class DBConnection {
         Connection conn;
         try{
             Properties prop = new Properties();
-
             InputStream fi = DBConnection.class.getResourceAsStream("/database.properties");
             prop.load(fi);
-            System.out.println(prop.getProperty("DATA_SERVER_NAME"));
-            System.out.println(prop.getProperty("DATABASE_NAME"));
-            System.out.println(prop.getProperty("USERNAME"));
-            System.out.println(prop.getProperty("PASSWORD"));
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://"+prop.getProperty("DATA_SERVER_NAME") +":1433;"
                     + "databaseName="+prop.getProperty("DATABASE_NAME")+";"
