@@ -29,6 +29,42 @@
                 background-repeat: no-repeat;
                 padding: 12px 20px 12px 40px;
             }
+            .product-card .flex {
+                height: 200px;
+            }
+            .product-card img {
+                width: 90%;
+                height: 90%;
+                object-fit: contain; /* Use 'contain' to ensure the image fits within the box without being cropped */
+                max-height: 100%;
+            }
+            .product-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center content vertically */
+                height: 100%;
+            }
+
+            .product-name {
+                height: 2.5em; /* Adjust as needed */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .product-details {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center product details vertically */
+                text-align: center; /* Center text horizontally */
+            }
+
+            .add-to-cart {
+                align-self: center; /* Center button horizontally */
+                margin-top: 1em; /* Add some margin to separate it from details */
+            }
+
         </style>
     </head>
     <body class="bg-gray-100">
@@ -97,44 +133,44 @@
             }
         </style>
         <!-- Products Section -->
-        
-       <section class="py-12 mt-16">
-    <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-gray-800 text-center">
-            <%= session.getAttribute("category") %>
-        </h2>
-        <div class="flex flex-wrap justify-center gap-6 mt-8">
-            <%
-                CategoryDAO dao = new CategoryDAO();
-                String name = (String) session.getAttribute("category");
-                ResultSet rs = dao.getAllProductCat(name); // Corrected to use category ID
-                while (rs.next()) {
-            %>
-            <div class="bg-white shadow-md rounded-lg overflow-hidden w-64"> <!-- Adjust width as needed -->
-                <img style="width: 300px; height: 200px;" src="<%= rs.getString("image") %>" alt="Product Image" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800"><%= rs.getString("name") %></h3>
-                    <p class="text-gray-600 mt-2">$10.00</p>
-                    <a href="/ProductController/Cart/<%= rs.getString("id") %>" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+        <section class="py-12">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+                    <%
+                        CategoryDAO dao = new CategoryDAO();
+                        String name = (String) session.getAttribute("category");
+                        ResultSet rs = dao.getAllProductCat(name); // Corrected to use category ID
+                        while (rs.next()) {
+                    %>
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
+                        <div class="flex justify-center items-center h-48 w-full">
+                            <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
+                        </div>
+                        <div class="p-4 product-details">
+                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("name")%></h3>
+                            <p class="text-gray-600 mt-2">$40.00</p>
+                        </div>
+                        <a href="/ProductController/Cart/<%= rs.getString("id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
+                    </div>
+                    <%
+                        }
+                    %>
                 </div>
             </div>
-            <%
-                }
-            %>
-        </div>
-    </div>
-</section>
+        </section>
 
 
-<!-- Footer -->
-<footer class="bg-gray-800 text-white py-8">
-    <div class="container mx-auto px-4 text-center">
-        <p>&copy; 2024 ShopName. All rights reserved.</p>
-        <div class="mt-4 space-x-4">
-            <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-            <a href="#" class="hover:text-gray-400">Terms of Service</a>
-        </div>
-    </div>
-</footer>
-</body>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2024 ShopName. All rights reserved.</p>
+                <div class="mt-4 space-x-4">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+                </div>
+            </div>
+        </footer>
+    </body>
 </html>
