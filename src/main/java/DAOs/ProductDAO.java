@@ -50,6 +50,7 @@ public class ProductDAO {
             if(rs.next()){
                 obj = new Product();
                 obj.setPro_name(rs.getString("name"));
+                obj.setPro_img(rs.getString("image"));
             }else 
                 obj = null;
         }catch(Exception e){
