@@ -36,9 +36,10 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
-                <form class="flex-grow mx-2">
-                    <input type="text" name="search" placeholder="Search..">
-                </form>
+                <form method="post">
+                    <input type="text" name="txtSearchName" placeholder="Search.." />
+                    <button type="submit" name="btnSearch">Search</button>
+                </form>  
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -96,12 +97,13 @@
             }
         </style>
         <!-- Products Section -->
-        <section class="py-12 mt-16">
+        
+       <section class="py-12 mt-16">
     <div class="container mx-auto px-4">
         <h2 class="text-2xl font-bold text-gray-800 text-center">
             <%= session.getAttribute("category") %>
         </h2>
-        <div class="flex flex-wrap justify-center gap-6">
+        <div class="flex flex-wrap justify-center gap-6 mt-8">
             <%
                 CategoryDAO dao = new CategoryDAO();
                 String name = (String) session.getAttribute("category");
@@ -109,11 +111,11 @@
                 while (rs.next()) {
             %>
             <div class="bg-white shadow-md rounded-lg overflow-hidden w-64"> <!-- Adjust width as needed -->
-                <img src="<%= rs.getString("image") %>" alt="Product Image" class="w-full h-48 object-cover">
+                <img style="width: 300px; height: 200px;" src="<%= rs.getString("image") %>" alt="Product Image" class="w-full h-48 object-cover">
                 <div class="p-4">
                     <h3 class="text-lg font-semibold text-gray-800"><%= rs.getString("name") %></h3>
                     <p class="text-gray-600 mt-2">$10.00</p>
-                    <a href="/ProductController/Cart/<%=rs.getString("id")%>" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                    <a href="/ProductController/Cart/<%= rs.getString("id") %>" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
                 </div>
             </div>
             <%
@@ -123,11 +125,6 @@
     </div>
 </section>
 
-
-</div>
-</div>
-</div>
-</section>
 
 <!-- Footer -->
 <footer class="bg-gray-800 text-white py-8">
