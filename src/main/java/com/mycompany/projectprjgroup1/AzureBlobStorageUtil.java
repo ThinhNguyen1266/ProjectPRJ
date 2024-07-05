@@ -4,12 +4,15 @@
  */
 package com.mycompany.projectprjgroup1;
 
+import DB.DBConnection;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  *
@@ -17,10 +20,14 @@ import java.io.IOException;
  */
 public class AzureBlobStorageUtil {
 
-    private String connectionString = "9EczHEQP650WEWT7uMSu3Ytj/yGN3kPRdo4wxFxtSoR7rVzpVlVxgf8RbS2afTE3/AjHNIhfNrCb+AStdqCk1w==";
+    private String connectionString;
     private String containerName = "pics";
-
+    
     public String uploadImage(String imagePath, String blobName) throws IOException {
+        Properties prop = new Properties();
+        InputStream fi = DBConnection.class.getResourceAsStream("/database.properties");
+        prop.load(fi);
+        connectionString = prop.getProperty("CONNECTION_STRING");
         BlobServiceClient blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString).buildClient();
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
