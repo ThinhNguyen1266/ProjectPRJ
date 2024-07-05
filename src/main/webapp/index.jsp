@@ -79,7 +79,7 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>         
-                 <form method="post" action="/ProductController/Search">
+                <form method="post" action="/ProductController/Search">
                     <input type="text" name="txtSearchName" placeholder="Search.." />
                     <button type="submit" name="btnSearch">Search</button>
                 </form>           
@@ -91,6 +91,7 @@
                         if (customerName != null) {
                     %>
                     <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName%></a>
+                    <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% } %>

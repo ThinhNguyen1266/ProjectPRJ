@@ -84,6 +84,7 @@
                         if (customerName != null) {
                     %>
                     <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName%></a>
+                    <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% }%>
