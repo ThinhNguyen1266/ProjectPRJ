@@ -64,4 +64,23 @@ public class UserDAO {
         return obj;
     }
 
+    public String getUserID(String name){
+        Connection conn = null;
+        ResultSet rs = null;
+        String id = "";
+        try{
+            conn = DB.DBConnection.getConnection();
+            String sql = "Select id from account where name = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, name);
+            rs = pst.executeQuery();
+            if(rs.next()){
+                id = rs.getString("id");
+            }
+                    
+        }catch(Exception e){
+            id = "";
+        }
+        return id;
+    }
 }
