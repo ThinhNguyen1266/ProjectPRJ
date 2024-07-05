@@ -105,6 +105,8 @@ public class ProductController extends HttpServlet {
             String[] url = path.split("/");
             String id = url[url.length - 1];
             response.sendRedirect("/ProductController/Cart/" + id);
+        }else {
+            request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
     }
 

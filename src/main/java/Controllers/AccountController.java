@@ -113,10 +113,10 @@ public class AccountController extends HttpServlet {
             // Redirect to login page
             response.sendRedirect("/");
 
-
         } else if (path.equals("/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
-
+        } else {
+            request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
     }
 

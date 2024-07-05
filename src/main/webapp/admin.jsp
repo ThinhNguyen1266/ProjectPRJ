@@ -17,6 +17,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Page</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <style>
             .hidden {
@@ -78,6 +79,66 @@
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="product-quantity">Product Quantity</label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-quantity" type="number" placeholder="Product Quantity" name="proQuan">
 
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="product-category">Product Category</label>
+                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-category" data-nextcombo="#product-subcategory">
+                                    <option value="">Select Category</option>
+                                    <option value="1" data-id="1" data-option="-1">Category 1</option>
+                                    <option value="2" data-id="2" data-option="-1">Category 2</option>
+                                    <option value="3" data-id="3" data-option="-1">Category 3</option>
+                                    <!-- Add more options as needed -->
+                                </select>
+                            </div>
+                            <div class="w-full md:w-1/2 px-3">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="product-subcategory">Product Subcategory</label>
+                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-subcategory" disabled>
+                                    <option value="">Select Subcategory</option>
+                                    <option value="1" data-id="1" data-option="1">Subcategory 1-1</option>
+                                    <option value="2" data-id="2" data-option="1">Subcategory 1-2</option>
+                                    <option value="3" data-id="3" data-option="2">Subcategory 2-1</option>
+                                    <option value="4" data-id="4" data-option="3">Subcategory 3-1</option>
+                                    <!-- Add more options as needed -->
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <script>
+                            function jq_ChainCombo(el) {
+                                var selected = $(el).find(':selected').data('id'); // get parent selected options' data-id attribute
+
+                                // get next combo (data-nextcombo attribute on parent select)
+                                var next_combo = $(el).data('nextcombo');
+
+                                // now if this 2nd combo doesn't have the old options list stored in it, make it happen
+                                if (!$(next_combo).data('store'))
+                                    $(next_combo).data('store', $(next_combo).find('option')); // store data
+
+                                // now include data stored in attribute for use...
+                                var options2 = $(next_combo).data('store');
+
+                                // update combo box with filtered results
+                                $(next_combo).empty().append(
+                                        options2.filter(function () {
+                                            return $(this).data('option') === selected;
+                                        })
+                                        );
+
+                                // now enable in case disabled... 
+                                $(next_combo).prop('disabled', false);
+                            }
+
+                            // quick little jquery plugin to apply jq_ChainCombo to all selects with a data-nextcombo on them
+                            jQuery.fn.chainCombo = function () {
+                                // find all selects with a data-nextcombo attribute
+                                $('[data-nextcombo]').each(function (i, obj) {
+                                    $(this).change(function () {
+                                        jq_ChainCombo(this);
+                                    });
+                                });
+                            }();
+                        </script>
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="product-category" >Product Category</label>
                         <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-category" name="proCat">
                             <%
@@ -208,13 +269,6 @@
         <br><br><br><br><br><br><br><br>
         <br><br><br><br><br><br><br><br>
 
-
-
-
-
-
-
-
         <!-- Footer -->
         <footer class="bg-gray-800 text-white py-8 mt-auto">
             <div class="container mx-auto px-4 text-center">
@@ -225,8 +279,6 @@
                 </div>
             </div>
         </footer>
-
-
         <script>
             document.getElementById('link-add-product').onclick = function () {
                 toggleSection('add-product');
