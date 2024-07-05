@@ -4,10 +4,18 @@
  */
 package Controllers;
 
+import DAOs.CartDAO;
+import DAOs.Cart_itemDAO;
 import DAOs.CategoryDAO;
 import DAOs.ProductDAO;
+import DAOs.ProductItemDAO;
+import DAOs.UserDAO;
+import Models.Cart;
+import Models.Cart_item;
 import Models.Category;
 import Models.Product;
+import Models.Product_item;
+import Models.User;
 import com.mycompany.projectprjgroup1.AzureBlobStorageUtil;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -129,7 +137,62 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+            HttpSession session = request.getSession();
+        if (request.getParameter("btnAddToCart") != null) {
+            String pro_id = request.getParameter("productId");
+            String quantity = request.getParameter("quantity");
+            List<Cart_item> cartList = new ArrayList<Cart_item>();
+
+            Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
+            String cart_itemID = cart_itemDAO.getCart_itemID();
+
+            Product_item product_item = new Product_item();
+            ProductItemDAO productItemDAO = new ProductItemDAO();
+            String product_itemID = productItemDAO.getProduct_itemID();
+            product_item = new Product_item(Integer.parseInt(product_itemID),Integer.parseInt(pro_id));
+
+            Cart cart = null;
+            CartDAO cartDAO = new CartDAO();
+            UserDAO userDAO = new UserDAO();
+            String cartID = cartDAO.getCartID();
+
+            Cookie[] c = request.getCookies();
+            String username = "";
+            for (Cookie cookie : c) {
+                if (cookie.getName().equals("username")) {
+                    username = cookie.getValue();
+                    break;
+                }
+            }
+
+            String userID = userDAO.getUserID(username);
+
+            User user = new User();
+            user.setId(Integer.parseInt(userID));
+            int count;
+
+            cart = new Cart((Integer.parseInt(cartID) + 1), user);
+
+            count = productItemDAO.addNewProductItem(product_item);
+
+            Cart_item cart_item = new Cart_item(Integer.parseInt(cart_itemID), product_item, (Integer.parseInt(cartID) + 1), user, Integer.parseInt(quantity));
+
+            if (session.getAttribute("cartList") == null) {
+                cartList.add(cart_item);
+                count = cartDAO.addNewCart(cart);
+                count = cart_itemDAO.addNewCart_Item(cart_item);
+
+                session.setAttribute("cartList", cartList);
+            } else {
+                cartList = (List<Cart_item>) session.getAttribute("cartList");
+                cartList.add(cart_item);
+                count = cart_itemDAO.addNewCart_Item(cart_item);
+            }
+            
+            
+            response.sendRedirect("/ProductController/List");
+        }
+        
         if (request.getParameter("btnSearch") != null) {
             String name = request.getParameter("txtSearchName");
             session.setAttribute("Searchname", name);
