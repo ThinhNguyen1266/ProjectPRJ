@@ -100,10 +100,17 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>         
+
+                <form method="post" action="/ProductController/Search">
+                    <input type="text" name="txtSearchName" placeholder="Search.." />
+                    <button type="submit" name="btnSearch">Search</button>
+                </form>           
+
                 <form method="post" class="search-container">
                     <input type="text" name="txtSearchName" placeholder="Search..">
                     <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
                 </form>          
+
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -111,6 +118,10 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
+
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName%></a>
+                    <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
+
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
                             <%= customerName%>
@@ -120,6 +131,7 @@
                             <a href="/AccountController/list" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
                         </div>
                     </div>
+
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% }%>

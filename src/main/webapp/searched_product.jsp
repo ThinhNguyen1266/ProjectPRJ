@@ -103,6 +103,10 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
+
+                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName%></a>
+                    <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
+
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
                             <%= customerName%>
@@ -112,6 +116,7 @@
                             <a href="/AccountController/list" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
                         </div>
                     </div>
+
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% }%>

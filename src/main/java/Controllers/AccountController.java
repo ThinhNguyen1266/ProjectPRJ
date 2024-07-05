@@ -62,8 +62,18 @@ public class AccountController extends HttpServlet {
         String path = request.getRequestURI();
         Cookie[] cookies = request.getCookies();
         HttpSession session = request.getSession();
+
         if (path.equals("/")) {
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("username")) {
+                        session.setAttribute("customername", cookie.getValue());
+                        break;
+                    }
+                }
+            }
             request.getRequestDispatcher("/index.jsp").forward(request, response);
+
         } else if (path.equals("/Login") || path.equals("/AccountController/Login")) {
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else if (path.equals("/Index") || path.equals("/AccountController/Index")) {
@@ -83,8 +93,30 @@ public class AccountController extends HttpServlet {
                     }
                 }
             }
+
+        } else if (path.startsWith("/AccountController/Logout")) {
+
+            session.invalidate();
+
+            // Remove cookies
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("username") || cookie.getName().equals("adminName")) {
+                        cookie.setValue(null);
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                    }
+                }
+            }
+
+            // Redirect to login page
+            response.sendRedirect("/");
+
+
         } else if (path.equals("/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
+
         }
     }
 
@@ -120,6 +152,7 @@ public class AccountController extends HttpServlet {
                     // Tạo cookie cho username
                     Cookie usernameCookie = new Cookie("username", username);
                     usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
+                    usernameCookie.setPath("/");
                     response.addCookie(usernameCookie);
                     session.setAttribute("customername", username);
                     response.sendRedirect("/ProductController/List");

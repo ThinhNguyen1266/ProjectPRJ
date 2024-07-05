@@ -65,8 +65,20 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
+        boolean coke = false;
         if (path.equals("/") || path.equals("/ProductController/List")) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("username")) {
+                        session.setAttribute("customername", cookie.getValue());
+                        coke = true;
+                        break;
+                    }
+                }
+            }
             request.getRequestDispatcher("/index.jsp").forward(request, response);
+
         } else if (path.equals("/ProductController/About-Contact")) {
             request.getRequestDispatcher("/about-contact.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Cart")) {
