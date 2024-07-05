@@ -1,13 +1,19 @@
+<%-- 
+    Document   : edit
+    Created on : Jul 5, 2024, 1:37:12 PM
+    Author     : Thinh
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Products</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body>
-    <div id="manage-products" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="manage-products" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8">
         <h3 class="text-xl font-bold text-gray-800">Manage Products</h3>
         <table class="min-w-full leading-normal mt-4">
             <thead>
@@ -101,5 +107,5 @@
             closeEditModal();
         }
     </script>
-</body>
+    </body>
 </html>
