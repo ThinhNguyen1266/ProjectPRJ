@@ -4,6 +4,9 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.ProductDAO"%>
+<%@page import="java.util.List"%>
+<%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -132,17 +135,38 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td
+                            <% if (session.getAttribute("cart") != null) {
+                                    List<Product> cart = (List<Product>) session.getAttribute("cart");
+                                    int index = 0;
+                                    while (index < cart.size()) {
+                                        Product p;
+                                        int id = cart.get(index).getPro_id();
+                                        index++;
+                                        ProductDAO pDAO = new ProductDAO();
+
+                                        p = pDAO.getProduct(String.valueOf(id));
+                                %>
+                                <tr>
+                               <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap">Product
-                                        Name</p>
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10">
+                                            <img
+                                                class="w-full h-full rounded-full"
+                                                src="<%= p.getPro_img() %>"
+                                                alt="Product Image">
+                                        </div>
+                                        <div class="ml-3">
+
+                                            <p
+                                                class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name() %></p>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap">1</p>
+                                    <input type="number" value="1"
+                                           class="w-16 py-2 px-3 border rounded text-gray-700">
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -154,7 +178,15 @@
                                     <p
                                         class="text-gray-900 whitespace-no-wrap">$10.00</p>
                                 </td>
-                            </tr>
+                                <td
+                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                                    <button
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
+                                </td>
+                    </tr>
+                                <%
+                                                }
+                                            }%>
                             <!-- Repeat for other products -->
                         </tbody>
                     </table>

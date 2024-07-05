@@ -11,10 +11,13 @@ import Models.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -39,7 +42,7 @@ public class ProductController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ProductController</title>");            
+            out.println("<title>Servlet ProductController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ProductController at " + request.getContextPath() + "</h1>");
@@ -73,7 +76,7 @@ public class ProductController extends HttpServlet {
             Product obj = pdao.getProduct(id);
             session.setAttribute("product", obj);
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
-        } else if (path.equals("/ProductController/Checkout")) {
+        }  else if (path.equals("/ProductController/Checkout")) {
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Category")) {
             String[] s = path.split("/");
@@ -86,6 +89,10 @@ public class ProductController extends HttpServlet {
             request.getRequestDispatcher("/category.jsp").forward(request, response);
         }else if (path.equals("/ProductController/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
+        } else if (path.startsWith("/ProductController/AddToCart")) {
+            String[] url = path.split("/");
+            String id = url[url.length - 1];
+            response.sendRedirect("/ProductController/Cart/" + id);
         } 
     }
 
@@ -101,12 +108,7 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-          if (request.getParameter("btnSearch") != null) {
-              String name = request.getParameter("txtSearchName");
-              session.setAttribute("Searchname", name);
-              response.sendRedirect("/ProductController/Search");
-        }
+        processRequest(request, response);
     }
 
     /**
