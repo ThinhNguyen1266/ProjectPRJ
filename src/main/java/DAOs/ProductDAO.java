@@ -87,6 +87,7 @@ public class ProductDAO {
             }
         }
         return rs;
+      }
     
     public Product getProductByID(String id){
          Connection conn = DB.DBConnection.getConnection();
