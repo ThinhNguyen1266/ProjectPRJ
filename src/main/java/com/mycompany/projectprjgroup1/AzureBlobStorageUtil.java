@@ -33,7 +33,7 @@ public class AzureBlobStorageUtil {
         BlobClient blobClient = containerClient.getBlobClient(blobName);
 
         File file = new File(imagePath);
-        blobClient.uploadFromFile(file.getPath());
+        blobClient.uploadFromFile(file.getPath(),true);
 
         // Trả về URL của blob
         return blobClient.getBlobUrl();
