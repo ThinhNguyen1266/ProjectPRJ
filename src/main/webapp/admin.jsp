@@ -4,6 +4,8 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.CategoryDAO"%>
+<%@page import="Models.Category"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -195,6 +197,7 @@
                 </div>
             </section>
         </div>
+
         <br><br><br><br><br><br><br><br>
         <br><br><br><br><br><br><br><br>
         <br><br><br><br><br><br><br><br>

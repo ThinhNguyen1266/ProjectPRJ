@@ -99,9 +99,10 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>         
-                <form method="post" class="search-container">
-                    <input type="text" name="txtSearchName" placeholder="Search..">
-                    <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
+
+                 <form method="post" action="/ProductController/Search">
+                    <input type="text" name="txtSearchName" placeholder="Search.." />
+                    <button type="submit" name="btnSearch">Search</button>
                 </form>           
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
