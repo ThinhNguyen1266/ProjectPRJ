@@ -46,6 +46,8 @@ public class CategoryDAO {
         }
         return rs;
     }
+    
+    
     public Category getCatName(int id){
         Connection conn = DB.DBConnection.getConnection();
         Category obj;
