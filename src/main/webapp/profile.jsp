@@ -63,6 +63,7 @@
                         user = new User();
                         UserDAO userDAO = new UserDAO();
                         user = userDAO.getUser(customerName);
+                      
                     %>
                     <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName%></a>
                     <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
@@ -79,7 +80,9 @@
 
             <!-- User Information Section -->
             <div class="profile-section">
+                
                 <div class="section-header">Profile Information</div>
+                <a class="btn btn-secondary" href="/AccountController/Edit/<%= customerName%>">Edit</a>
                 <p><strong>Name:<%= (user==null) ? "": user.getName() %></strong> <!-- User Name --></p>
                 <p><strong>Email: :<%= (user==null) ? "": user.getEmails() %></strong> <!-- User Email --></p>
                 <p><strong>Phone Number: :<%= (user==null) ? "": user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
