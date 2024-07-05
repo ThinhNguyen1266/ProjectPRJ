@@ -19,42 +19,88 @@ public class ProductDAO {
 
     public ProductDAO() {
     }
-    
-    
-    public ResultSet getAll(){
+
+    public ResultSet getAll() {
         Connection conn = DB.DBConnection.getConnection();
-        ResultSet rs=null;
-        try{
+        ResultSet rs = null;
+        try {
             Statement st = conn.createStatement();
             rs = st.executeQuery("SELECT * from product");
-            if(rs.next()){
-                return rs;
-            }else
-                rs=null;
-            
-        }catch(Exception e){
+        } catch (Exception e) {
             rs = null;
         }
         return rs;
     }
-    
+
+    public ResultSet getAllProductAdmin() {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT  p.id , p.name, p.[description], p.[image], p.quantity,c.name  \n"
+                    + "FROM [product] as p JOIN [category] as c\n"
+                    + "ON p.category_id = c.id\n"
+                    + "ORDER BY p.id ASC";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
     public Product getProduct(String id) {
         Connection conn = DB.DBConnection.getConnection();
-        ResultSet rs=null;
+        ResultSet rs = null;
         Product obj = null;
-        try{
+        try {
             String sql = "Select * FROM product where id = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, id);
             rs = pst.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 obj = new Product();
+                obj.setPro_id(Integer.parseInt(rs.getString("id")));
                 obj.setPro_name(rs.getString("name"));
-            }else 
+                obj.setPro_img(rs.getString("image"));
+            } else {
                 obj = null;
-        }catch(Exception e){
+            }
+        } catch (Exception e) {
             obj = null;
         }
         return obj;
+    }
+
+      public ResultSet getAllProductByName(String name) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        if (conn != null) {
+            try {
+                String query = "SELECT * FROM product WHERE name LIKE ?";
+                PreparedStatement ps = conn.prepareStatement(query);
+                 ps.setString(1, "%" + name + "%");
+                rs = ps.executeQuery();
+            } catch (Exception e) {
+                e.printStackTrace();
+                rs = null;
+            }
+        }
+        return rs;
+      }
+    
+    public Product getProductByID(String id){
+         Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs=null;
+        Product product = null;
+        try{
+            String sql = "SELECT * FROM Product WHERE ID = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, id);
+            rs = pst.executeQuery();
+        }catch(Exception e){
+            product = null;
+        }
+        return product;
     }
 }

@@ -4,6 +4,9 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.ProductDAO"%>
+<%@page import="java.util.List"%>
+<%@page import="Models.Product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,9 +37,10 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
-                <form class="flex-grow mx-2">
-                    <input type="text" name="search" placeholder="Search..">
-                </form>
+                <form method="post">
+                    <input type="text" name="txtSearchName" placeholder="Search.." />
+                    <button type="submit" name="btnSearch">Search</button>
+                </form>  
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -131,17 +135,38 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td
+                            <% if (session.getAttribute("cart") != null) {
+                                    List<Product> cart = (List<Product>) session.getAttribute("cart");
+                                    int index = 0;
+                                    while (index < cart.size()) {
+                                        Product p;
+                                        int id = cart.get(index).getPro_id();
+                                        index++;
+                                        ProductDAO pDAO = new ProductDAO();
+
+                                        p = pDAO.getProduct(String.valueOf(id));
+                                %>
+                                <tr>
+                               <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap">Product
-                                        Name</p>
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 w-10 h-10">
+                                            <img
+                                                class="w-full h-full rounded-full"
+                                                src="<%= p.getPro_img() %>"
+                                                alt="Product Image">
+                                        </div>
+                                        <div class="ml-3">
+
+                                            <p
+                                                class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name() %></p>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap">1</p>
+                                    <input type="number" value="1"
+                                           class="w-16 py-2 px-3 border rounded text-gray-700">
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -153,7 +178,15 @@
                                     <p
                                         class="text-gray-900 whitespace-no-wrap">$10.00</p>
                                 </td>
-                            </tr>
+                                <td
+                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                                    <button
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
+                                </td>
+                    </tr>
+                                <%
+                                                }
+                                            }%>
                             <!-- Repeat for other products -->
                         </tbody>
                     </table>

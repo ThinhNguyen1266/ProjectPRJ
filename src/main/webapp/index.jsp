@@ -21,6 +21,16 @@
                 background-repeat: no-repeat;
                 padding: 12px 20px 12px 40px;
             }
+            .product-card .flex {
+                height: 200px;
+            }
+            .product-card img {
+                width: 90%;
+                height: 90%;
+                object-fit: contain; /* Use 'contain' to ensure the image fits within the box without being cropped */
+                max-height: 100%;
+            }
+
             .product-card {
                 display: flex;
                 flex-direction: column;
@@ -48,16 +58,31 @@
                 margin-top: 1em; /* Add some margin to separate it from details */
             }
 
+            .search-form {
+                display: flex;
+                align-items: center;
+                margin: 2rem auto;
+                max-width: 600px;
+            }
+            .search-input {
+                flex-grow: 1;
+                margin-right: 0.5rem;
+            }
+            .search-button {
+                white-space: nowrap;
+            }
         </style>
+
     </head>
     <body class="bg-gray-100">
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
-                <form class="flex-grow mx-2">
-                    <input type="text" name="search" placeholder="Search..">
-                </form>
+                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>         
+                <form method="post">
+                    <input type="text" name="txtSearchName" placeholder="Search.." />
+                    <button type="submit" name="btnSearch"></button>
+                </form>            
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -120,20 +145,22 @@
                         while (rs.next()) {
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
-                        <img style="width: 300px; height: 200px" src="<%= rs.getString("image") %>" alt="Product Image" class="w-full h-48 object-cover">
+                        <div class="flex justify-center items-center h-48 w-full">
+                            <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
+                        </div>
                         <div class="p-4 product-details">
-                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%=rs.getString("name")%></h3>
+                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("name")%></h3>
                             <p class="text-gray-600 mt-2">$40.00</p>
                         </div>
-                        <a href="/ProductController/Cart/<%=rs.getString("id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
+                        <a href="/ProductController/Cart/<%= rs.getString("id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
                     <%
                         }
                     %>
                 </div>
-
             </div>
         </section>
+
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white py-8">
