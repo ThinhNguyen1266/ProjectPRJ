@@ -74,7 +74,7 @@
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
                 <form method="post">
                     <input type="text" name="txtSearchName" placeholder="Search.." />
-                    <button type="submit" name="btnSearch">Search</button>
+                    <button type="submit" name="btnSearch"></button>
                 </form>  
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
@@ -83,11 +83,39 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
-                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello, <%= customerName%></a>
+                    <div class="relative inline-block text-left">
+                        <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
+                            <%= customerName%>
+                        </button>
+                        <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                            <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                            <a href="/AccountController/list" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
+                        </div>
+                    </div>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
-                    <% }%>
+                    <% } %>
                 </div>
+
+                <script>
+                    function toggleDropdown() {
+                        var dropdownMenu = document.getElementById("dropdownMenu");
+                        dropdownMenu.classList.toggle("hidden");
+                    }
+
+                    // Close the dropdown if the user clicks outside of it
+                    window.onclick = function (event) {
+                        if (!event.target.matches('button')) {
+                            var dropdowns = document.getElementsByClassName("dropdown-menu");
+                            for (var i = 0; i < dropdowns.length; i++) {
+                                var openDropdown = dropdowns[i];
+                                if (!openDropdown.classList.contains('hidden')) {
+                                    openDropdown.classList.add('hidden');
+                                }
+                            }
+                        }
+                    }
+                </script>
             </div>
         </header>
         <section class="bg-white shadow-md py-4 mt-16">
