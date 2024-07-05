@@ -8,18 +8,39 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shopping Website Group1</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <style>
-            input[type=text] {
-                width: 500px;
-                box-sizing: border-box;
-                border: 2px solid #ccc;
-                border-radius: 4px;
+            .search-container {
+                display: flex;
+                align-items: center;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .search-container input[type="text"] {
+                width: 400px;
+                padding: 10px;
+                border: none;
+                outline: none;
                 font-size: 16px;
-                background-color: white;
-                background-image: url('https://www.w3schools.com/howto/searchicon.png');
-                background-position: 10px 10px;
-                background-repeat: no-repeat;
-                padding: 12px 20px 12px 40px;
+            }
+            .search-container button {
+                padding: 10px 15px;
+                border: none;
+                background-color: #f8f8f8;
+                cursor: pointer;
+                border-left: 1px solid #ccc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .search-container button:hover {
+                background-color: #f0f0f0;
+            }
+            .search-container button i {
+                font-size: 16px;
+                color: #333;
             }
             .product-card .flex {
                 height: 200px;
@@ -79,10 +100,17 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>         
+
                 <form method="post" action="/ProductController/Search">
                     <input type="text" name="txtSearchName" placeholder="Search.." />
                     <button type="submit" name="btnSearch">Search</button>
                 </form>           
+
+                <form method="post" class="search-container">
+                    <input type="text" name="txtSearchName" placeholder="Search..">
+                    <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
+                </form>          
+
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -90,12 +118,45 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
+
                     <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName%></a>
                     <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
+
+                    <div class="relative inline-block text-left">
+                        <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
+                            <%= customerName%>
+                        </button>
+                        <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                            <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                            <a href="/AccountController/list" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
+                        </div>
+                    </div>
+
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
-                    <% } %>
+                    <% }%>
                 </div>
+
+                <script>
+                    function toggleDropdown() {
+                        var dropdownMenu = document.getElementById("dropdownMenu");
+                        dropdownMenu.classList.toggle("hidden");
+                    }
+
+                    // Close the dropdown if the user clicks outside of it
+                    window.onclick = function (event) {
+                        if (!event.target.matches('button')) {
+                            var dropdowns = document.getElementsByClassName("dropdown-menu");
+                            for (var i = 0; i < dropdowns.length; i++) {
+                                var openDropdown = dropdowns[i];
+                                if (!openDropdown.classList.contains('hidden')) {
+                                    openDropdown.classList.add('hidden');
+                                }
+                            }
+                        }
+                    }
+                </script>
+
             </div>
         </header>
 
