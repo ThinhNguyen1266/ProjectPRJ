@@ -82,6 +82,7 @@
                         <option value="">Select Category</option>
                         <% while(rs.next()) { %>
                         <option value="<%= rs.getString("id") %>"><%= rs.getString("name") %></option>
+                        
                         <% } %>
                     </select>
                     
