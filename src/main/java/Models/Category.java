@@ -22,6 +22,10 @@ public class Category {
         this.cat_name = cat_name;
     }
 
+    public Category(int cat_id) {
+        this.cat_id = cat_id;
+    }
+    
     public int getCat_id() {
         return cat_id;
     }

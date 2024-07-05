@@ -62,8 +62,18 @@ public class AccountController extends HttpServlet {
         String path = request.getRequestURI();
         Cookie[] cookies = request.getCookies();
         HttpSession session = request.getSession();
+
         if (path.equals("/")) {
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("username")) {
+                        session.setAttribute("customername", cookie.getValue());
+                        break;
+                    }
+                }
+            }
             request.getRequestDispatcher("/index.jsp").forward(request, response);
+
         } else if (path.equals("/Login") || path.equals("/AccountController/Login")) {
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else if (path.equals("/Index") || path.equals("/AccountController/Index")) {
@@ -83,6 +93,30 @@ public class AccountController extends HttpServlet {
                     }
                 }
             }
+
+        } else if (path.startsWith("/AccountController/Logout")) {
+
+            session.invalidate();
+
+            // Remove cookies
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("username") || cookie.getName().equals("adminName")) {
+                        cookie.setValue(null);
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                    }
+                }
+            }
+
+            // Redirect to login page
+            response.sendRedirect("/");
+
+        } else if (path.equals("/Search")) {
+            request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
     }
 
@@ -128,6 +162,12 @@ public class AccountController extends HttpServlet {
                 }
 
             }
+
+        }
+        if (request.getParameter("btnSearch") != null) {
+            String name = request.getParameter("txtSearchName");
+            session.setAttribute("Searchname", name);
+            response.sendRedirect("/Search");
         }
     }
 

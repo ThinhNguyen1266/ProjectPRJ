@@ -30,6 +30,22 @@ public class CategoryDAO {
         return rs;
     }
      
+      public ResultSet getAllSubCat(String id){
+       Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs=null;
+        if(conn !=null){
+            try {
+                String sql ="SELECT * FROM category WHERE parent = ?";
+                PreparedStatement ps= conn.prepareStatement(sql);
+                ps.setString(1, id);
+                rs=ps.executeQuery();
+            } catch (Exception e) {
+                rs=null;
+            }
+        }
+        return rs;
+    }
+     
     public ResultSet getAllProductCat(String name) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
@@ -46,6 +62,8 @@ public class CategoryDAO {
         }
         return rs;
     }
+    
+    
     public Category getCatName(int id){
         Connection conn = DB.DBConnection.getConnection();
         Category obj;
