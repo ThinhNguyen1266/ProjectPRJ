@@ -23,6 +23,13 @@ public class User extends Account {
         this.phoneNumber = phoneNumber;
         this.Address = address;
     }
+    public User(int id,String email, String name, String phoneNumber, Address address){
+        super("", "", 0, email);
+        this.id=id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.Address = address;
+    }
 
     public User(int id, String name, String phoneNumber, Address Address, String username, String password, int account_id, String emails) {
         super(username, password, account_id, emails);

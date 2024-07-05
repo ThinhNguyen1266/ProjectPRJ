@@ -5,6 +5,8 @@
 package DAOs;
 
 import DB.DBConnection;
+import Models.Province;
+import Models.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +26,7 @@ public class ProvinceDAO {
         ResultSet rs = null;
         try{
             Statement st = conn.createStatement();
-                rs = st.executeQuery("SELECT name FROM province");
+                rs = st.executeQuery("SELECT * FROM province");
         }catch(Exception e){
             rs=null;
         }
@@ -47,5 +49,26 @@ public class ProvinceDAO {
             id="";
         }
         return id;
+    }
+    public Province getUserAddress(String name) {
+
+        Province obj;
+        Connection conn = DB.DBConnection.getConnection();
+
+        try {
+            String sql = "select p.name from [user] us join user_address usa on us.account_id=usa.user_id join [address] a on usa.address_id=a.id join province p on a.province_id=p.id WHERE US.name=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, name);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                obj = new Province();
+                obj.setProvince_name(rs.getString("name"));
+            } else {
+                obj = null;
+            }
+        } catch (Exception e) {
+            obj = null;
+        }
+        return obj;
     }
 }
