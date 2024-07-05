@@ -15,6 +15,11 @@ public class Product {
     private String pro_img;
     private int pro_quan;
     private Category Category;
+    
+    public Product(int pro_id, int pro_quan){
+        this.pro_id = pro_id;
+        this.pro_quan = pro_quan;
+    }
 
     public Product(int pro_id, String pro_name, String pro_des, String pro_img, int pro_quan, Category Category) {
         this.pro_id = pro_id;

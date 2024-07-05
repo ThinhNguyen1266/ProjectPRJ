@@ -60,6 +60,7 @@ public class ProductDAO {
             rs = pst.executeQuery();
             if (rs.next()) {
                 obj = new Product();
+                obj.setPro_id(Integer.parseInt(rs.getString("id")));
                 obj.setPro_name(rs.getString("name"));
                 obj.setPro_img(rs.getString("image"));
             } else {
@@ -86,5 +87,20 @@ public class ProductDAO {
             }
         }
         return rs;
+      }
+    
+    public Product getProductByID(String id){
+         Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs=null;
+        Product product = null;
+        try{
+            String sql = "SELECT * FROM Product WHERE ID = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, id);
+            rs = pst.executeQuery();
+        }catch(Exception e){
+            product = null;
+        }
+        return product;
     }
 }

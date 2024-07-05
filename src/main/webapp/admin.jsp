@@ -7,6 +7,7 @@
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,15 +24,16 @@
     </head>
 
     <body class="bg-gray-100">
-        <!-- Header -->
-        <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-            <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="index.html" class="text-xl font-bold text-gray-800">ShopName</a>
-                <div class="flex space-x-4">
-                    <a href="index.html" class="text-gray-800 hover:text-gray-600">Home</a>
-                    <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                    <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <h1>Hello: <%= session.getAttribute("adminname")%></h1>
+        <c:if test="${sessionScope.adminName ==null}"> <c:redirect url="/Admin_profile"></c:redirect> </c:if>
+                <!-- Header -->
+                <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+                    <div class="mx-auto px-4 py-4 flex justify-between items-center">
+                        <a href="index.html" class="text-xl font-bold text-gray-800">ShopName</a>
+                        <div class="flex space-x-4">
+                            <a href="index.html" class="text-gray-800 hover:text-gray-600">Home</a>
+                            <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
+                            <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
+                            <h1>${sessionScope.adminName}</h1>
                 </div>
             </div>
         </header>
@@ -91,7 +93,7 @@
 
 
                 <!-- Manage Products -->
-                <div id="manage-products" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8">
+                <div id="manage-products" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8 hidden">
                     <h3 class="text-xl font-bold text-gray-800">Manage Products</h3>
                     <table class="min-w-full leading-normal mt-4">
                         <thead>
@@ -119,76 +121,17 @@
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><img src="<%= rs.getString("image")%>" alt="Product 1 Image" class="w-16 h-16"></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">$10.00</td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("quantity")%></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("category")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("name")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded" onclick="openEditModal('<%= rs.getString("id")%>', '<%= rs.getString("name")%>', '<%= rs.getString("description")%>', '<%= rs.getString("image")%>', '$10.00', '<%= rs.getString("quantity")%>', '<%= rs.getString("category")%>')">Edit</button>
+                                    <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</button>
                                     <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
                                 </td>
                             </tr>
+                            <!-- More rows as needed -->
                             <% }%>
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Edit Modal -->
-                <div id="edit-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
-                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">Edit Product</h3>
-                        <form id="edit-form">
-                            <input type="hidden" id="edit-product-id">
-                            <div class="mb-4">
-                                <label for="edit-product-name" class="block text-gray-700 text-sm font-bold mb-2">Product Name:</label>
-                                <input type="text" id="edit-product-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-                            <div class="mb-4">
-                                <label for="edit-product-description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-                                <textarea id="edit-product-description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-                            </div>
-                            <div class="mb-4">
-                                <label for="edit-product-image" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
-                                <input type="text" id="edit-product-image" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-                            <div class="mb-4">
-                                <label for="edit-product-price" class="block text-gray-700 text-sm font-bold mb-2">Price:</label>
-                                <input type="text" id="edit-product-price" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-                            <div class="mb-4">
-                                <label for="edit-product-quantity" class="block text-gray-700 text-sm font-bold mb-2">Quantity:</label>
-                                <input type="text" id="edit-product-quantity" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-                            <div class="mb-4">
-                                <label for="edit-product-category" class="block text-gray-700 text-sm font-bold mb-2">Category:</label>
-                                <input type="text" id="edit-product-category" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="saveEdit()">Save</button>
-                                <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="closeEditModal()">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <script>
-                    function openEditModal(id, name, description, image, price, quantity, category) {
-                        document.getElementById('edit-product-id').value = id;
-                        document.getElementById('edit-product-name').value = name;
-                        document.getElementById('edit-product-description').value = description;
-                        document.getElementById('edit-product-image').value = image;
-                        document.getElementById('edit-product-price').value = price;
-                        document.getElementById('edit-product-quantity').value = quantity;
-                        document.getElementById('edit-product-category').value = category;
-                        document.getElementById('edit-modal').classList.remove('hidden');
-                    }
-
-                    function closeEditModal() {
-                        document.getElementById('edit-modal').classList.add('hidden');
-                    }
-
-                    function saveEdit() {
-                        // Implement save functionality here
-                        closeEditModal();
-                    }
-                </script>
 
 
                 <!-- View Orders -->
