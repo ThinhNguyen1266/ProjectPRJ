@@ -100,7 +100,12 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>         
+
                 <form method="post" class="search-container">
+
+                
+                <form method="post" class="search-container" action="/ProductController/Search">
+
                     <input type="text" name="txtSearchName" placeholder="Search..">
                     <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
                 </form>          
@@ -112,16 +117,13 @@
                         if (customerName != null) {
                     %>
 
-                    <a href="/AccountController/Profile" class="text-gray-800 hover:text-gray-600">Hello: <%= customerName%></a>
-                    <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
-
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
                             <%= customerName%>
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                            <a href="/AccountController/list" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
+                            <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
                         </div>
                     </div>
 
