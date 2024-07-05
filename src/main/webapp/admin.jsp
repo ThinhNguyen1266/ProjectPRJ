@@ -67,10 +67,8 @@
                 <div id="add-product" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8 hidden">
 
                     <h3 class="text-xl font-bold text-gray-800">Add New Product</h3>
-                    <form class="mt-4" method="post" action="/ProductController">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="product-ID">Product ID</label>
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-ID" type="text" placeholder="Product ID" name="proID">
-
+                    <form class="mt-4" method="post" action="/ProductController" enctype='multipart/form-data'>
+                        
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="product-name">Product Name</label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-name" type="text" placeholder="Product Name" name="proName">
 
@@ -84,22 +82,37 @@
                             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="product-category">Product Category</label>
                                 <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-category" data-nextcombo="#product-subcategory">
+
+                                    <%
+                                        CategoryDAO catDAO = new CategoryDAO();
+                                        ResultSet rs = catDAO.getAllCategoriesNull();
+                                    %>
                                     <option value="">Select Category</option>
-                                    <option value="1" data-id="1" data-option="-1">Category 1</option>
-                                    <option value="2" data-id="2" data-option="-1">Category 2</option>
-                                    <option value="3" data-id="3" data-option="-1">Category 3</option>
-                                    <!-- Add more options as needed -->
+                                    <% while (rs.next()) {%>
+                                    <option value="<%= rs.getString("id")%>" data-id="<%= rs.getString("id")%>" data-option="-1"><%= rs.getString("name")%></option>
+
+                                    <% } %>
                                 </select>
+
                             </div>
                             <div class="w-full md:w-1/2 px-3">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="product-subcategory">Product Subcategory</label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-subcategory" disabled>
+                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-subcategory" name="proCat" disabled>
                                     <option value="">Select Subcategory</option>
-                                    <option value="1" data-id="1" data-option="1">Subcategory 1-1</option>
-                                    <option value="2" data-id="2" data-option="1">Subcategory 1-2</option>
-                                    <option value="3" data-id="3" data-option="2">Subcategory 2-1</option>
-                                    <option value="4" data-id="4" data-option="3">Subcategory 3-1</option>
-                                    <!-- Add more options as needed -->
+                                    <%
+                                        rs = catDAO.getAllCategoriesNull();
+                                        while (rs.next()) {
+                                    %>
+                                    <%
+                                        ResultSet subcat = catDAO.getAllSubCat(rs.getString("id"));
+                                        while (subcat.next()) {
+                                    %>
+                                    <option value="<%= subcat.getString("id")%>"  data-option="<%= rs.getString("id")%>"><%= subcat.getString("name")%></option>
+                                    <!--                                    <option value="2" data-id="2" data-option="1">Subcategory 1-2</option>
+                                                                        <option value="3" data-id="3" data-option="2">Subcategory 2-1</option>
+                                                                        <option value="4" data-id="4" data-option="3">Subcategory 3-1</option>-->
+                                    <% } %>
+                                    <% } %>
                                 </select>
                             </div>
                         </div>
@@ -140,21 +153,10 @@
                                 });
                             }();
                         </script>
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="product-category" >Product Category</label>
-                        <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-category" name="proCat">
-                            <%
-                                CategoryDAO catDAO = new CategoryDAO();
-                                ResultSet rs = catDAO.getAllCategoriesNull();
-                            %>
-                            <option value="">Select Category</option>
-                            <% while (rs.next()) {%>
-                            <option value="<%= rs.getString("id")%>"><%= rs.getString("name")%></option>
 
-                            <% } %>
-                        </select>
 
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="product-image">Product Image</label>
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-image" type="file" accept="image/*">
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-image" type="file" accept="image/*" name="proImg">
 
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" name="createBtn">Add Product</button>
                     </form>
@@ -241,19 +243,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% 
+                            <%
                                 UserDAO ud = new UserDAO();
                                 rs = ud.getAll();
-                                while(rs.next()){
+                                while (rs.next()) {
                             %>
                             <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("account_id") %></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a href="profile.html"><%= rs.getString("name") %></a></td>                            
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("email") %></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("phone_number") %></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("account_id")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a href="profile.html"><%= rs.getString("name")%></a></td>                            
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("email")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("phone_number")%></td>
                                 </td>
                             </tr>
-                            <% } %>
+                            <% }%>
                         </tbody>
                     </table>
                 </div>
