@@ -4,6 +4,7 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.UserDAO"%>
 <%@page import="DAOs.CategoryDAO"%>
 <%@page import="Models.Category"%>
 <%@page import="java.sql.ResultSet"%>
@@ -240,14 +241,19 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <% 
+                                UserDAO ud = new UserDAO();
+                                rs = ud.getAll();
+                                while(rs.next()){
+                            %>
                             <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">U001</td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a href="profile.html">Alice Smith</a></td>                            
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">alice@example.com</td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">123-456-7890</td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("account_id") %></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a href="profile.html"><%= rs.getString("name") %></a></td>                            
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("email") %></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("phone_number") %></td>
                                 </td>
                             </tr>
-                            <!-- More rows as needed -->
+                            <% } %>
                         </tbody>
                     </table>
                 </div>
