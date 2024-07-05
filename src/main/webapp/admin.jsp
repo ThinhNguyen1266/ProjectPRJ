@@ -4,6 +4,8 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.CategoryDAO"%>
+<%@page import="Models.Category"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -58,35 +60,35 @@
             <!-- Add New Product -->
             <div id="add-product" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8 hidden">
                 <h3 class="text-xl font-bold text-gray-800">Add New Product</h3>
-                <form class="mt-4">
+                <form class="mt-4" method="post" action="/ProductController">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="product-ID">Product ID</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-ID" type="text" placeholder="Product ID">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-ID" type="text" placeholder="Product ID" name="proID">
                     
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="product-name">Product Name</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-name" type="text" placeholder="Product Name">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-name" type="text" placeholder="Product Name" name="proName">
                     
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="product-description">Product Description</label>
-                    <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-description" placeholder="Product Description"></textarea>
-                    
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="product-price">Product Price</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-price" type="text" placeholder="Product Price">
+                    <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-description" placeholder="Product Description" name="proDes"></textarea>
                     
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="product-quantity">Product Quantity</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-quantity" type="text" placeholder="Product Quantity">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-quantity" type="text" placeholder="Product Quantity" name="proQuan">
                     
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="product-category">Product Category</label>
-                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-category">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="product-category" >Product Category</label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-category" name="proCat">
+                        <% 
+                            CategoryDAO catDAO= new CategoryDAO();
+                            ResultSet rs = catDAO.getAllCategoriesNull();
+                        %>
                         <option value="">Select Category</option>
-                        <option value="1">Category 1</option>
-                        <option value="2">Category 2</option>
-                        <option value="3">Category 3</option>
-                        <!-- Add more options as needed -->
+                        <% while(rs.next()) { %>
+                        <option value="<%= rs.getString("id") %>"><%= rs.getString("name") %></option>
+                        <% } %>
                     </select>
                     
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="product-image">Product Image</label>
                     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-image" type="file" accept="image/*">
                     
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="button">Add Product</button>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" name="createBtn">Add Product</button>
                 </form>
             </div>
             
@@ -111,7 +113,7 @@
                     <tbody>
                         <% 
                             ProductDAO pdao = new ProductDAO();
-                            ResultSet rs = pdao.getAllProductAdmin();
+                            rs = pdao.getAllProductAdmin();
                             while (rs.next()){
                         %>
                         <tr>
