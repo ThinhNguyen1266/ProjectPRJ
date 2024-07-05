@@ -14,9 +14,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Checkout</title>
-        <link
-            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-            rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <style>
             .search-container {
                 display: flex;
@@ -193,21 +192,21 @@
                                         ProductDAO pDAO = new ProductDAO();
 
                                         p = pDAO.getProduct(String.valueOf(id));
-                                %>
-                                <tr>
-                               <td
+                            %>
+                            <tr>
+                                <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 w-10 h-10">
                                             <img
                                                 class="w-full h-full rounded-full"
-                                                src="<%= p.getPro_img() %>"
+                                                src="<%= p.getPro_img()%>"
                                                 alt="Product Image">
                                         </div>
                                         <div class="ml-3">
 
                                             <p
-                                                class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name() %></p>
+                                                class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name()%></p>
                                         </div>
                                     </div>
                                 </td>
@@ -231,10 +230,10 @@
                                     <button
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
                                 </td>
-                    </tr>
-                                <%
-                                                }
-                                            }%>
+                            </tr>
+                            <%
+                                        }
+                                    }%>
                             <!-- Repeat for other products -->
                         </tbody>
                     </table>

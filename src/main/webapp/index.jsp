@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shopping Website Group1</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <style>
             .search-container {
                 display: flex;
@@ -99,11 +100,10 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>         
-
-                 <form method="post" action="/ProductController/Search">
-                    <input type="text" name="txtSearchName" placeholder="Search.." />
-                    <button type="submit" name="btnSearch">Search</button>
-                </form>           
+                <form method="post" class="search-container">
+                    <input type="text" name="txtSearchName" placeholder="Search..">
+                    <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
+                </form>          
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>

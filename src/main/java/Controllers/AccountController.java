@@ -83,6 +83,8 @@ public class AccountController extends HttpServlet {
                     }
                 }
             }
+        } else if (path.equals("/Search")) {
+            request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
         }
     }
 
@@ -127,6 +129,12 @@ public class AccountController extends HttpServlet {
                 }
 
             }
+
+        }
+        if (request.getParameter("btnSearch") != null) {
+            String name = request.getParameter("txtSearchName");
+            session.setAttribute("Searchname", name);
+            response.sendRedirect("/Search");
         }
     }
 
