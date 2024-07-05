@@ -40,7 +40,7 @@ public class UserDAO {
                 addressDraw = new Address();
                 addressDraw.setAddress(rs.getString("address"));
                 obj = new User(rs.getString("email"), rs.getString("user_name"), rs.getString("phone_number"), addressDraw);
-                
+
             }
         } catch (Exception e) {
             // Log the exception
@@ -83,4 +83,21 @@ public class UserDAO {
         }
         return id;
     }
+    public ResultSet getAll() {
+        ResultSet rs;
+        try {
+            String sql = "SELECT u.account_id, u.name, u.phone_number , a.email\n"
+                    + "FROM account AS a\n"
+                    + "JOIN [user] AS u \n"
+                    + "ON a.id = u.account_id";
+            Connection conn = DB.DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+             rs = ps.executeQuery();
+            return rs;
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
 }
