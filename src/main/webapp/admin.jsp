@@ -32,7 +32,7 @@
                     <div class="mx-auto px-4 py-4 flex justify-between items-center">
                         <a href="index.html" class="text-xl font-bold text-gray-800">ShopName</a>
                         <div class="flex space-x-4">
-                            <a href="index.html" class="text-gray-800 hover:text-gray-600">Home</a>
+                            <a href="/" class="text-gray-800 hover:text-gray-600">Home</a>
                             <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                             <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
                             <h1>${sessionScope.adminName}</h1>
@@ -220,7 +220,7 @@
                     <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-description" placeholder="Product Description" name="proDes"></textarea>
                     
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="product-quantity">Product Quantity</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-quantity" type="text" placeholder="Product Quantity" name="proQuan">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-quantity" type="number" placeholder="Product Quantity" name="proQuan">
                     
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="product-category" >Product Category</label>
                     <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-category" name="proCat">
