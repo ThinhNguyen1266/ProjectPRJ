@@ -114,7 +114,7 @@
                         <tbody>
                             <%
                                 ProductDAO pdao = new ProductDAO();
-                                ResultSet rs = pdao.getAllProductAdmin();
+                                rs = pdao.getAllProductAdmin();
                                 while (rs.next()) {
                             %>
                             <tr>
