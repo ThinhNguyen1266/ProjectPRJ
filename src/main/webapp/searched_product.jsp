@@ -14,9 +14,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Products</title>
-        <link
-            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-            rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <style>
             .search-container {
                 display: flex;
@@ -50,6 +49,42 @@
                 font-size: 16px;
                 color: #333;
             }
+            .product-card .flex {
+                height: 200px;
+            }
+            .product-card img {
+                width: 90%;
+                height: 90%;
+                object-fit: contain; /* Use 'contain' to ensure the image fits within the box without being cropped */
+                max-height: 100%;
+            }
+
+            .product-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center content vertically */
+                height: 100%;
+            }
+
+            .product-name {
+                height: 2.5em; /* Adjust as needed */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .product-details {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center product details vertically */
+                text-align: center; /* Center text horizontally */
+            }
+
+            .add-to-cart {
+                align-self: center; /* Center button horizontally */
+                margin-top: 1em; /* Add some margin to separate it from details */
+            }
         </style>
     </head>
     <body class="bg-gray-100">
@@ -60,7 +95,7 @@
                 <form method="post" class="search-container">
                     <input type="text" name="txtSearchName" placeholder="Search..">
                     <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
-                </form>  
+                </form> 
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -148,22 +183,25 @@
         </style>
         <!-- Products Section -->
 
-        <section class="py-12 mt-16">
+        <section class="py-12">
             <div class="container mx-auto px-4">
-                <div class="flex flex-wrap justify-center gap-6 mt-8">
+                <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
                         ProductDAO dao = new ProductDAO();
                         String name = (String) session.getAttribute("Searchname");
                         ResultSet rs = dao.getAllProductByName(name); // Corrected to use category ID
                         while (rs.next()) {
                     %>
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden w-64"> <!-- Adjust width as needed -->
-                        <img style="width: 300px; height: 200px;" src="<%= rs.getString("image")%>" alt="Product Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-800"><%= rs.getString("name")%></h3>
-                            <p class="text-gray-600 mt-2">$10.00</p>
-                            <a href="/ProductController/Cart/<%= rs.getString("id")%>" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add to Cart</a>
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
+                        <div class="flex justify-center items-center h-48 w-full">
+                            <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
                         </div>
+                        <div class="p-4 product-details">
+                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("name")%></h3>
+                            <p class="text-gray-600 mt-2">$40.00</p>
+                        </div>
+                        <a href="/ProductController/Cart/<%= rs.getString("id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
                     <%
                         }

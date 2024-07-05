@@ -13,58 +13,41 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Products</title>
-        <link
-            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-            rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <style>
-            input[type=text] {
-                width: 500px;
-                box-sizing: border-box;
-                border: 2px solid #ccc;
-                border-radius: 4px;
+            .search-container {
+                display: flex;
+                align-items: center;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .search-container input[type="text"] {
+                width: 400px;
+                padding: 10px;
+                border: none;
+                outline: none;
                 font-size: 16px;
-                background-color: white;
-                background-image: url('https://www.w3schools.com/howto/searchicon.png');
-                background-position: 10px 10px;
-                background-repeat: no-repeat;
-                padding: 12px 20px 12px 40px;
             }
-            .product-card .flex {
-                height: 200px;
-            }
-            .product-card img {
-                width: 90%;
-                height: 90%;
-                object-fit: contain; /* Use 'contain' to ensure the image fits within the box without being cropped */
-                max-height: 100%;
-            }
-            .product-card {
+            .search-container button {
+                padding: 10px 15px;
+                border: none;
+                background-color: #f8f8f8;
+                cursor: pointer;
+                border-left: 1px solid #ccc;
                 display: flex;
-                flex-direction: column;
-                justify-content: center; /* Center content vertically */
-                height: 100%;
+                align-items: center;
+                justify-content: center;
             }
-
-            .product-name {
-                height: 2.5em; /* Adjust as needed */
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+            .search-container button:hover {
+                background-color: #f0f0f0;
             }
-
-            .product-details {
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: center; /* Center product details vertically */
-                text-align: center; /* Center text horizontally */
+            .search-container button i {
+                font-size: 16px;
+                color: #333;
             }
-
-            .add-to-cart {
-                align-self: center; /* Center button horizontally */
-                margin-top: 1em; /* Add some margin to separate it from details */
-            }
-
         </style>
     </head>
     <body class="bg-gray-100">
@@ -72,10 +55,10 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
-                <form method="post">
-                    <input type="text" name="txtSearchName" placeholder="Search.." />
-                    <button type="submit" name="btnSearch"></button>
-                </form>  
+                <form method="post" class="search-container">
+                    <input type="text" name="txtSearchName" placeholder="Search..">
+                    <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
+                </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>

@@ -14,21 +14,40 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cart</title>
-        <link
-            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-            rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <style>
-            input[type=text] {
-                width: 500px;
-                box-sizing: border-box;
-                border: 2px solid #ccc;
-                border-radius: 4px;
+            .search-container {
+                display: flex;
+                align-items: center;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .search-container input[type="text"] {
+                width: 400px;
+                padding: 10px;
+                border: none;
+                outline: none;
                 font-size: 16px;
-                background-color: white;
-                background-image: url('https://www.w3schools.com/howto/searchicon.png');
-                background-position: 10px 10px;
-                background-repeat: no-repeat;
-                padding: 12px 20px 12px 40px;
+            }
+            .search-container button {
+                padding: 10px 15px;
+                border: none;
+                background-color: #f8f8f8;
+                cursor: pointer;
+                border-left: 1px solid #ccc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .search-container button:hover {
+                background-color: #f0f0f0;
+            }
+            .search-container button i {
+                font-size: 16px;
+                color: #333;
             }
         </style>
     </head>
@@ -37,10 +56,10 @@
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
-               <form method="post">
-                    <input type="text" name="txtSearchName" placeholder="Search.." />
-                    <button type="submit" name="btnSearch"></button>
-                </form>  
+                <form method="post" class="search-container">
+                    <input type="text" name="txtSearchName" placeholder="Search..">
+                    <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
+                </form> 
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                     <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
@@ -152,31 +171,31 @@
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
                                 </td>
                             </tr>
-                                <%} else if (session.getAttribute("cart") != null) {
-                                    List<Product> cart = (List<Product>) session.getAttribute("cart");
-                                    int index = 0;
-                                    while (index < cart.size()) {
-                                        Product p;
-                                        int id = cart.get(index).getPro_id();
-                                        index++;
-                                        ProductDAO pDAO = new ProductDAO();
+                            <%} else if (session.getAttribute("cart") != null) {
+                                List<Product> cart = (List<Product>) session.getAttribute("cart");
+                                int index = 0;
+                                while (index < cart.size()) {
+                                    Product p;
+                                    int id = cart.get(index).getPro_id();
+                                    index++;
+                                    ProductDAO pDAO = new ProductDAO();
 
-                                        p = pDAO.getProduct(String.valueOf(id));
-                                %>
-                                <tr>
-                               <td
+                                    p = pDAO.getProduct(String.valueOf(id));
+                            %>
+                            <tr>
+                                <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 w-10 h-10">
                                             <img
                                                 class="w-full h-full rounded-full"
-                                                src="<%= p.getPro_img() %>"
+                                                src="<%= p.getPro_img()%>"
                                                 alt="Product Image">
                                         </div>
                                         <div class="ml-3">
 
                                             <p
-                                                class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name() %></p>
+                                                class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name()%></p>
                                         </div>
                                     </div>
                                 </td>
@@ -200,10 +219,10 @@
                                     <button
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
                                 </td>
-                    </tr>
-                                <%
-                                                }
-                                            }%>
+                            </tr>
+                            <%
+                                    }
+                                }%>
                             <!-- Repeat for other products -->
                         </tbody>
                     </table>

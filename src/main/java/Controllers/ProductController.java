@@ -76,7 +76,7 @@ public class ProductController extends HttpServlet {
             Product obj = pdao.getProduct(id);
             session.setAttribute("product", obj);
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
-        }  else if (path.equals("/ProductController/Checkout")) {
+        } else if (path.equals("/ProductController/Checkout")) {
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Category")) {
             String[] s = path.split("/");
@@ -87,13 +87,13 @@ public class ProductController extends HttpServlet {
             session.setAttribute("category", name);
             session.setAttribute("categoryid", id);
             request.getRequestDispatcher("/category.jsp").forward(request, response);
-        }else if (path.equals("/ProductController/Search")) {
+        } else if (path.equals("/ProductController/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/AddToCart")) {
             String[] url = path.split("/");
             String id = url[url.length - 1];
             response.sendRedirect("/ProductController/Cart/" + id);
-        } 
+        }
     }
 
     /**
@@ -104,17 +104,17 @@ public class ProductController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   @Override
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-          if (request.getParameter("btnSearch") != null) {
-              String name = request.getParameter("txtSearchName");
-              session.setAttribute("Searchname", name);
-              response.sendRedirect("/ProductController/Search");
+        if (request.getParameter("btnSearch") != null) {
+            String name = request.getParameter("txtSearchName");
+            session.setAttribute("Searchname", name);
+            response.sendRedirect("/ProductController/Search");
         }
     }
+
     /**
      * Returns a short description of the servlet.
      *
