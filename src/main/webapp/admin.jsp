@@ -40,8 +40,6 @@
                             <h1>${sessionScope.adminName}</h1>
 
                     <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
-
-
                 </div>
             </div>
         </header>
@@ -93,6 +91,7 @@
 
                                     <% } %>
                                 </select>
+                            </div>  
 
                             </div>
                             <div class="w-full md:w-1/2 px-3">
