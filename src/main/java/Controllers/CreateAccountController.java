@@ -17,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -78,40 +79,50 @@ public class CreateAccountController extends HttpServlet {
             throws ServletException, IOException {
 
         if (request.getParameter("btnSignin") != null) {
-
+            CreateAccountDAO caDAO = new CreateAccountDAO();
+            HttpSession session = request.getSession();
             String username = request.getParameter("txtUsername");
             String password = request.getParameter("txtPassword");
             String confirmpassword = request.getParameter("txtConfirmPassword");
             String email = request.getParameter("txtEmail");
+            String name = request.getParameter("txtName");
+            String phoneNumber = request.getParameter("txtPhonenumber");
+            String addressDraw = request.getParameter("txtAddress");
+            String provinceDraw = request.getParameter("txtProvince");
 
-            if (password.equals(confirmpassword)) {
-                CreateAccountDAO caDAO = new CreateAccountDAO();
+            // Set all form values to request attributes
+            request.setAttribute("txtUsername", username);
+            request.setAttribute("txtEmail", email);
+            request.setAttribute("txtName", name);
+            request.setAttribute("txtPhonenumber", phoneNumber);
+            request.setAttribute("txtAddress", addressDraw);
+            request.setAttribute("txtProvince", provinceDraw);
+
+            if (!caDAO.checkUsername(username)) {
+                request.setAttribute("UsernameError", "Username has already existed");
+                request.getRequestDispatcher("/create-account.jsp").forward(request, response);
+            } else if (!password.equals(confirmpassword)) {
+                request.setAttribute("PasswordError", "Passwords do not match");
+                request.getRequestDispatcher("/create-account.jsp").forward(request, response);
+            } else {
+                // Proceed with account creation
                 String id = caDAO.getAccountID();
                 AccountDAO accDAO = new AccountDAO();
                 Account acc = new Account(username, accDAO.getMD5Hash(password), (Integer.parseInt(id) + 1), email);
-                String name = request.getParameter("txtName");
-                String phoneNumber = request.getParameter("txtPhonenumber");
-                String addressDraw = request.getParameter("txtAddress");
-                String provinceDraw = request.getParameter("txtProvince");
-
                 String userId = caDAO.getUserID();
-
                 ProvinceDAO provinceDAO = new ProvinceDAO();
                 int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
                 Province province = new Province(provinceID, provinceDraw);
                 String addressIDDraw = caDAO.getAddressID();
-                int addressID = Integer.parseInt(addressIDDraw)+1;
-
+                int addressID = Integer.parseInt(addressIDDraw) + 1;
                 Address address = new Address(addressID, provinceID, addressDraw, province);
-
                 User user = new User(Integer.parseInt(userId) + 1, name, phoneNumber, address, acc.getUsername(), acc.getPassword(), acc.getAccount_id(), acc.getEmails());
-                // Add code to save user or further processing
 
+                // Save user and other details
                 int count = caDAO.addNewAccount(acc);
                 count = caDAO.addNewUser(user);
                 count = caDAO.addNewAddress(address);
                 count = caDAO.addNewUserAddress(address, acc);
-
                 response.sendRedirect("/AccountController/Login");
             }
         }
