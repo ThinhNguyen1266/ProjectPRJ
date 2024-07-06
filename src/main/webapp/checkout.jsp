@@ -4,6 +4,8 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.Cart_itemDAO"%>
+<%@page import="Models.Cart_item"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="Models.Product"%>
@@ -68,7 +70,7 @@
                         if (customerName != null) {
                     %>
 
-                    
+
 
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
@@ -76,7 +78,7 @@
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                           <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
+                            <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
                         </div>
                     </div>
 
@@ -186,16 +188,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% if (session.getAttribute("cart") != null) {
-                                    List<Product> cart = (List<Product>) session.getAttribute("cart");
+                            <% if (session.getAttribute("cartList") != null) { //List all product that have bought
+                                    List<Cart_item> cartList = (List<Cart_item>) session.getAttribute("cartList");
                                     int index = 0;
-                                    while (index < cart.size()) {
-                                        Product p;
-                                        int id = cart.get(index).getPro_id();
+                                    while (index < cartList.size()) {
+                                        Cart_item cart_item;
+                                        int id = cartList.get(index).getCart_item_id();
+                                        int quantity = cartList.get(index).getQuantity();
                                         index++;
+                                        Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
+
+                                        cart_item = cart_itemDAO.getCartItem(String.valueOf(id));
+
                                         ProductDAO pDAO = new ProductDAO();
 
-                                        p = pDAO.getProduct(String.valueOf(id));
+                                        Product p = pDAO.getProduct(String.valueOf(cart_item.getProduct_item().getPro_id()));
                             %>
                             <tr>
                                 <td
@@ -216,7 +223,7 @@
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <input type="number" value="1"
+                                    <input type="number" value="<%= cart_item.getQuantity()%>" disabled=""
                                            class="w-16 py-2 px-3 border rounded text-gray-700">
                                 </td>
                                 <td
@@ -229,22 +236,16 @@
                                     <p
                                         class="text-gray-900 whitespace-no-wrap">$10.00</p>
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                                    <button
-                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
-                                </td>
                             </tr>
                             <%
-                                        }
-                                    }%>
+                                    }
+                                }%>
                             <!-- Repeat for other products -->
                         </tbody>
                     </table>
                     <div class="mt-8 flex justify-end">
-                        <button
-                            class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Place
-                            Order</button>
+                        <a href="/ProductController/PlaceOrder" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Place Orders</a>
+                        
                     </div>
                 </div>
             </div>
