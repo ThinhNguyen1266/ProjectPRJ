@@ -38,10 +38,7 @@
                             <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                             <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
                             <h1>${sessionScope.adminName}</h1>
-
                     <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
-
-
                 </div>
             </div>
         </header>
@@ -159,9 +156,6 @@
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" name="createBtn">Add Product</button>
                     </form>
                 </div>
-
-
-
                 <!-- Manage Products -->
                 <div id="manage-products" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8 hidden">
                     <h3 class="text-xl font-bold text-gray-800">Manage Products</h3>
