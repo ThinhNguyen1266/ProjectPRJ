@@ -19,6 +19,22 @@ import java.sql.Statement;
  */
 public class CreateAccountDAO {
 
+    public boolean checkUsername(String name) {
+        Connection conn = DBConnection.getConnection();
+        try{
+            String sql = "SELECT * FROM Account where name=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, name);
+            ResultSet rs = pst.executeQuery();
+            if(rs.next())
+                return false;
+            else
+                return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
+
     public String getAccountID() {
         Connection conn = DBConnection.getConnection();
         ResultSet rs = null;
