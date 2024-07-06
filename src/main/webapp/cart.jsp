@@ -242,8 +242,7 @@
                     </td>
                     <td
                         class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                        <button
-                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
+                         <a href="/ProductController/Delete/<%=id %>" class="btn btn-danger btn-sm">Remove</a>
                     </td>
                 </tr>
                 <%}%>

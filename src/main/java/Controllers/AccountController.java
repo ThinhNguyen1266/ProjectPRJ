@@ -101,7 +101,7 @@ public class AccountController extends HttpServlet {
 
         } else if (path.startsWith("/AccountController/Logout")) {
 
-            session.invalidate();
+            session.removeAttribute("customername");
 
             // Remove cookies
             if (cookies != null) {
