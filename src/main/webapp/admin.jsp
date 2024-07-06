@@ -38,7 +38,6 @@
                             <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
                             <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
                             <h1>${sessionScope.adminName}</h1>
-
                     <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
                 </div>
             </div>
@@ -91,7 +90,7 @@
 
                                     <% } %>
                                 </select>
-                            </div>  
+                        
 
                         </div>
                         <div class="w-full md:w-1/2 px-3">
