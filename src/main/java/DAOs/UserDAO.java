@@ -4,12 +4,14 @@
  */
 package DAOs;
 
+import DB.DBConnection;
 import Models.Account;
 import Models.Address;
 import Models.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  *
@@ -129,6 +131,26 @@ public class UserDAO {
         }
         return id;
     }
+
+    public String getUserAddressID(String userid){
+        Connection conn = null;
+        ResultSet rs = null;
+        String id = "";
+        try{
+            conn = DB.DBConnection.getConnection();
+            String sql = "Select a.id from address a join user_address ua on a.id=ua.address_id where ua.user_id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, userid);
+            rs = pst.executeQuery();
+            if(rs.next()){
+                id = rs.getString("id");
+            }
+                    
+        }catch(Exception e){
+            id = "";
+        }
+        return id;
+    }
     public ResultSet getAll() {
         ResultSet rs;
         try {
@@ -144,5 +166,56 @@ public class UserDAO {
             rs = null;
         }
         return rs;
+    }
+     public int editUser(int id,User newinfo){
+      
+         int count;
+         try {
+               Connection conn = DB.DBConnection.getConnection();
+             String sql = "UPDATE [user] set name=?, phone_number=? where account_id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,newinfo.getName());
+            pst.setString(2, newinfo.getPhoneNumber());
+            pst.setInt(3,newinfo.getId());
+            
+            count=pst.executeUpdate();
+        } catch (Exception e) {
+            count=0;
+        }
+         return count;
+    }
+      public int editUserEmail(int id,User newinfo){
+      
+         int count;
+         try {
+               Connection conn = DB.DBConnection.getConnection();
+             String sql = "UPDATE account set email=? where id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,newinfo.getEmails());
+            pst.setInt(2,newinfo.getId());
+            
+            count=pst.executeUpdate();
+        } catch (Exception e) {
+            count=0;
+        }
+         return count;
+    }
+       
+        public int editUserAddress(Address address,User newinfo){
+        Connection conn = DB.DBConnection.getConnection();
+        int count = 0;
+        try{
+            String sql = "Update address set province_id=?, address=? where id=?";
+            
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, newinfo.getAddress().getProvince().getProvince_id());
+            pst.setString(2,newinfo.getAddress().getAddress());
+            pst.setInt(3, newinfo.getAddress().getAddressId());
+            count = pst.executeUpdate();
+        }catch(Exception e){
+            count = 0;
+        }
+        
+        return count;
     }
     }
