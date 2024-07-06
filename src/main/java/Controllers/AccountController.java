@@ -5,8 +5,11 @@
 package Controllers;
 
 import DAOs.AccountDAO;
+import DAOs.ProvinceDAO;
 import DAOs.UserDAO;
 import Models.Account;
+import Models.Address;
+import Models.Province;
 import Models.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -181,12 +184,26 @@ public class AccountController extends HttpServlet {
             String name = request.getParameter("txtSearchName");
             session.setAttribute("Searchname", name);
             response.sendRedirect("/Search");
-        }if(request.getParameter("btnSave")!=null){
-        String email = request.getParameter("txtEmail");
-        String name = request.getParameter("txtName");
-        String phoneNumber = request.getParameter("txtPhonenumber");
-        String addressDraw = request.getParameter("txtAddress");
-        String provinceDraw = request.getParameter("txtProvince");
+        }
+        if (request.getParameter("btnSave") != null) {
+            String id=request.getParameter("txtId");
+            String email = request.getParameter("txtEmail");
+            String name = request.getParameter("txtName");
+            String phoneNumber = request.getParameter("txtPhonenumber");
+             String addressDraw = request.getParameter("txtAddress");
+            String provinceDraw = request.getParameter("txtProvince");
+            ProvinceDAO provinceDAO = new ProvinceDAO();
+            UserDAO uDAO= new UserDAO();
+                int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
+                Province province = new Province(provinceID, provinceDraw);
+                String addressID=uDAO.getUserAddressID(id);
+                Address address = new Address(Integer.parseInt(addressID), provinceID, addressDraw, province);
+            
+            User newinfo= new User(Integer.parseInt(id), email, name, phoneNumber, address);
+            uDAO.editUser(Integer.parseInt(id), newinfo);
+            uDAO.editUserEmail(Integer.parseInt(id), newinfo);
+            uDAO.editUserAddress(address, newinfo);
+            response.sendRedirect("/AccountController/Profile");
         }
     }
 

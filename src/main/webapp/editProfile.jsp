@@ -28,7 +28,7 @@
             <div class="container mx-auto px-4 max-w-md">
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Edit
                     Profile</h2>
-                <form action="CreateAccountController" method="post" class="bg-white shadow-md rounded-lg p-8 mt-8">
+                <form action="/AccountController" method="post" class="bg-white shadow-md rounded-lg p-8 mt-8">
                      <div class="mb-4">
                        
                         <input
@@ -91,7 +91,7 @@
                     <div class="flex items-center justify-between">
                         <a href="/AccountController/Profile" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block text-center">
                             Back</a>
-                        <button class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block text-center" name="btnSave">Save</button>
+                        <button type="submit" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block text-center" name="btnSave">Save</button>
 
                     </div>
                 </form>
