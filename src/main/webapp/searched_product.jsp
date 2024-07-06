@@ -85,6 +85,14 @@
                 align-self: center; /* Center button horizontally */
                 margin-top: 1em; /* Add some margin to separate it from details */
             }
+            .filter-select {
+                padding: 0.5rem 1rem;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin-top: 0.5rem;
+            }
         </style>
     </head>
     <body class="bg-gray-100">
@@ -104,7 +112,7 @@
                         if (customerName != null) {
                     %>
 
-                    
+
 
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
@@ -112,7 +120,7 @@
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                           <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
+                            <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
                         </div>
                     </div>
 
@@ -174,17 +182,6 @@
                 </div>
             </div>
         </section>
-
-        <style>
-            .filter-select {
-                padding: 0.5rem 1rem;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                background-color: white;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                margin-top: 0.5rem;
-            }
-        </style>
         <!-- Products Section -->
 
         <section class="py-12">
@@ -213,7 +210,6 @@
                 </div>
             </div>
         </section>
-
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white py-8">

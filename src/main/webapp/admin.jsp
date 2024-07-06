@@ -40,8 +40,6 @@
                             <h1>${sessionScope.adminName}</h1>
 
                     <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
-
-
                 </div>
             </div>
         </header>
@@ -90,7 +88,7 @@
                                     <option value="3" data-id="3" data-option="-1">Category 3</option>
                                     <!-- Add more options as needed -->
                                 </select>
-                            </div>
+                            </div>  
                             <div class="w-full md:w-1/2 px-3">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="product-subcategory">Product Subcategory</label>
                                 <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-subcategory" disabled>
@@ -241,19 +239,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% 
+                            <%
                                 UserDAO ud = new UserDAO();
                                 rs = ud.getAll();
-                                while(rs.next()){
+                                while (rs.next()) {
                             %>
                             <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("account_id") %></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a href="profile.html"><%= rs.getString("name") %></a></td>                            
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("email") %></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("phone_number") %></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("account_id")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a href="profile.html"><%= rs.getString("name")%></a></td>                            
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("email")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("phone_number")%></td>
                                 </td>
                             </tr>
-                            <% } %>
+                            <% }%>
                         </tbody>
                     </table>
                 </div>
