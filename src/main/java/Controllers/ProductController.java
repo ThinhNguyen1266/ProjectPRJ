@@ -121,7 +121,9 @@ public class ProductController extends HttpServlet {
             String[] url = path.split("/");
             String id = url[url.length - 1];
             response.sendRedirect("/ProductController/Cart/" + id);
-        } else {
+        }else if(path.equals("/ProductController/PlaceOrder")){
+            response.sendRedirect("/ProductController/List");
+        }else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
     }
@@ -137,24 +139,23 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         if (request.getParameter("btnAddToCart") != null) {
             String pro_id = request.getParameter("productId");
             String quantity = request.getParameter("quantity");
             List<Cart_item> cartList = new ArrayList<Cart_item>();
 
             Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
-            String cart_itemID = cart_itemDAO.getCart_itemID();
 
             Product_item product_item = new Product_item();
             ProductItemDAO productItemDAO = new ProductItemDAO();
-            String product_itemID = productItemDAO.getProduct_itemID();
-            product_item = new Product_item(Integer.parseInt(product_itemID),Integer.parseInt(pro_id));
+            String product_itemIDDraw = productItemDAO.getProduct_itemID();
+            int product_itemID = (Integer.parseInt(product_itemIDDraw) + 1);
+            product_item = new Product_item(product_itemID, Integer.parseInt(pro_id));
 
             Cart cart = null;
             CartDAO cartDAO = new CartDAO();
             UserDAO userDAO = new UserDAO();
-            String cartID = cartDAO.getCartID();
 
             Cookie[] c = request.getCookies();
             String username = "";
@@ -171,28 +172,40 @@ public class ProductController extends HttpServlet {
             user.setId(Integer.parseInt(userID));
             int count;
 
-            cart = new Cart((Integer.parseInt(cartID) + 1), user);
+            String cartIDDraw = cartDAO.getCartID();
+            int cartID = (Integer.parseInt(cartIDDraw) + 1);
+
+            cart = new Cart(cartID, user);
 
             count = productItemDAO.addNewProductItem(product_item);
-
-            Cart_item cart_item = new Cart_item(Integer.parseInt(cart_itemID), product_item, (Integer.parseInt(cartID) + 1), user, Integer.parseInt(quantity));
+            String cart_itemIDDraw = cart_itemDAO.getCart_itemID();
+            int cart_itemID = (Integer.parseInt(cart_itemIDDraw) + 1);
 
             if (session.getAttribute("cartList") == null) {
+                Cart_item cart_item = new Cart_item(cart_itemID, product_item, cartID, user, Integer.parseInt(quantity));
+
                 cartList.add(cart_item);
                 count = cartDAO.addNewCart(cart);
                 count = cart_itemDAO.addNewCart_Item(cart_item);
 
                 session.setAttribute("cartList", cartList);
             } else {
+                Cart_item cart_item = new Cart_item(cart_itemID, product_item, (cartID-1), user, Integer.parseInt(quantity));
+
                 cartList = (List<Cart_item>) session.getAttribute("cartList");
                 cartList.add(cart_item);
                 count = cart_itemDAO.addNewCart_Item(cart_item);
             }
-            
-            
+            ProductDAO pDAO = new ProductDAO();
+
+            int index = 0;
+            while (index < cartList.size()) {
+                Product p = pDAO.getProduct(String.valueOf(cart_itemDAO.getCartItem(String.valueOf(cartList.get(index).getCart_item_id())).getProduct_item().getPro_id()));
+                index++;
+            }
             response.sendRedirect("/ProductController/List");
         }
-        
+
         if (request.getParameter("btnSearch") != null) {
             String name = request.getParameter("txtSearchName");
             session.setAttribute("Searchname", name);
@@ -200,7 +213,7 @@ public class ProductController extends HttpServlet {
         }
         if (request.getParameter("createBtn") != null) {
             ProductDAO pdao = new ProductDAO();
-            
+
             String name = request.getParameter("proName");
             String des = request.getParameter("proDes");
             String quan = request.getParameter("proQuan");

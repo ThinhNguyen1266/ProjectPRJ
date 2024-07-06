@@ -191,89 +191,91 @@
                         document.getElementById('hidden-quantity').value = quantity;
                     }
                 </script>
-            <%}else if (session.getAttribute("cartList") != null) { //List all product that have bought
-                List<Cart_item> cartList = (List<Cart_item>) session.getAttribute("cartList");
-                int index = 0;
-                while (index < cartList.size()) {
-                    Cart_item cart_item;
-                    int id = cartList.get(index).getCart_item_id();
-                    int quantity = cartList.get(index).getQuantity();
-                    index++;
-                    Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
-                    ProductDAO pDAO = new ProductDAO();
+                <%} else if (session.getAttribute("cartList") != null) { //List all product that have bought
+                    List<Cart_item> cartList = (List<Cart_item>) session.getAttribute("cartList");
+                    int index = 0;
+                    while (index < cartList.size()) {
+                        Cart_item cart_item;
+                        int id = cartList.get(index).getCart_item_id();
+                        int quantity = cartList.get(index).getQuantity();
+                        index++;
+                        Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
 
-                    cart_item = cart_itemDAO.getCartItem(String.valueOf(id));
-                    Product p = pDAO.getProduct(String.valueOf(cart_item.getProduct_item().getPro_id()));
-            %>
-        </tbody>
-        <tr>
-            <td
-                class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 w-10 h-10">
-                        <img
-                            class="w-full h-full rounded-full"
-                            src="<%= p.getPro_img()%>"
-                            alt="Product Image">
-                    </div>
-                    <div class="ml-3">
+                        cart_item = cart_itemDAO.getCartItem(String.valueOf(id));
 
+                        ProductDAO pDAO = new ProductDAO();
+
+                        Product p = pDAO.getProduct(String.valueOf(cart_item.getProduct_item().getPro_id()));
+                %>
+                </tbody>
+                <tr>
+                    <td
+                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 w-10 h-10">
+                                <img
+                                    class="w-full h-full rounded-full"
+                                    src="<%= p.getPro_img()%>"
+                                    alt="Product Image">
+                            </div>
+                            <div class="ml-3">
+
+                                <p
+                                    class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name()%></p>
+                            </div>
+                        </div>
+                    </td>
+                    <td
+                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <input type="number" value="<%= cart_item.getQuantity()%>"
+                               class="w-16 py-2 px-3 border rounded text-gray-700">
+                    </td>
+                    <td
+                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p
-                            class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name()%></p>
-                    </div>
+                            class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                    </td>
+                    <td
+                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p
+                            class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                    </td>
+                    <td
+                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                        <button
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
+                    </td>
+                </tr>
+                <%}%>
+                </tbody>
+                </table>
+            </div>
+            <div class="mt-8 flex justify-end">
+                <a href="/ProductController/List"
+                   class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Back to list</a>
+                <a href="/ProductController/Checkout"
+                   class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
+                    to Checkout</a>
+            </div>
+            <%
+                }
+            %>
+
+
+
+            <%}%>
+        </section>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2024 ShopName. All rights reserved.</p>
+                <div class="mt-4 space-x-4">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
                 </div>
-            </td>
-            <td
-                class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                <input type="number" value="<%= cart_item.getQuantity() %>"
-                       class="w-16 py-2 px-3 border rounded text-gray-700">
-            </td>
-            <td
-                class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                <p
-                    class="text-gray-900 whitespace-no-wrap">$10.00</p>
-            </td>
-            <td
-                class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                <p
-                    class="text-gray-900 whitespace-no-wrap">$10.00</p>
-            </td>
-            <td
-                class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                <button
-                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
-            </td>
-        </tr>
-        <%}%>
-    </tbody>
-</table>
-</div>
-<div class="mt-8 flex justify-end">
-    <a href="/ProductController/List"
-       class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Back to list</a>
-    <a href="/ProductController/Checkout"
-       class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
-        to Checkout</a>
-</div>
-<%
-    }
-%>
-
-
-
-<%}%>
-</section>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
-<!-- Footer -->
-<footer class="bg-gray-800 text-white py-8">
-    <div class="container mx-auto px-4 text-center">
-        <p>&copy; 2024 ShopName. All rights reserved.</p>
-        <div class="mt-4 space-x-4">
-            <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-            <a href="#" class="hover:text-gray-400">Terms of Service</a>
-        </div>
-    </div>
-</footer>
-</body>
+            </div>
+        </footer>
+    </body>
 </html>

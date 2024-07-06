@@ -16,23 +16,16 @@ import java.sql.Statement;
  * @author AnhNLCE181837
  */
 public class CartDAO {
-    public String getCartID() {
-        Connection conn = DBConnection.getConnection();
-        ResultSet rs = null;
-        String id = "";
-        try {
-            Statement st = conn.createStatement();
+    
+     public String getCartID() {
+        String id = "169999"; // Default value if no id is found
+        try ( Connection conn = DBConnection.getConnection();  Statement st = conn.createStatement();  ResultSet rs = st.executeQuery("SELECT TOP 1 id FROM [cart] ORDER BY id DESC")) {
 
-            rs = st.executeQuery("SELECT id FROM cart");
-            if (rs.next() == false) {
-                id = "140000";
-            } else {
-                while (rs.next()) {
-                    id = rs.getString("id");
-                }
+            if (rs.next()) {
+                id = rs.getString("id");
             }
         } catch (Exception e) {
-            id = "";
+            e.printStackTrace(); // Print the stack trace for debugging
         }
         return id;
     }

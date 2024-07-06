@@ -5,8 +5,6 @@
 package DAOs;
 
 import DB.DBConnection;
-import Models.Cart;
-import Models.Product;
 import Models.Product_item;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,22 +18,14 @@ import java.sql.Statement;
 public class ProductItemDAO {
 
     public String getProduct_itemID() {
-        Connection conn = DBConnection.getConnection();
-        ResultSet rs = null;
-        String id = "";
-        try {
-            Statement st = conn.createStatement();
+        String id = "149999"; // Default value if no id is found
+        try ( Connection conn = DBConnection.getConnection();  Statement st = conn.createStatement();  ResultSet rs = st.executeQuery("SELECT TOP 1 id FROM [product_item] ORDER BY id DESC")) {
 
-            rs = st.executeQuery("SELECT id FROM product_item");
-            if (rs.next() == false) {
-                id = "150000";
-            } else {
-                while (rs.next()) {
-                    id = rs.getString("id");
-                }
+            if (rs.next()) {
+                id = rs.getString("id");
             }
         } catch (Exception e) {
-            id = "";
+            e.printStackTrace(); // Print the stack trace for debugging
         }
         return id;
     }
