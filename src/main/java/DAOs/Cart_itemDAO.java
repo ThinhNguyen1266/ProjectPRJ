@@ -68,4 +68,18 @@ public class Cart_itemDAO {
         }
         return count;
     }
+    public int deleteNewCart_Item(int id){
+        Connection conn = DBConnection.getConnection();
+        int count = 0;
+        try{
+            String sql = "delete from cart_item where id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+           
+            count = pst.executeUpdate();
+        }catch(Exception e){
+            count = 0;
+        }
+        return count;
+    }
 }

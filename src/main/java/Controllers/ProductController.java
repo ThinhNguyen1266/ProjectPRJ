@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -123,6 +124,30 @@ public class ProductController extends HttpServlet {
             response.sendRedirect("/ProductController/Cart/" + id);
         }else if(path.equals("/ProductController/PlaceOrder")){
             response.sendRedirect("/ProductController/List");
+        }else if (path.startsWith("/ProductController/Delete")) {
+            String[] s = path.split("/");
+            String id = s[s.length - 1];
+            Cart_itemDAO cdao = new Cart_itemDAO();
+            cdao.deleteNewCart_Item(Integer.parseInt(id));
+            List<Cart_item> cartList = (List<Cart_item>) session.getAttribute("cartList");
+
+            // Find and remove the item from the cartList
+            if (cartList != null) {
+                Iterator<Cart_item> iterator = cartList.iterator();
+                while (iterator.hasNext()) {
+                    Cart_item item = iterator.next();
+                    if (item.getCart_item_id() == Integer.parseInt(id)) { // Assuming getId() returns the ID of the item
+                        iterator.remove();
+                        break; // Item found and removed, exit the loop
+                    }
+                }
+            }
+
+                // Update the cartList in the session
+            session.setAttribute("cartList", cartList);
+            response.sendRedirect("/ProductController/Cart");
+
+
         }else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
