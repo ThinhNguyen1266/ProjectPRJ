@@ -5,7 +5,9 @@
 package Controllers;
 
 import DAOs.AccountDAO;
+import DAOs.UserDAO;
 import Models.Account;
+import Models.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -115,6 +117,17 @@ public class AccountController extends HttpServlet {
 
         } else if (path.equals("/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
+        } else if  (path.startsWith("/AccountController/Edit")) {
+            String[] s = path.split("/");
+            String id = s[s.length - 1];
+            AccountDAO dao = new AccountDAO();
+            User user = null;
+            user = new User();
+             UserDAO userDAO = new UserDAO();
+            user = userDAO.getUserWithId(id);
+            session.setAttribute("userinformation", user);
+           
+            request.getRequestDispatcher("/editProfile.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
@@ -168,6 +181,12 @@ public class AccountController extends HttpServlet {
             String name = request.getParameter("txtSearchName");
             session.setAttribute("Searchname", name);
             response.sendRedirect("/Search");
+        }if(request.getParameter("btnSave")!=null){
+        String email = request.getParameter("txtEmail");
+        String name = request.getParameter("txtName");
+        String phoneNumber = request.getParameter("txtPhonenumber");
+        String addressDraw = request.getParameter("txtAddress");
+        String provinceDraw = request.getParameter("txtProvince");
         }
     }
 
