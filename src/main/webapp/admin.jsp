@@ -4,6 +4,7 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.ProductItemDAO"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page import="DAOs.CategoryDAO"%>
 <%@page import="Models.Category"%>
@@ -36,7 +37,6 @@
                         <div class="flex space-x-4">
                             <a href="/" class="text-gray-800 hover:text-gray-600">Home</a>
                             <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                            <a href="cart.html" class="text-gray-800 hover:text-gray-600">Cart</a>
                             <h1>${sessionScope.adminName}</h1>
                     <a href="/AccountController/Logout" class="btn btn-danger">Sign Out</a>
                 </div>
@@ -178,20 +178,22 @@
                         </thead>
                         <tbody>
                             <%
-                                ProductDAO pdao = new ProductDAO();
-                                rs = pdao.getAllProductAdmin();
+                                ProductItemDAO pidao = new ProductItemDAO();
+                                rs = pidao.getAllAdmin();
                                 while (rs.next()) {
                             %>
                             <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("id")%></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("name")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("pro_id")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("pro_name")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("description")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><img src="<%= rs.getString("image")%>" alt="Product 1 Image" class="w-16 h-16"></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">$10.00</td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("price")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("quantity")%></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("name")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("cat_name")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</button>
+                                    <form action="ProductController/Edit/<%=rs.getString("pro_id")%>" >
+                                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</button>
+                                    </form>
                                     <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
                                 </td>
                             </tr>

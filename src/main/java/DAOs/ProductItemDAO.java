@@ -50,6 +50,93 @@ public class ProductItemDAO {
         return obj;
     }
 
+    public ResultSet getAllAdmin() {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT \n"
+                    + "DISTINCT p.id as pro_id, p.name as pro_name,p.[description],pi.quantity, pi.price , p.[image], (select name from category where id = c.parent)+' '+c.name as cat_name\n"
+                    + "FROM product as p\n"
+                    + "JOIN product_item as pi\n"
+                    + "on p.id = pi.product_id\n"
+                    + "JOIN category as c\n"
+                    + "on p.category_id = c.id";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            return rs;
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
+    public ResultSet getAllInMenu() {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT p.id as pro_id, p.name as pro_name, pi.price, p.[image]\n"
+                    + "FROM product as p\n"
+                    + "JOIN product_item as pi\n"
+                    + "on p.id = pi.product_id";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            return rs;
+
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
+    public ResultSet getAllByName(String name) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT DISTINCT p.id as pro_id, p.name as pro_name, pi.price , p.[image]\n"
+                    + "FROM product as p\n"
+                    + "JOIN product_item as pi\n"
+                    + "on p.id = pi.product_id\n"
+                    + "where p.name like ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + name + "%");
+            rs = ps.executeQuery();
+
+            return rs;
+
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
+    public ResultSet getAllByCatParent(String cat_id) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT DISTINCT p.id as pro_id, p.name as pro_name, pi.price , p.[image]\n"
+                    + "FROM product as p\n"
+                    + "JOIN product_item as pi\n"
+                    + "on p.id = pi.product_id\n"
+                    + "JOIN category as c\n"
+                    + "on p.category_id = c.id\n"
+                    + "where c.parent = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, cat_id);
+            rs = ps.executeQuery();
+
+            return rs;
+
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
     public int addNewProductItem(Product_item obj) {
         Connection conn = null;
         PreparedStatement pst = null;
