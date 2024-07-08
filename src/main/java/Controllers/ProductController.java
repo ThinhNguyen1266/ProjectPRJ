@@ -110,10 +110,6 @@ public class ProductController extends HttpServlet {
         } else if (path.startsWith("/ProductController/Category")) {
             String[] s = path.split("/");
             String id = s[s.length - 1];
-            CategoryDAO dao = new CategoryDAO();
-            Category obj = dao.getCatName(Integer.parseInt(id));
-            String name = obj.getCat_name();
-            session.setAttribute("category", name);
             session.setAttribute("categoryid", id);
             request.getRequestDispatcher("/category.jsp").forward(request, response);
         } else if (path.equals("/ProductController/Search")) {
@@ -146,9 +142,12 @@ public class ProductController extends HttpServlet {
                 // Update the cartList in the session
             session.setAttribute("cartList", cartList);
             response.sendRedirect("/ProductController/Cart");
-
-
-        }else {
+        }else if(path.startsWith("/ProductController/Edit")){
+            String[] s = path.split("/");
+            String id = s[s.length-1];
+            request.setAttribute("editID", id);
+            request.getRequestDispatcher("/editProduct.jsp").forward(request, response);
+        }else {      
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
     }

@@ -1,3 +1,4 @@
+<%@page import="DAOs.ProductItemDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.CategoryDAO"%>
@@ -197,8 +198,8 @@
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
-                        ProductDAO pDAO = new ProductDAO();
-                        rs = pDAO.getAll();
+                        ProductItemDAO pidao = new ProductItemDAO();
+                        rs = pidao.getAllInMenu();
                         while (rs.next()) {
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
@@ -206,10 +207,11 @@
                             <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
                         </div>
                         <div class="p-4 product-details">
-                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("name")%></h3>
-                            <p class="text-gray-600 mt-2">$40.00</p>
+                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
+                            <%  %>
+                            <p class="text-gray-600 mt-2"><%= rs.getString("price")%>vnd</p>
                         </div>
-                        <a href="/ProductController/Cart/<%= rs.getString("id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
+                        <a href="/ProductController/Cart/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
                     <%
                         }

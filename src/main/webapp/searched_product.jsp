@@ -4,6 +4,7 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.ProductItemDAO"%>
 <%@page import="DAOs.ProductDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.CategoryDAO"%>
@@ -189,9 +190,10 @@
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
-                        ProductDAO dao = new ProductDAO();
+                        ProductItemDAO pidao = new ProductItemDAO();
                         String name = (String) session.getAttribute("Searchname");
-                        ResultSet rs = dao.getAllProductByName(name); // Corrected to use category ID
+                        System.out.println(name);
+                        ResultSet rs = pidao.getAllByName(name);// Corrected to use category ID  
                         while (rs.next()) {
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
@@ -199,10 +201,10 @@
                             <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
                         </div>
                         <div class="p-4 product-details">
-                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("name")%></h3>
-                            <p class="text-gray-600 mt-2">$40.00</p>
+                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
+                            <p class="text-gray-600 mt-2"><%= rs.getString("price")%></p>
                         </div>
-                        <a href="/ProductController/Cart/<%= rs.getString("id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
+                        <a href="/ProductController/Cart/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
                     </div>
                     <%
                         }
