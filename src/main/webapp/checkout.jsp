@@ -4,6 +4,10 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="Models.Province"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="DAOs.ProvinceDAO"%>
+<%@page import="Models.User"%>
 <%@page import="DAOs.Cart_itemDAO"%>
 <%@page import="Models.Cart_item"%>
 <%@page import="DAOs.ProductDAO"%>
@@ -109,6 +113,9 @@
             </div>
         </header>
     </header>
+     <%
+            User obj = (User) session.getAttribute("userinformation");        
+        %>
 
     <!-- Checkout Section -->
     <section class="py-12 mt-16">
@@ -121,52 +128,50 @@
                         class="text-xl font-bold text-gray-800 mb-4">Shipping
                         Information</h3>
                     <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-700 text-sm font-bold mb-2"
-                                for="first-name">First Name</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="first-name" type="text"
-                                placeholder="First Name">
-                        </div>
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-700 text-sm font-bold mb-2"
-                                for="last-name">Last Name</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="last-name" type="text"
-                                placeholder="Last Name">
-                        </div>
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-700 text-sm font-bold mb-2"
-                                for="address">Address</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="address" type="text"
-                                placeholder="Address">
-                        </div>
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-700 text-sm font-bold mb-2"
-                                for="Province">Province</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="Province" type="text"
-                                placeholder="Province">
-                        </div>
-                        <div class="mb-4">
-                            <label
-                                class="block text-gray-700 text-sm font-bold mb-2"
-                                for="phone number">Phone number </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="phone number" type="text"
-                                placeholder="phone number">
-                        </div>
+                       
+                       <div class="mb-4">
 
+                        <label
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            for="name">Name</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="name" type="text" placeholder="Name" name="txtName" value="<%= obj.getName() %>">
+                    </div>
+                         <div class="mb-4">
+                        <label
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            for="Phone number">Phone number</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="Phone number" type="text"
+                            placeholder="Phone number" name="txtPhonenumber" value="<%= obj.getPhoneNumber() %>">
+                    </div>
+                    <div class="mb-4">
+                        <label
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            for="Address">Address</label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="Address" type="Address" placeholder="Address" name="txtAddress" value="<%= obj.getAddress().getAddress() %>">
+                    </div>
+                       <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Province</label>
+                        <select name="txtProvince" id="province">
+                            <%
+                                ProvinceDAO provinceDao = new ProvinceDAO();
+                                ResultSet rs = provinceDao.getAll();
+                                Province userProvince = provinceDao.getUserAddress(obj.getName());
+                                
+                                while (rs.next()) {
+                                    String provinceName = rs.getString("name");
+                                   boolean isSelected = userProvince != null && provinceName.equals(userProvince.getProvince_name());
+                            %>
+                            <option value="<%= provinceName %>" <%= isSelected ? "selected" : "" %>><%= provinceName %></option>
+                            <% }%>
+                        </select>
+
+                    </div>
                     </form>
                 </div>
             </div>

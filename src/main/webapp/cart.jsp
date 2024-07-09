@@ -164,9 +164,7 @@
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">$10.00</p>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
-                                </td>
+                                
                             </tr>
                         </tbody>
                     </table>
@@ -181,7 +179,8 @@
                         <input type="hidden" id="hidden-quantity" name="quantity" value="1"> <!-- Adjust as needed -->
                         <button type="submit" class="bg-blue-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" name="btnAddToCart">Add to cart</button>
                     </form>
-                    <a href="/ProductController/Checkout" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed to Checkout</a>
+                        <a href="/ProductController/List" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Back to Shop</a>
+                        <a href="/ProductController/Checkout/<%= customerName%>" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed to Checkout</a>
                 </div>
                 <% } %>
 
@@ -255,6 +254,7 @@
                 <a href="/ProductController/Checkout"
                    class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
                     to Checkout</a>
+               
             </div>
             <%
                 }
