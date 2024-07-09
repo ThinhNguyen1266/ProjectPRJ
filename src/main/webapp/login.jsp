@@ -64,6 +64,7 @@
                         <a href="/Create_account"
                            class="inline-block align-baseline font-bold text-sm text-gray-800 hover:text-gray-600">Create
                             Account</a>
+                        
                     </div>
                 </form>
             </div>
