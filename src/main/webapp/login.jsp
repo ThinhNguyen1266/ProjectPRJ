@@ -21,7 +21,7 @@
             <div
                 class="container mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List"
-                    class="text-xl font-bold text-gray-800">ShopName</a>
+                   class="text-xl font-bold text-gray-800">ShopName</a>
             </div>
         </header>
 
@@ -31,6 +31,14 @@
                 <h2
                     class="text-2xl font-bold text-gray-800 text-center">Login</h2>
                 <form action="AccountController" method="post" class="bg-white shadow-md rounded-lg p-8 mt-8">
+                    <%
+                        if (request.getAttribute("error") != null) {
+                    %>
+                    <p style="color: red"><%= (String) request.getAttribute("error")%></p>
+                    <%
+                        }
+                    %>
+
                     <div class="mb-4">
                         <label
                             class="block text-gray-700 text-sm font-bold mb-2"
@@ -54,7 +62,7 @@
                             id="btnLogin" type="submit" name="btnLogin" value="Login"
                             />
                         <a href="/Create_account"
-                            class="inline-block align-baseline font-bold text-sm text-gray-800 hover:text-gray-600">Create
+                           class="inline-block align-baseline font-bold text-sm text-gray-800 hover:text-gray-600">Create
                             Account</a>
                     </div>
                 </form>

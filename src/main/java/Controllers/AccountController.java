@@ -124,16 +124,16 @@ public class AccountController extends HttpServlet {
 
         } else if (path.equals("/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
-        } else if  (path.startsWith("/AccountController/Edit")) {
+        } else if (path.startsWith("/AccountController/Edit")) {
             String[] s = path.split("/");
             String id = s[s.length - 1];
             AccountDAO dao = new AccountDAO();
             User user = null;
             user = new User();
-             UserDAO userDAO = new UserDAO();
+            UserDAO userDAO = new UserDAO();
             user = userDAO.getUserWithId(id);
             session.setAttribute("userinformation", user);
-           
+
             request.getRequestDispatcher("/editProfile.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
@@ -167,43 +167,38 @@ public class AccountController extends HttpServlet {
                 response.addCookie(adminCookie);
                 session.setAttribute("adminName", username);
                 response.sendRedirect("/Admin_profile");
+            } else if (dao.login(acc)) {
+                // Tạo cookie cho username
+                Cookie usernameCookie = new Cookie("username", username);
+                usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
+                usernameCookie.setPath("/");
+                response.addCookie(usernameCookie);
+                session.setAttribute("customername", username);
+                response.sendRedirect("/ProductController/List");
             } else {
-                if (dao.login(acc)) {
-                    // Tạo cookie cho username
-                    Cookie usernameCookie = new Cookie("username", username);
-                    usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
-                    usernameCookie.setPath("/");
-                    response.addCookie(usernameCookie);
-                    session.setAttribute("customername", username);
-                    response.sendRedirect("/ProductController/List");
-                } else {
-                    request.setAttribute("error", "invalid username or password");
-                    response.sendRedirect("/Create_profile");
-                }
-
+                    request.setAttribute("error", "Invalid username or password");
+                    request.getRequestDispatcher("/login.jsp").forward(request, response);
             }
 
-        }
-        if (request.getParameter("btnSearch") != null) {
+        }else if (request.getParameter("btnSearch") != null) {
             String name = request.getParameter("txtSearchName");
             session.setAttribute("Searchname", name);
             response.sendRedirect("/Search");
-        }
-        if (request.getParameter("btnSave") != null) {
-            String id=request.getParameter("txtId");
+        }else if (request.getParameter("btnSave") != null) {
+            String id = request.getParameter("txtId");
             String email = request.getParameter("txtEmail");
             String name = request.getParameter("txtName");
             String phoneNumber = request.getParameter("txtPhonenumber");
-             String addressDraw = request.getParameter("txtAddress");
+            String addressDraw = request.getParameter("txtAddress");
             String provinceDraw = request.getParameter("txtProvince");
             ProvinceDAO provinceDAO = new ProvinceDAO();
-            UserDAO uDAO= new UserDAO();
-                int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
-                Province province = new Province(provinceID, provinceDraw);
-                String addressID=uDAO.getUserAddressID(id);
-                Address address = new Address(Integer.parseInt(addressID), provinceID, addressDraw, province);
-            
-            User newinfo= new User(Integer.parseInt(id), email, name, phoneNumber, address);
+            UserDAO uDAO = new UserDAO();
+            int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
+            Province province = new Province(provinceID, provinceDraw);
+            String addressID = uDAO.getUserAddressID(id);
+            Address address = new Address(Integer.parseInt(addressID), provinceID, addressDraw, province);
+
+            User newinfo = new User(Integer.parseInt(id), email, name, phoneNumber, address);
             uDAO.editUser(Integer.parseInt(id), newinfo);
             uDAO.editUserEmail(Integer.parseInt(id), newinfo);
             uDAO.editUserAddress(address, newinfo);
