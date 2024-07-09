@@ -1,3 +1,11 @@
+<%-- 
+    Document   : product
+    Created on : Jul 9, 2024, 3:27:08 AM
+    Author     : Thinh
+--%>
+
+<%@page import="DAOs.ProductItemDAO"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
