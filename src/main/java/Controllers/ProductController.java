@@ -4,6 +4,7 @@
  */
 package Controllers;
 
+import DAOs.AccountDAO;
 import DAOs.CartDAO;
 import DAOs.Cart_itemDAO;
 import DAOs.CategoryDAO;
@@ -105,7 +106,15 @@ public class ProductController extends HttpServlet {
             Product obj = pdao.getProduct(id);
             session.setAttribute("product", obj);
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
-        } else if (path.equals("/ProductController/Checkout")) {
+        } else if (path.startsWith("/ProductController/Checkout")) {
+             String[] s = path.split("/");
+            String id = s[s.length - 1];
+            AccountDAO dao = new AccountDAO();
+            User user = null;
+            user = new User();
+             UserDAO userDAO = new UserDAO();
+            user = userDAO.getUserWithId(id);
+            session.setAttribute("userinformation", user);
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Category")) {
             String[] s = path.split("/");
