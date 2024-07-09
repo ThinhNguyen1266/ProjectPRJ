@@ -71,13 +71,17 @@ public class AccountController extends HttpServlet {
         if (path.equals("/")) {
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
+                     if (cookie.getName().equals("adminName")) {
+                        session.setAttribute("adminName", cookie.getValue());
+                        request.getRequestDispatcher("/admin.jsp").forward(request, response);
+                    }
                     if (cookie.getName().equals("username")) {
                         session.setAttribute("customername", cookie.getValue());
-                        break;
+                        request.getRequestDispatcher("/index.jsp").forward(request, response);
                     }
                 }
             }
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            
 
         } else if (path.equals("/Login") || path.equals("/AccountController/Login")) {
             request.getRequestDispatcher("/login.jsp").forward(request, response);
@@ -116,7 +120,7 @@ public class AccountController extends HttpServlet {
             }
 
             // Redirect to login page
-            response.sendRedirect("/");
+            response.sendRedirect("/ProductController/List");
 
         } else if (path.equals("/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
