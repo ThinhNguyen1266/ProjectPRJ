@@ -99,12 +99,23 @@ public class ProductController extends HttpServlet {
         } else if (path.equals("/ProductController/About-Contact")) {
             request.getRequestDispatcher("/about-contact.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Cart")) {
-            String[] s = path.split("/");
-            String id = s[s.length - 1];
-            ProductDAO pdao = new ProductDAO();
-            Product obj = pdao.getProduct(id);
-            session.setAttribute("product", obj);
-            request.getRequestDispatcher("/cart.jsp").forward(request, response);
+            Cookie[] cookies = request.getCookies();
+            boolean flag = false;
+            for (Cookie c : cookies) {
+                if (c.getName().equals("username")) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                response.sendRedirect("/AccountController/Login");
+            } else {
+                String[] s = path.split("/");
+                String id = s[s.length - 1];
+                ProductItemDAO pdao = new ProductItemDAO();
+                Product_item obj = pdao.getProductItem(id);
+                session.setAttribute("product", obj);
+                request.getRequestDispatcher("/cart.jsp").forward(request, response);
+            }
         } else if (path.equals("/ProductController/Checkout")) {
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Category")) {
@@ -118,9 +129,10 @@ public class ProductController extends HttpServlet {
             String[] url = path.split("/");
             String id = url[url.length - 1];
             response.sendRedirect("/ProductController/Cart/" + id);
-        }else if(path.equals("/ProductController/PlaceOrder")){
+        } else if (path.equals("/ProductController/PlaceOrder")) {
+            
             response.sendRedirect("/ProductController/List");
-        }else if (path.startsWith("/ProductController/Delete")) {
+        } else if (path.startsWith("/ProductController/Delete")) {
             String[] s = path.split("/");
             String id = s[s.length - 1];
             Cart_itemDAO cdao = new Cart_itemDAO();
@@ -139,15 +151,15 @@ public class ProductController extends HttpServlet {
                 }
             }
 
-                // Update the cartList in the session
+            // Update the cartList in the session
             session.setAttribute("cartList", cartList);
             response.sendRedirect("/ProductController/Cart");
-        }else if(path.startsWith("/ProductController/Edit")){
+        } else if (path.startsWith("/ProductController/Edit")) {
             String[] s = path.split("/");
-            String id = s[s.length-1];
+            String id = s[s.length - 1];
             request.setAttribute("editID", id);
             request.getRequestDispatcher("/editProduct.jsp").forward(request, response);
-        }else {      
+        } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
     }
@@ -165,17 +177,16 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (request.getParameter("btnAddToCart") != null) {
-            String pro_id = request.getParameter("productId");
+            String proItem_id = request.getParameter("proItemId");
             String quantity = request.getParameter("quantity");
             List<Cart_item> cartList = new ArrayList<Cart_item>();
 
             Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
-
-            Product_item product_item = new Product_item();
             ProductItemDAO productItemDAO = new ProductItemDAO();
-            String product_itemIDDraw = productItemDAO.getProduct_itemID();
-            int product_itemID = (Integer.parseInt(product_itemIDDraw) + 1);
-            product_item = new Product_item(product_itemID, Integer.parseInt(pro_id));
+
+            Product_item product_item = productItemDAO.getProductItem(proItem_id);
+            
+            String pro_name = product_item.getPro_name();
 
             Cart cart = null;
             CartDAO cartDAO = new CartDAO();
@@ -201,7 +212,6 @@ public class ProductController extends HttpServlet {
 
             cart = new Cart(cartID, user);
 
-            count = productItemDAO.addNewProductItem(product_item);
             String cart_itemIDDraw = cart_itemDAO.getCart_itemID();
             int cart_itemID = (Integer.parseInt(cart_itemIDDraw) + 1);
 
@@ -214,7 +224,7 @@ public class ProductController extends HttpServlet {
 
                 session.setAttribute("cartList", cartList);
             } else {
-                Cart_item cart_item = new Cart_item(cart_itemID, product_item, (cartID-1), user, Integer.parseInt(quantity));
+                Cart_item cart_item = new Cart_item(cart_itemID, product_item, (cartID - 1), user, Integer.parseInt(quantity));
 
                 cartList = (List<Cart_item>) session.getAttribute("cartList");
                 cartList.add(cart_item);

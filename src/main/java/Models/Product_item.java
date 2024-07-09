@@ -14,9 +14,10 @@ public class Product_item extends Product{
     private long price;
     private Variation_option[] Variation_option;
     
-    public Product_item(int item_id, int pro_id){
-        super(pro_id);
+    public Product_item(int item_id, int pro_id, long price, String pro_img, String pro_name){
+        super(pro_id, pro_img, pro_name);
         this.item_id = item_id;
+        this.price = price;
     }
 
     public Product_item(int item_id, int item_quan, long price, Variation_option[] Variation_option, int pro_id, String pro_name, String pro_des, String pro_img, int pro_quan, Models.Category Category) {

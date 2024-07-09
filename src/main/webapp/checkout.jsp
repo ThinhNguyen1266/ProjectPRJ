@@ -4,6 +4,8 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="Models.Product_item"%>
+<%@page import="DAOs.ProductItemDAO"%>
 <%@page import="DAOs.Cart_itemDAO"%>
 <%@page import="Models.Cart_item"%>
 <%@page import="DAOs.ProductDAO"%>
@@ -200,9 +202,9 @@
 
                                         cart_item = cart_itemDAO.getCartItem(String.valueOf(id));
 
-                                        ProductDAO pDAO = new ProductDAO();
+                                        ProductItemDAO piDAO = new ProductItemDAO();
 
-                                        Product p = pDAO.getProduct(String.valueOf(cart_item.getProduct_item().getPro_id()));
+                                        Product_item pItem = cart_item.getProduct_item();
                             %>
                             <tr>
                                 <td
@@ -211,13 +213,13 @@
                                         <div class="flex-shrink-0 w-10 h-10">
                                             <img
                                                 class="w-full h-full rounded-full"
-                                                src="<%= p.getPro_img()%>"
+                                                src="<%= pItem.getPro_img()%>"
                                                 alt="Product Image">
                                         </div>
                                         <div class="ml-3">
 
                                             <p
-                                                class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name()%></p>
+                                                class="text-gray-900 whitespace-no-wrap"><%= pItem.getPro_name()%></p>
                                         </div>
                                     </div>
                                 </td>
@@ -229,7 +231,7 @@
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <p
-                                        class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                                        class="text-gray-900 whitespace-no-wrap"><%= pItem.getPrice() %></p>
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -245,7 +247,7 @@
                     </table>
                     <div class="mt-8 flex justify-end">
                         <a href="/ProductController/PlaceOrder" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Place Orders</a>
-                        
+
                     </div>
                 </div>
             </div>

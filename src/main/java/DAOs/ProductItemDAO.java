@@ -35,12 +35,15 @@ public class ProductItemDAO {
         ResultSet rs = null;
         Product_item obj = null;
         try {
-            String sql = "Select * FROM product_item where id = ?";
+            String sql = "SELECT pi.id as proItem_id, p.id as pro_id, p.name as pro_name, pi.price as price, p.[image] as image\n"
+                    + "FROM product as p\n"
+                    + "JOIN product_item as pi\n"
+                    + "on p.id = pi.product_id where pi.id = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, id);
             rs = pst.executeQuery();
             if (rs.next()) {
-                obj = new Product_item(rs.getInt("id"), rs.getInt("product_id"));
+                obj = new Product_item(rs.getInt("proItem_id"), rs.getInt("pro_id"), rs.getInt("price"), rs.getString("image"), rs.getString("pro_name"));
             } else {
                 obj = null;
             }
@@ -76,7 +79,7 @@ public class ProductItemDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT p.id as pro_id, p.name as pro_name, pi.price, p.[image]\n"
+            String sql = "SELECT pi.id as proItem_id, p.id as pro_id, p.name as pro_name, pi.price, p.[image]\n"
                     + "FROM product as p\n"
                     + "JOIN product_item as pi\n"
                     + "on p.id = pi.product_id";

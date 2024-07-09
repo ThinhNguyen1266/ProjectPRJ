@@ -4,6 +4,8 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="DAOs.ProductItemDAO"%>
+<%@page import="Models.Product_item"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.Cart_itemDAO"%>
 <%@page import="Models.Cart_item"%>
@@ -136,10 +138,12 @@
                         </thead>
                         <%
                             // Buy 1 product
-                            Product obj = null;
+                            Product_item proItem = null;
                             String imgSrc = "https://via.placeholder.com/300";
                             if (session.getAttribute("product") != null) {
-                                obj = (Product) session.getAttribute("product");
+                                proItem = (Product_item) session.getAttribute("product");
+                                ProductDAO pDao = new ProductDAO();
+                                Product obj = pDao.getProduct(String.valueOf(proItem.getPro_id()));
                                 imgSrc = obj.getPro_img();
                         %>
                         <tbody>
@@ -156,13 +160,13 @@
                                     </div>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <input type="number" value="1" id="quantity-input" class="w-16 py-2 px-3 border rounded text-gray-700" oninput="updateHiddenQuantity()">
+                                    <input type="number" min="1" value="1" id="quantity-input" class="w-16 py-2 px-3 border rounded text-gray-700" oninput="updateHiddenQuantity()" oninput="updateTotalPrice()">
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                                    <p class="text-gray-900 whitespace-no-wrap" id="price"><%= proItem.getPrice()%> VND</p>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                                    <p class="text-gray-900 whitespace-no-wrap" id="totalPrice" onload="updateTotalPrice()">10.000 VND</p>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
                                     <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
@@ -177,7 +181,7 @@
                 <% if (obj != null) {%>
                 <div class="mt-8 flex justify-end">
                     <form action="/ProductController" method="post" style="margin-right: 10px">
-                        <input type="hidden" name="productId" value="<%= obj.getPro_id()%>">
+                        <input type="hidden" name="proItemId" value="<%= proItem.getItem_id()%>">
                         <input type="hidden" id="hidden-quantity" name="quantity" value="1"> <!-- Adjust as needed -->
                         <button type="submit" class="bg-blue-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" name="btnAddToCart">Add to cart</button>
                     </form>
@@ -185,12 +189,6 @@
                 </div>
                 <% } %>
 
-                <script>
-                    function updateHiddenQuantity() {
-                        var quantity = document.getElementById('quantity-input').value;
-                        document.getElementById('hidden-quantity').value = quantity;
-                    }
-                </script>
                 <%} else if (session.getAttribute("cartList") != null) { //List all product that have bought
                     List<Cart_item> cartList = (List<Cart_item>) session.getAttribute("cartList");
                     int index = 0;
@@ -203,9 +201,9 @@
 
                         cart_item = cart_itemDAO.getCartItem(String.valueOf(id));
 
-                        ProductDAO pDAO = new ProductDAO();
+                        ProductItemDAO piDAO = new ProductItemDAO();
 
-                        Product p = pDAO.getProduct(String.valueOf(cart_item.getProduct_item().getPro_id()));
+                        Product_item pItem = cart_item.getProduct_item();
                 %>
                 </tbody>
                 <tr>
@@ -215,34 +213,34 @@
                             <div class="flex-shrink-0 w-10 h-10">
                                 <img
                                     class="w-full h-full rounded-full"
-                                    src="<%= p.getPro_img()%>"
+                                    src="<%= pItem.getPro_img()%>"
                                     alt="Product Image">
                             </div>
                             <div class="ml-3">
 
                                 <p
-                                    class="text-gray-900 whitespace-no-wrap"><%= p.getPro_name()%></p>
+                                    class="text-gray-900 whitespace-no-wrap"><%= pItem.getPro_name()%></p>
                             </div>
                         </div>
                     </td>
                     <td
                         class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <input type="number" value="<%= cart_item.getQuantity()%>"
+                        <input type="number" id="quantity-input" value="<%= cart_item.getQuantity()%>" oninput="updateTotalPrice()"
                                class="w-16 py-2 px-3 border rounded text-gray-700">
                     </td>
                     <td
                         class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p
-                            class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                            class="text-gray-900 whitespace-no-wrap" id="price"><%= pItem.getPrice()%> VND</p>
                     </td>
                     <td
                         class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p
-                            class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                            class="text-gray-900 whitespace-no-wrap" id="totalPrice" onload="updateTotalPrice()">10.000 VND</p>
                     </td>
                     <td
                         class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                         <a href="/ProductController/Delete/<%=id %>" class="btn btn-danger btn-sm">Remove</a>
+                        <a href="/ProductController/Delete/<%=id%>" class="btn btn-danger btn-sm">Remove</a>
                     </td>
                 </tr>
                 <%}%>
@@ -276,5 +274,18 @@
                 </div>
             </div>
         </footer>
+
+        <script>
+            function updateHiddenQuantity() {
+                var quantity = document.getElementById('quantity-input').value;
+                document.getElementById('hidden-quantity').value = quantity;
+            }
+
+            function updateTotalPrice() {
+                var quantity = document.getElementById('quantity-input').value;
+                var price = document.getElementById('price').value;
+                document.getElementById('totalPrice').value = quantity * price;
+            }
+        </script>
     </body>
 </html>
