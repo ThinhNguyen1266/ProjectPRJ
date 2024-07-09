@@ -10,6 +10,12 @@
         <title>Shopping Website Group1</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+
         <style>
             .search-container {
                 display: flex;
@@ -111,8 +117,8 @@
                         <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
                     </form>          
                     <div class="flex space-x-4">
-                        <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                        <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
+                        <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600"><i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact</a>
+                        <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600"><i class="fa fa-shopping-cart"></i> Cart</a>
                         <%
                             String customerName = (String) session.getAttribute("customername");
                             if (customerName != null) {
@@ -120,16 +126,16 @@
 
                         <div class="relative inline-block text-left">
                             <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
-                                <%= customerName%>
+                                <i class="fa fa-user-circle-o"></i> <%= customerName%>
                             </button>
                             <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                                <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                                <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
+                                <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"><i class='fas fa-user-alt'></i> Profile</a>
+                                <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"><i class="fa fa-sign-out"></i> Sign Out</a>
                             </div>
                         </div>
 
                         <% } else { %>
-                        <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                        <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600"><i class="fa fa-sign-in"></i> Login</a>
                         <% }%>
                     </div>
 
@@ -180,9 +186,21 @@
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
                         <div class="p-6 text-center">
+                            <%
+                                if (rs.getString("name").equals("Laptops")) {
+                            %>
                             <h3 class="text-lg font-semibold text-gray-800">
-                                <a href="/ProductController/Category/<%=rs.getInt("id")%>"><%=rs.getString("name")%></a>
+                                <a href="/ProductController/Category/<%=rs.getInt("id")%>"><i class='fas fa-laptop'></i> <%=rs.getString("name")%></a>
                             </h3>
+                            <%} else if (rs.getString("name").equals("Phones")) {%>
+                            <h3 class="text-lg font-semibold text-gray-800">
+                                <a href="/ProductController/Category/<%=rs.getInt("id")%>"><i class="material-icons">smartphone</i> <%=rs.getString("name")%></a>
+                            </h3>
+                            <%} else if (rs.getString("name").equals("Accessories")) {%>
+                            <h3 class="text-lg font-semibold text-gray-800">
+                                <a href="/ProductController/Category/<%=rs.getInt("id")%>"><i class="fas fa-cogs"></i> <%=rs.getString("name")%></a>
+                            </h3>
+                            <%}%>
                         </div>
                     </div>
                     <%
@@ -208,10 +226,10 @@
                         </div>
                         <div class="p-4 product-details">
                             <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
-                            <%  %>
+                            <%%>
                             <p class="text-gray-600 mt-2"><%= rs.getString("price")%>vnd</p>
                         </div>
-                        <a href="/ProductController/Cart/<%= rs.getString("proItem_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
+                        <a href="/ProductController/Cart/<%= rs.getString("proItem_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
                     </div>
                     <%
                         }
