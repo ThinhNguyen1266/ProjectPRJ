@@ -166,10 +166,22 @@
                                     <p class="text-gray-900 whitespace-no-wrap" id="price"><%= proItem.getPrice()%> VND</p>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap" id="totalPrice" onload="updateTotalPrice()">10.000 VND</p>
+                                    <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"><%= proItem.getPrice()%> VND</p>
                                 </td>
-                                
-                            </tr>
+                        <script>
+                            document.getElementById('quantity-input').addEventListener('input', updateTotalPrice);
+
+                            function updateTotalPrice() {
+                                var quantity = document.getElementById('quantity-input').value;
+                                var price = parseFloat('<%= proItem.getPrice()%>');
+                                var totalPrice = quantity * price;
+                                document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' VND';
+                            }
+
+                            // Initialize the total price on page load
+                            updateTotalPrice();
+                        </script>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -183,8 +195,8 @@
                         <input type="hidden" id="hidden-quantity" name="quantity" value="1"> <!-- Adjust as needed -->
                         <button type="submit" class="bg-blue-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" name="btnAddToCart">Add to cart</button>
                     </form>
-                        <a href="/ProductController/List" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Back to Shop</a>
-                        <a href="/ProductController/Checkout/<%= customerName%>" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed to Checkout</a>
+                    <a href="/ProductController/List" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Back to Shop</a>
+                    <a href="/ProductController/Checkout/<%= customerName%>" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed to Checkout</a>
                 </div>
                 <% } %>
 
@@ -232,15 +244,26 @@
                         <p
                             class="text-gray-900 whitespace-no-wrap" id="price"><%= pItem.getPrice()%> VND</p>
                     </td>
-                    <td
-                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p
-                            class="text-gray-900 whitespace-no-wrap" id="totalPrice" onload="updateTotalPrice()">10.000 VND</p>
+                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"><%= pItem.getPrice()%> VND</p>
                     </td>
-                    <td
-                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                        <a href="/ProductController/Delete/<%=id%>" class="btn btn-danger btn-sm">Remove</a>
-                    </td>
+                <script>
+                    document.getElementById('quantity-input').addEventListener('input', updateTotalPrice);
+
+                    function updateTotalPrice() {
+                        var quantity = document.getElementById('quantity-input').value;
+                        var price = parseFloat('<%= pItem.getPrice()%>');
+                        var totalPrice = quantity * price;
+                        document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' VND';
+                    }
+
+                    // Initialize the total price on page load
+                    updateTotalPrice();
+                </script>
+                <td
+                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                    <a href="/ProductController/Delete/<%=id%>" class="btn btn-danger btn-sm">Remove</a>
+                </td>
                 </tr>
                 <%}%>
                 </tbody>
@@ -252,7 +275,7 @@
                 <a href="/ProductController/Checkout"
                    class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
                     to Checkout</a>
-               
+
             </div>
             <%
                 }

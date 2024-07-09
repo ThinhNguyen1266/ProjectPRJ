@@ -75,9 +75,6 @@
                         String customerName = (String) session.getAttribute("customername");
                         if (customerName != null) {
                     %>
-
-
-
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
                             <%= customerName%>
@@ -87,7 +84,6 @@
                             <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
                         </div>
                     </div>
-
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
                     <% }%>
@@ -115,87 +111,66 @@
             </div>
         </header>
     </header>
-     <%
-            User obj = (User) session.getAttribute("userinformation");        
-        %>
+    <%
+        User obj = (User) session.getAttribute("userinformation");
+        if (obj == null) {
+            response.sendRedirect("/AccountController/Login"); // Redirect to login page if user is not logged in
+            return;
+        }
+    %>
 
     <!-- Checkout Section -->
     <section class="py-12 mt-16">
         <div class="container mx-auto px-4">
-            <h2
-                class="text-2xl font-bold text-gray-800 text-center">Checkout</h2>
+            <h2 class="text-2xl font-bold text-gray-800 text-center">Checkout</h2>
             <div class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
                 <div class="px-8 py-4">
-                    <h3
-                        class="text-xl font-bold text-gray-800 mb-4">Shipping
-                        Information</h3>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Shipping Information</h3>
                     <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                       
-                       <div class="mb-4">
-
-                        <label
-                            class="block text-gray-700 text-sm font-bold mb-2"
-                            for="name">Name</label>
-                        <input
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="name" type="text" placeholder="Name" name="txtName" value="<%= obj.getName() %>">
-                    </div>
-                         <div class="mb-4">
-                        <label
-                            class="block text-gray-700 text-sm font-bold mb-2"
-                            for="Phone number">Phone number</label>
-                        <input
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="Phone number" type="text"
-                            placeholder="Phone number" name="txtPhonenumber" value="<%= obj.getPhoneNumber() %>">
-                    </div>
-                    <div class="mb-4">
-                        <label
-                            class="block text-gray-700 text-sm font-bold mb-2"
-                            for="Address">Address</label>
-                        <input
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="Address" type="Address" placeholder="Address" name="txtAddress" value="<%= obj.getAddress().getAddress() %>">
-                    </div>
-                       <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Province</label>
-                        <select name="txtProvince" id="province">
-                            <%
-                                ProvinceDAO provinceDao = new ProvinceDAO();
-                                ResultSet rs = provinceDao.getAll();
-                                Province userProvince = provinceDao.getUserAddress(obj.getName());
-                                
-                                while (rs.next()) {
-                                    String provinceName = rs.getString("name");
-                                   boolean isSelected = userProvince != null && provinceName.equals(userProvince.getProvince_name());
-                            %>
-                            <option value="<%= provinceName %>" <%= isSelected ? "selected" : "" %>><%= provinceName %></option>
-                            <% }%>
-                        </select>
-
-                    </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="Name" name="txtName" value="<%= obj.getName()%>">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="Phone number">Phone number</label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Phone number" type="text" placeholder="Phone number" name="txtPhonenumber" value="<%= obj.getPhoneNumber()%>">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="Address">Address</label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Address" type="Address" placeholder="Address" name="txtAddress" value="<%= obj.getAddress().getAddress()%>">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Province</label>
+                            <select name="txtProvince" id="province">
+                                <%
+                                    ProvinceDAO provinceDao = new ProvinceDAO();
+                                    ResultSet rs = provinceDao.getAll();
+                                    Province userProvince = provinceDao.getUserAddress(obj.getName());
+                                    while (rs.next()) {
+                                        String provinceName = rs.getString("name");
+                                        boolean isSelected = userProvince != null && provinceName.equals(userProvince.getProvince_name());
+                                %>
+                                <option value="<%= provinceName%>" <%= isSelected ? "selected" : ""%>><%= provinceName%></option>
+                                <% }%>
+                            </select>
+                        </div>
                     </form>
                 </div>
             </div>
             <div class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
                 <div class="px-8 py-4">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">Order
-                        Summary</h3>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h3>
                     <table class="min-w-full leading-normal">
                         <thead>
                             <tr>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% if (session.getAttribute("cartList") != null) { //List all product that have bought
+                            <% if (session.getAttribute("cartList") != null) {
                                     List<Cart_item> cartList = (List<Cart_item>) session.getAttribute("cartList");
                                     int index = 0;
                                     while (index < cartList.size()) {
@@ -204,55 +179,51 @@
                                         int quantity = cartList.get(index).getQuantity();
                                         index++;
                                         Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
-
                                         cart_item = cart_itemDAO.getCartItem(String.valueOf(id));
-
                                         ProductItemDAO piDAO = new ProductItemDAO();
-
                                         Product_item pItem = cart_item.getProduct_item();
                             %>
                             <tr>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 w-10 h-10">
-                                            <img
-                                                class="w-full h-full rounded-full"
-                                                src="<%= pItem.getPro_img()%>"
-                                                alt="Product Image">
+                                            <img class="w-full h-full rounded-full" src="<%= pItem.getPro_img()%>" alt="Product Image">
                                         </div>
                                         <div class="ml-3">
-
-                                            <p
-                                                class="text-gray-900 whitespace-no-wrap"><%= pItem.getPro_name()%></p>
+                                            <p class="text-gray-900 whitespace-no-wrap"><%= pItem.getPro_name()%></p>
                                         </div>
                                     </div>
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <input type="number" value="<%= cart_item.getQuantity()%>" disabled=""
-                                           class="w-16 py-2 px-3 border rounded text-gray-700">
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <input type="number" value="<%= cart_item.getQuantity()%>" disabled="" class="w-16 py-2 px-3 border rounded text-gray-700">
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap"><%= pItem.getPrice() %></p>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap"><%= pItem.getPrice()%></p>
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"><%= pItem.getPrice()%> VND</p>
                                 </td>
-                            </tr>
-                            <%
-                                    }
-                                }%>
-                            <!-- Repeat for other products -->
+                        <script>
+                            document.getElementById('quantity-input').addEventListener('input', updateTotalPrice);
+
+                            function updateTotalPrice() {
+                                var quantity = document.getElementById('quantity-input').value;
+                                var price = parseFloat('<%= pItem.getPrice()%>');
+                                var totalPrice = quantity * price;
+                                document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' VND';
+                            }
+
+                            // Initialize the total price on page load
+                            updateTotalPrice();
+                        </script>
+                        </tr>
+                        <%
+                                }
+                            }%>
                         </tbody>
                     </table>
                     <div class="mt-8 flex justify-end">
                         <a href="/ProductController/PlaceOrder" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Place Orders</a>
-
                     </div>
                 </div>
             </div>
