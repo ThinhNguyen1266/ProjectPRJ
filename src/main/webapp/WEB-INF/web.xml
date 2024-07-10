@@ -12,10 +12,6 @@
         <servlet-name>CreateAccountController</servlet-name>
         <servlet-class>Controllers.CreateAccountController</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>Verity</servlet-name>
-        <servlet-class>Controllers.Verity</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>AccountController</servlet-name>
         <url-pattern>/AccountController/*</url-pattern>
@@ -29,16 +25,10 @@
         <servlet-name>CreateAccountController</servlet-name>
         <url-pattern>/CreateAccountController/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Verity</servlet-name>
-        <url-pattern>/Verity</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
-    <welcome-file-list>
-        <welcome-file>/</welcome-file>
-    </welcome-file-list>
+    
 </web-app>

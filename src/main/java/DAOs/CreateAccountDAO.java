@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Random;
 
 /**
  *
@@ -148,5 +149,16 @@ public class CreateAccountDAO {
         }
 
         return count;
+    }
+     public String generateRandomString() {
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random RANDOM = new Random();
+        int length = 6;
+        StringBuilder randomString = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = RANDOM.nextInt(CHARACTERS.length());
+            randomString.append(CHARACTERS.charAt(randomIndex));
+        }
+        return randomString.toString();
     }
 }

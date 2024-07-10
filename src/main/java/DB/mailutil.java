@@ -17,7 +17,7 @@ import java.util.Properties;
  * @author DucNHCE180015
  */
 public class mailutil {
-    public static void sendVerificationEmail(String email) {
+    public static void sendVerificationEmail(String email,String otp) {
         // SMTP server configuration
         String host = "smtp.gmail.com";
         final String user = "dantdm1243@gmail.com"; // SMTP server username (change accordingly)
@@ -47,7 +47,9 @@ public class mailutil {
             message.setFrom(new InternetAddress(user)); // Set the sender's email address
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to)); // Add the recipient's email address
             message.setSubject("Please verify your email address"); // Set the email subject
-            message.setText("Click the link to verify your account: http://localhost:8080/CreateAccountController/Verity"); // Set the email content
+            String emailContent = "Click the link and enter OTP to verify your account: http://localhost:8080/CreateAccountController/Verity?email=" + email 
+                + "\nHere is your OTP: " + otp;
+            message.setText(emailContent);
 
             // Send the email
             Transport.send(message);

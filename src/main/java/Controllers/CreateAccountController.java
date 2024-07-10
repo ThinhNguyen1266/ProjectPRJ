@@ -69,55 +69,10 @@ public class CreateAccountController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-       if(path.contains("/CreateAccountController/Verity")){
-           Cookie[] cookies = request.getCookies();
-        String accountInfo = null;
-        CreateAccountDAO caDAO = new CreateAccountDAO();
+        if (path.contains("/CreateAccountController/Verity")) {
 
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("RegisterName")) {
-                    accountInfo = cookie.getValue();
-                    break;
-                }
-            }
+            request.getRequestDispatcher("/otp_verity.jsp").forward(request, response);
         }
-
-        if (accountInfo != null) {
-            try {
-                String[] userInfo = accountInfo.split(":");
-
-                String username = URLDecoder.decode(userInfo[0], "UTF-8");
-                String password = URLDecoder.decode(userInfo[1], "UTF-8");
-                String email = URLDecoder.decode(userInfo[2], "UTF-8");
-                String name = URLDecoder.decode(userInfo[3], "UTF-8");
-                String phoneNumber = URLDecoder.decode(userInfo[4], "UTF-8");
-                String addressDraw = URLDecoder.decode(userInfo[5], "UTF-8");
-                String provinceDraw = URLDecoder.decode(userInfo[6], "UTF-8");
-                
-                 String id = caDAO.getAccountID();
-                AccountDAO accDAO = new AccountDAO();
-                Account acc = new Account(username, accDAO.getMD5Hash(password), (Integer.parseInt(id) + 1), email);
-                String userId = caDAO.getUserID();
-                ProvinceDAO provinceDAO = new ProvinceDAO();
-                int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
-                Province province = new Province(provinceID, provinceDraw);
-                String addressIDDraw = caDAO.getAddressID();
-                int addressID = Integer.parseInt(addressIDDraw) + 1;
-                Address address = new Address(addressID, provinceID, addressDraw, province);
-                User user = new User(Integer.parseInt(userId) + 1, name, phoneNumber, address, acc.getUsername(), acc.getPassword(), acc.getAccount_id(), acc.getEmails());
-            
-                int count = caDAO.addNewAccount(acc);
-                count = caDAO.addNewUser(user);
-                count = caDAO.addNewAddress(address);
-                count = caDAO.addNewUserAddress(address, acc);
-
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
-         response.sendRedirect("/ProductController/List");
-       }
     }
 
     /**
@@ -158,26 +113,113 @@ public class CreateAccountController extends HttpServlet {
                 request.setAttribute("PasswordError", "Passwords do not match");
                 request.getRequestDispatcher("/create-account.jsp").forward(request, response);
             } else {
-            // Proceed with account creation
-               
-            String encodedUsername = URLEncoder.encode(username, "UTF-8");
-            String encodedPassword = URLEncoder.encode(password, "UTF-8");
-            String encodedEmail = URLEncoder.encode(email, "UTF-8");
-            String encodedName = URLEncoder.encode(name, "UTF-8");
-            String encodedPhoneNumber = URLEncoder.encode(phoneNumber, "UTF-8");
-            String encodedAddressDraw = URLEncoder.encode(addressDraw, "UTF-8");
-            String encodedProvinceDraw = URLEncoder.encode(provinceDraw, "UTF-8");
-            String cookieValue = encodedUsername + ":" + encodedPassword + ":" + encodedEmail + ":" + encodedName + ":" + encodedPhoneNumber + ":" + encodedAddressDraw + ":" + encodedProvinceDraw;
-            Cookie userloginCookie = new Cookie("RegisterName", cookieValue);
-            userloginCookie.setMaxAge(24 * 60 * 60 * 3); // 3 days
-            userloginCookie.setPath("/");
-            response.addCookie(userloginCookie);
-            mailutil.sendVerificationEmail(email);
+                // Proceed with account creation
 
-            response.sendRedirect("/ProductController/List");
+                String encodedUsername = URLEncoder.encode(username, "UTF-8");
+                String encodedPassword = URLEncoder.encode(password, "UTF-8");
+                String encodedEmail = URLEncoder.encode(email, "UTF-8");
+                String encodedName = URLEncoder.encode(name, "UTF-8");
+                String encodedPhoneNumber = URLEncoder.encode(phoneNumber, "UTF-8");
+                String encodedAddressDraw = URLEncoder.encode(addressDraw, "UTF-8");
+                String encodedProvinceDraw = URLEncoder.encode(provinceDraw, "UTF-8");
+                String otp = caDAO.generateRandomString();
+                String cookieValue = encodedUsername + ":" + encodedPassword + ":" + encodedEmail + ":" + encodedName + ":" + encodedPhoneNumber + ":" + encodedAddressDraw + ":" + encodedProvinceDraw;
+                Cookie userloginCookie = new Cookie("RegisterName", cookieValue);
+                Cookie OtpCook = new Cookie("OTP", otp);
+                userloginCookie.setMaxAge(60 * 3); // 3 days
+                userloginCookie.setPath("/");
+                response.addCookie(userloginCookie);
+                OtpCook.setMaxAge(60 * 3); // 3 days
+                OtpCook.setPath("/");
+                response.addCookie(OtpCook);
+                mailutil.sendVerificationEmail(email, otp);
+
+                response.sendRedirect("/ProductController/List");
+            }
+        }
+        if (request.getParameter("btnSend") != null) {
+            HttpSession session = request.getSession();
+            String inputOtp = request.getParameter("txtOtp");
+            Cookie[] cookies = request.getCookies();
+            String accountInfo = null;
+            String CorrectOTP = null;
+            CreateAccountDAO caDAO = new CreateAccountDAO();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("OTP")) {
+                        CorrectOTP = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+            if (CorrectOTP.equals(inputOtp)) {
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if (cookie.getName().equals("RegisterName")) {
+                            accountInfo = cookie.getValue();
+                            break;
+                        }
+                    }
+                    if (accountInfo != null) {
+                        try {
+                            String[] userInfo = accountInfo.split(":");
+
+                            String username = URLDecoder.decode(userInfo[0], "UTF-8");
+                            String password = URLDecoder.decode(userInfo[1], "UTF-8");
+                            String email = URLDecoder.decode(userInfo[2], "UTF-8");
+                            String name = URLDecoder.decode(userInfo[3], "UTF-8");
+                            String phoneNumber = URLDecoder.decode(userInfo[4], "UTF-8");
+                            String addressDraw = URLDecoder.decode(userInfo[5], "UTF-8");
+                            String provinceDraw = URLDecoder.decode(userInfo[6], "UTF-8");
+
+                            String id = caDAO.getAccountID();
+                            AccountDAO accDAO = new AccountDAO();
+                            Account acc = new Account(username, accDAO.getMD5Hash(password), (Integer.parseInt(id) + 1), email);
+                            String userId = caDAO.getUserID();
+                            ProvinceDAO provinceDAO = new ProvinceDAO();
+                            int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
+                            Province province = new Province(provinceID, provinceDraw);
+                            String addressIDDraw = caDAO.getAddressID();
+                            int addressID = Integer.parseInt(addressIDDraw) + 1;
+                            Address address = new Address(addressID, provinceID, addressDraw, province);
+                            User user = new User(Integer.parseInt(userId) + 1, name, phoneNumber, address, acc.getUsername(), acc.getPassword(), acc.getAccount_id(), acc.getEmails());
+
+                            int count = caDAO.addNewAccount(acc);
+                            count = caDAO.addNewUser(user);
+                            count = caDAO.addNewAddress(address);
+                            count = caDAO.addNewUserAddress(address, acc);
+                            if (cookies != null) {
+                                for (Cookie cookie : cookies) {
+                                    if (cookie.getName().equals("RegisterName")) {
+                                        cookie.setValue(null);
+                                        cookie.setMaxAge(0);
+                                        cookie.setPath("/");
+                                        response.addCookie(cookie);
+                                    }
+                                }
+                                for (Cookie cookie : cookies) {
+                                    if (cookie.getName().equals("OTP")) {
+                                        cookie.setValue(null);
+                                        cookie.setMaxAge(0);
+                                        cookie.setPath("/");
+                                        response.addCookie(cookie);
+                                    }
+                                }
+                            }
+
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    response.sendRedirect("/ProductController/List");
+                }
+            } else {
+                response.sendRedirect("/AccountController/Login");
+            }
+
         }
     }
-    }
+
     /**
      * Returns a short description of the servlet.
      *
