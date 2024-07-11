@@ -229,7 +229,7 @@
                             <%%>
                             <p class="text-gray-600 mt-2"><%= rs.getString("price")%>vnd</p>
                         </div>
-                        <a href="/ProductController/Cart/<%= rs.getString("proItem_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
+                        <a href="/ProductController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
                     </div>
                     <%
                         }

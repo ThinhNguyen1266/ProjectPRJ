@@ -4,6 +4,7 @@
     Author     : Thinh
 --%>
 
+<%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductItemDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -13,17 +14,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Product Display</title>
         <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link
             href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
             rel="stylesheet">
         <link rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <style>
+            /* Existing styles */
             body {
                 font-family: Arial, sans-serif;
                 margin: 0;
@@ -53,6 +55,8 @@
             .details-container {
                 flex: 2;
                 padding: 20px;
+                padding-top: 0;
+                margin-top: 0;
             }
             .details-container h3 {
                 font-size: 28px;
@@ -64,36 +68,10 @@
                 color: #e60023;
                 margin-bottom: 20px;
             }
-            .details-container .ratings {
-                display: flex;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-            .details-container .ratings span {
-                margin-left: 10px;
-                color: #555;
-            }
             .details-container .quantity-selector {
                 display: flex;
                 align-items: center;
                 margin-bottom: 20px;
-            }
-            .quantity-selector button {
-                background-color: #f0f0f0;
-                border: 1px solid #ccc;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-            }
-            .quantity-selector input {
-                width: 50px;
-                text-align: center;
-                border: 1px solid #ccc;
-                margin: 0 5px;
-                height: 30px;
             }
             .details-container .stock-status {
                 margin-left: 10px;
@@ -102,29 +80,7 @@
             .details-container .actions {
                 display: flex;
                 gap: 10px;
-            }
-            .details-container .actions button {
-                padding: 10px 20px;
-                font-size: 16px;
-                border-radius: 4px;
-                cursor: pointer;
-                border: none;
-                transition: background 0.3s ease;
-            }
-            .details-container .add-to-cart {
-                background: #fff;
-                color: #e60023;
-                border: 1px solid #e60023;
-            }
-            .details-container .add-to-cart:hover {
-                background: #fce4e4;
-            }
-            .details-container .buy-now {
-                background: #e60023;
-                color: #fff;
-            }
-            .details-container .buy-now:hover {
-                background: #b3001b;
+                margin-top: 20px; /* Add margin to separate from quantity selector */
             }
             .add-to-cart {
                 display: flex;
@@ -136,67 +92,126 @@
                 border-radius: 4px;
                 cursor: pointer;
             }
-
-            .add-to-cart .icon {
-                width: 16px;
-                height: 16px;
-                margin-right: 8px;
+            .option-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 10px; /* Adjust margin to separate from other elements */
             }
-
-            .add-to-cart svg {
-                fill: currentColor;
+            .option {
+                padding: 8px 12px; /* Adjust padding for better spacing */
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .option.selected {
+                background-color: #007bff;
+                color: #fff;
+            }
+            .option.disabled {
+                background-color: #e9ecef;
+                color: #6c757d;
+                cursor: not-allowed;
+            }
+            .option-group label {
+                display: block;
+                margin-bottom: 5px;
             }
         </style>
+        <script>
+            $(document).ready(function () {
+                var product_ID = $('#product_ID').val();
+                $.ajax({
+                    url: "/GetProductOptions",
+                    type: 'GET',
+                    data: {
+                        product_ID: product_ID
+                    },
+                    success: function (response) {
+                        Object.keys(response).forEach(function (variation) {
+                            var group = $('<div class="option-group" id="' + variation + '-group"></div>');
+                            group.append('<label for="' + variation + '-group">' + variation + ':</label> ');
+                            response[variation].forEach(function (option) {
+                                group.append('<div class="option" data-type="' + variation + '" data-value="' + option + '">' + option + '</div>');
+                            });
+                            $('#variation').append(group);
+                        });
+                        bindOptionClickEvents();
+                    }
+                });
+
+            });
+
+            function bindOptionClickEvents() {
+                $('.option').off('click').on('click', function () {
+                    if ($(this).hasClass('disabled'))
+                        return;
+
+                    var type = $(this).data('type');
+                    var value = $(this).data('value');
+                    
+                    if ($(this).hasClass('selected')) {
+                        $(this).removeClass('selected');
+                    } else {
+                        $('.option[data-type=' + type + ']').removeClass('selected');
+                        $(this).addClass('selected');
+                    }
+                    var numOfOp = $('.option-group label').length;
+                    var selectedOptions = {};
+                    $('.option.selected').each(function () {
+                        selectedOptions[$(this).data('type')] = $(this).data('value');
+                    });
+                });
+            }
+        </script>
     </head>
     <body>
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List"
-                    class="text-2xl font-bold text-gray-900">ShopName</a>
+                   class="text-2xl font-bold text-gray-900">ShopName</a>
 
                 <form method="post" class="search-container">
 
                     <form method="post" class="search-container"
-                        action="/ProductController/Search">
+                          action="/ProductController/Search">
 
                         <input type="text" name="txtSearchName"
-                            placeholder="Search..">
+                               placeholder="Search..">
                         <button type="submit" name="btnSearch"><i
                                 class="fa fa-search"></i></button>
                     </form>
                     <div class="flex space-x-4">
                         <a href="/ProductController/About-Contact"
-                            class="text-gray-800 hover:text-gray-600">About/Contact</a>
+                           class="text-gray-800 hover:text-gray-600">About/Contact</a>
                         <a href="/ProductController/Cart"
-                            class="text-gray-800 hover:text-gray-600"><i
+                           class="text-gray-800 hover:text-gray-600"><i
                                 class='fas fa-shopping-cart'></i></a>
-                        <%
-                        String customerName = (String)
-                        session.getAttribute("customername");
-                        if (customerName != null) {
-                        %>
+                            <%
+                                String customerName = (String) session.getAttribute("customername");
+                                if (customerName != null) {
+                            %>
 
                         <div class="relative inline-block text-left">
                             <button onclick="toggleDropdown()"
-                                class="text-gray-800 hover:text-gray-600">
-                                <i class='far fa-user-circle'></i> <%=
-                                customerName%>
+                                    class="text-gray-800 hover:text-gray-600">
+                                <i class='far fa-user-circle'></i> <%=customerName%>
                             </button>
                             <div id="dropdownMenu"
-                                class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
+                                 class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                                 <a href="/AccountController/Profile"
-                                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                                   class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
                                 <a href="/AccountController/Logout"
-                                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign
+                                   class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign
                                     Out</a>
                             </div>
                         </div>
 
                         <% } else { %>
                         <a href="/AccountController/Login"
-                            class="text-gray-800 hover:text-gray-600"><i
+                           class="text-gray-800 hover:text-gray-600"><i
                                 class='far fa-question-circle'></i> Login</a>
-                        <% }%>
+                            <% }%>
                     </div>
 
                     <script>
@@ -219,38 +234,55 @@
                         }
                     </script>
 
-                </div>
-            </header>
-            <br><br><br>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Laptop</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Items</li>
-                </ol>
-            </nav>
+            </div>
+        </header>
+        <br><br><br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Laptop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Items</li>
+            </ol>
+        </nav>
+        <%
+
+            ProductItemDAO pidao = new ProductItemDAO();
+            String id = (String) request.getAttribute("proId");
+            System.out.println(id);
+            ResultSet rs = null;
+            if (id != null) {
+                rs = pidao.getProductView(id);
+            } else {
+                request.getRequestDispatcher("/").forward(request, response);
+            }
+            if (rs != null) {
+        %>
         <div class="container">
             <div class="flex">
+                <input type="hidden" id="product_ID" value="<%= id%>"/>
                 <div class="img-container">
-                    <img src="https://via.placeholder.com/600"
-                        alt="Product Image">
+                    <img src="<%= rs.getString("image")%>"
+                         alt="Product Image">
                 </div>
                 <div class="details-container h-96 mt-20">
-                    <h3>Product Name</h3>
-                    <div class="des">descripstion </div>
+                    <h3><%= rs.getString("pro_name")%></h3>
+                    <div class="des"><%= rs.getString("description")%> </div>
 
-                    <div class="price">$99.99</div>
+                    <div id="variation">
+
+                    </div>
+
+                    <div class="price" id="price"><%= rs.getString("price")%></div>
 
                     <div class="quantity-selector flex items-center">
-                        <label for="quantity" class="mr-2">Số Lượng</label>
+                        <label for="quantity" class="mr-2">Quantity</label>
                         <button type="button" onclick="minusNum1()"
-                            class="px-2 py-1 border border-gray-300">-</button>
+                                class="px-2 py-1 border border-gray-300">-</button>
                         <input type="text" id="firstvalue" value="1"
-                            class="w-12 text-center mx-2 border border-gray-300">
+                               class="w-12 text-center mx-2 border border-gray-300">
                         <button type="button" onclick="addNum1()"
-                            class="px-2 py-1 border border-gray-300">+</button>
-                        <div class="stock-status ml-4">2 sản phẩm có
-                            sẵn</div>
+                                class="px-2 py-1 border border-gray-300">+</button>
+                        <div class="stock-status ml-4"><%= rs.getString("quantity")%> in storage</div>
                     </div>
                     <script>
                         function addNum1() {
@@ -270,115 +302,19 @@
                     <div class="actions">
                         <button type="button" class="add-to-cart">
                             <i class="fa fa-shopping-cart"></i>
-                            Thêm Vào Giỏ Hàng
+                            Add to Cart
                         </button>
 
-                        <button type="button" class="buy-now">Mua
-                            Ngay</button>
+                        <button type="button" class="buy-now">Buy Now</button>
                     </div>
                 </div>
             </div>
         </div>
-        <section class="py-12">
-            <div class="container mx-auto px-4">
-                <h2
-                    class="text-2xl font-bold text-gray-800 text-center">Recommended
-                    Products</h2>
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-8">
-                    <div
-                        class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                            alt="Product Image"
-                            class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                1</h3>
-                            <div class="mt-2 flex items-center">
-                                <span class="sold">Sold 97</span>
-                            </div>
-                            <p class="text-gray-600 mt-2">$10.00</p>
-                            <a href="cart.html"
-                                class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                            alt="Product Image"
-                            class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                2</h3>
-                            <div class="mt-2 flex items-center">
-                                <span class="sold">Sold 163</span>
-                            </div>
-                            <p class="text-gray-600 mt-2">$20.00</p>
-                            <a href="cart.html"
-                                class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                            alt="Product Image"
-                            class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                3</h3>
-                            <div class="mt-2 flex items-center">
-                                <span class="sold">Sold 43</span>
-                            </div>
-                            <p class="text-gray-600 mt-2">$30.00</p>
-                            <a href="cart.html"
-                                class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                            alt="Product Image"
-                            class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                4</h3>
-                            <div class="mt-2 flex items-center">
-                                <span class="sold">Sold 62</span>
-                            </div>
-                            <p class="text-gray-600 mt-2">$40.00</p>
-                            <a href="cart.html"
-                                class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white shadow-md rounded-lg overflow-hidden">
-                        <img src="https://via.placeholder.com/300"
-                            alt="Product Image"
-                            class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3
-                                class="text-lg font-semibold text-gray-800">Product
-                                5</h3>
-                            <div class="mt-2 flex items-center">
-                                <span class="sold">Sold 105</span>
-                            </div>
-                            <p class="text-gray-600 mt-2">$50.00</p>
-                            <a href="cart.html"
-                                class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Add
-                                to Cart</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <%
+            } else {
+                request.getRequestDispatcher("/").forward(request, response);
+            }
+        %>
         <footer class="bg-gray-800 text-black py-8">
             <div class="container mx-auto px-4 text-center">
                 <p>&copy; 2024 ShopName. All rights reserved.</p>
@@ -391,4 +327,5 @@
             </div>
         </footer>
     </body>
+
 </html>

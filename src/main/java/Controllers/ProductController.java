@@ -160,6 +160,11 @@ public class ProductController extends HttpServlet {
             String id = s[s.length - 1];
             request.setAttribute("editID", id);
             request.getRequestDispatcher("/editProduct.jsp").forward(request, response);
+        } else if (path.startsWith("/ProductController/View")) {
+            String[] s = path.split("/");
+            String id = s[s.length - 1];
+            request.setAttribute("proId", id);
+            request.getRequestDispatcher("/product.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
