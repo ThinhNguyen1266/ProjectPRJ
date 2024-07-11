@@ -16,6 +16,10 @@
         <servlet-name>Verity</servlet-name>
         <servlet-class>Controllers.Verity</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetProductOptions</servlet-name>
+        <servlet-class>Controllers.GetProductOptions</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountController</servlet-name>
         <url-pattern>/AccountController/*</url-pattern>
@@ -32,6 +36,10 @@
     <servlet-mapping>
         <servlet-name>Verity</servlet-name>
         <url-pattern>/Verity</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetProductOptions</servlet-name>
+        <url-pattern>/GetProductOptions</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

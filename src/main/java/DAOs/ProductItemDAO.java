@@ -9,7 +9,12 @@ import Models.Product_item;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -58,13 +63,17 @@ public class ProductItemDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT \n"
-                    + "DISTINCT p.id as pro_id, p.name as pro_name,p.[description],pi.quantity, pi.price , p.[image], (select name from category where id = c.parent)+' '+c.name as cat_name\n"
+            String sql = "SELECT\n"
+                    + "    p.id as pro_id, p.name as pro_name, p.[description], SUM(pi.quantity) as quantity, MIN(pi.price) as price , p.[image],\n"
+                    + "    COALESCE(pc.name + ' ', '')+c.name as cat_name\n"
                     + "FROM product as p\n"
-                    + "JOIN product_item as pi\n"
-                    + "on p.id = pi.product_id\n"
-                    + "JOIN category as c\n"
-                    + "on p.category_id = c.id";
+                    + "    JOIN product_item as pi\n"
+                    + "    on p.id = pi.product_id\n"
+                    + "    JOIN category as c\n"
+                    + "    on p.category_id = c.id\n"
+                    + "    JOIN category as pc\n"
+                    + "    ON c.parent = pc.id\n"
+                    + "GROUP BY p.id, p.name, p.[description], p.quantity, p.[image], pc.name,c.name";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             return rs;
@@ -79,10 +88,11 @@ public class ProductItemDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT pi.id as proItem_id, p.id as pro_id, p.name as pro_name, pi.price, p.[image]\n"
-                    + "FROM product as p\n"
-                    + "JOIN product_item as pi\n"
-                    + "on p.id = pi.product_id";
+            String sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                    + "FROM product as p \n"
+                    + "JOIN product_item as pi \n"
+                    + "on p.id = pi.product_id\n"
+                    + "GROUP BY p.id, p.name, p.[image]";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
 
@@ -99,11 +109,12 @@ public class ProductItemDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT DISTINCT p.id as pro_id, p.name as pro_name, pi.price , p.[image]\n"
-                    + "FROM product as p\n"
-                    + "JOIN product_item as pi\n"
+            String sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                    + "FROM product as p \n"
+                    + "JOIN product_item as pi \n"
                     + "on p.id = pi.product_id\n"
-                    + "where p.name like ?";
+                    + "GROUP BY p.id, p.name, p.[image]\n"
+                    + "HAVING p.name like ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, "%" + name + "%");
             rs = ps.executeQuery();
@@ -121,13 +132,14 @@ public class ProductItemDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT DISTINCT p.id as pro_id, p.name as pro_name, pi.price , p.[image]\n"
-                    + "FROM product as p\n"
-                    + "JOIN product_item as pi\n"
+            String sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                    + "FROM product as p \n"
+                    + "JOIN product_item as pi \n"
                     + "on p.id = pi.product_id\n"
-                    + "JOIN category as c\n"
-                    + "on p.category_id = c.id\n"
-                    + "where c.parent = ?";
+                    + "JOIN category as c \n"
+                    + "on c.id = p.category_id\n"
+                    + "where c.parent = ? \n"
+                    + "GROUP BY p.id, p.name, p.[image]";
             ps = conn.prepareStatement(sql);
             ps.setString(1, cat_id);
             rs = ps.executeQuery();
@@ -138,6 +150,35 @@ public class ProductItemDAO {
             rs = null;
         }
         return rs;
+    }
+
+    public ResultSet getProductView(String pro_id) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT\n"
+                    + "    p.id as pro_id, p.name as pro_name, p.[description], SUM(pi.quantity) as quantity, MIN(pi.price) as price , p.[image],\n"
+                    + "    COALESCE(pc.name + ' ', '')+c.name as cat_name\n"
+                    + "FROM product as p\n"
+                    + "    JOIN product_item as pi\n"
+                    + "    on p.id = pi.product_id\n"
+                    + "    JOIN category as c\n"
+                    + "    on p.category_id = c.id\n"
+                    + "    JOIN category as pc\n"
+                    + "    ON c.parent = pc.id\n"
+                    + "Where p.id = ? \n"
+                    + "GROUP BY p.id, p.name, p.[description], p.quantity, p.[image], pc.name,c.name";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, pro_id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
     }
 
     public int addNewProductItem(Product_item obj) {
@@ -153,7 +194,6 @@ public class ProductItemDAO {
             pst.setInt(2, obj.getPro_id());
             pst.setInt(3, obj.getItem_quan()); // Assuming 'quantity' is a field in Product_item
             pst.setDouble(4, obj.getPrice()); // Assuming 'price' is a field in Product_item
-
             count = pst.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,4 +214,63 @@ public class ProductItemDAO {
         return count;
     }
 
+    public JSONObject getProductOptions(String pro_id) {
+        JSONObject json = new JSONObject();
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT\n"
+                    + "    v.name as variation_name, vo.[value] as variation_option_value\n"
+                    + "FROM product as p\n"
+                    + "    JOIN product_item as pi\n"
+                    + "    on p.id = pi.product_id\n"
+                    + "    JOIN product_configuration as pc\n"
+                    + "    ON pi.id = pc.products_item_id\n"
+                    + "    JOIN variation_option as vo\n"
+                    + "    on vo.id = pc.variation_option_id\n"
+                    + "    JOIN variation as v\n"
+                    + "    on  vo.variation_id = v.id\n"
+                    + "where p.id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, pro_id);
+            rs = ps.executeQuery();
+            Map<String,JSONArray> variations = new HashMap<>();
+            while(rs.next()){
+                String variationName = rs.getString("variation_name");
+                String variationOption = rs.getString("variation_option_value");
+                if(!variations.containsKey(variationName)){
+                    variations.put(variationName, new JSONArray());
+                }
+                if(!containJson(variations.get(variationName), variationOption)){
+                    variations.get(variationName).put(variationOption);
+                }    
+            }
+            
+            for (Map.Entry<String, JSONArray> entry : variations.entrySet()) {
+                if(entry.getValue().length()>1){
+                    json.put(entry.getKey(), entry.getValue());
+                }
+            }
+        } catch (Exception e) {
+             e.printStackTrace();
+        }finally{
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return json;
+    }
+    
+    
+    private boolean containJson (JSONArray jsona,String value ){
+        for (int i = 0; i < jsona.length(); i++) {
+            if(jsona.getString(i).equals(value)) return true;
+        }
+        return false;
+    }
 }
