@@ -5,6 +5,7 @@
 package DAOs;
 
 import DB.DBConnection;
+import Models.Category;
 import Models.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,6 +64,12 @@ public class ProductDAO {
                 obj.setPro_id(Integer.parseInt(rs.getString("id")));
                 obj.setPro_name(rs.getString("name"));
                 obj.setPro_img(rs.getString("image"));
+                obj.setPro_des(rs.getString("description"));
+                obj.setPro_quan(Integer.parseInt(rs.getString("quantity")));
+                Category cat = new Category();
+                CategoryDAO cDAO = new CategoryDAO();
+                cat = cDAO.getCategory(rs.getString("category_id"));
+                obj.setCategory(cat);
             } else {
                 obj = null;
             }
@@ -140,5 +147,23 @@ public class ProductDAO {
             }
         }
         return 0;
+    }
+    
+    public int editProduct(Product obj) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        int count = 0;
+        try{
+            String sql = "UPDATE Product SET name = ?, description = ?, category_id = ? where id = ? ";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, obj.getPro_name());
+            pst.setString(2, obj.getPro_des());
+            pst.setInt(3, obj.getCategory().getCat_id());
+            pst.setInt(4, obj.getPro_id());
+            count = pst.executeUpdate();
+        }catch(Exception e){
+            count = 0;
+        }
+        return count;
     }
 }

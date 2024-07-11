@@ -279,6 +279,26 @@ public class ProductController extends HttpServlet {
             pdao.add(product);
             request.getRequestDispatcher("/admin.jsp").forward(request, response);
         }
+        
+        if(request.getParameter("btnUpdate")!=null){
+            String id = request.getParameter("proID");
+            String name = request.getParameter("proName");
+            String des = request.getParameter("proDes");
+            String subCat = request.getParameter("proSubCat");
+            
+            Product obj = new Product();
+            obj.setPro_id(Integer.parseInt(id));
+            obj.setPro_name(name);
+            obj.setPro_des(des);
+            Category cat = new Category(Integer.parseInt(subCat));
+            obj.setCategory(cat);
+            
+            ProductDAO pDAO = new ProductDAO();
+            int count = pDAO.editProduct(obj);
+            if(count != 0) {
+                response.sendRedirect("/Admin_profile");
+            }
+        }
     }
 
     /**

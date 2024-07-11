@@ -15,6 +15,30 @@ import java.sql.Statement;
  * @author DucNHCE180015
  */
 public class CategoryDAO {
+    
+    public Category getCategory(String id){
+       Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs=null;
+        Category cat = null;
+        if(conn !=null){
+            try {
+                String sql = "SELECT * FROM Category WHERE id = ?";
+                PreparedStatement pst = conn.prepareStatement(sql);
+                pst.setString(1,id);
+                rs = pst.executeQuery();
+                if(rs.next()){
+                    cat = new Category(Integer.parseInt(rs.getString("id")), Integer.parseInt(rs.getString("parent")), rs.getString("name"));
+                }else{
+                    cat = null;
+                }
+            } catch (Exception e) {
+                cat = null;
+            }
+            
+        }
+        return cat;
+    }
+    
      public ResultSet getAllCategoriesNull(){
        Connection conn = DB.DBConnection.getConnection();
         ResultSet rs=null;
