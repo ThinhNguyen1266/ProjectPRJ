@@ -80,8 +80,10 @@ public class AccountController extends HttpServlet {
                         request.getRequestDispatcher("/index.jsp").forward(request, response);
                     }
                 }
+            }else{
+               request.getRequestDispatcher("/index.jsp").forward(request, response); 
             }
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            
 
         } else if (path.equals("/Login") || path.equals("/AccountController/Login")) {
             request.getRequestDispatcher("/login.jsp").forward(request, response);
