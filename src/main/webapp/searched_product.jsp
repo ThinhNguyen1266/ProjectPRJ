@@ -197,14 +197,16 @@
                         while (rs.next()) {
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
-                        <div class="flex justify-center items-center h-48 w-full">
-                            <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
-                        </div>
-                        <div class="p-4 product-details">
-                            <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
-                            <p class="text-gray-600 mt-2"><%= rs.getString("price")%></p>
-                        </div>
-                        <a href="/ProductController/Cart/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">Add to Cart</a>
+                         <a href="/ProductController/View/<%= rs.getString("pro_id")%>">
+                            <div class="flex justify-center items-center h-48 w-full">
+                                <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
+                            </div>
+                            </a>
+                            <div class="p-4 product-details">
+                                <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
+                                <p class="text-gray-600 mt-2"><%= rs.getString("price")%> vnd</p>
+                            </div>
+                         <a href="/ProductController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
                     </div>
                     <%
                         }

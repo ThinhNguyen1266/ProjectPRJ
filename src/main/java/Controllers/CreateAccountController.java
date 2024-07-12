@@ -70,7 +70,7 @@ public class CreateAccountController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         if (path.contains("/CreateAccountController/Verity")) {
-
+            
             request.getRequestDispatcher("/otp_verity.jsp").forward(request, response);
         }
     }
@@ -134,7 +134,7 @@ public class CreateAccountController extends HttpServlet {
                 response.addCookie(OtpCook);
                 mailutil.sendVerificationEmail(email, otp);
 
-                response.sendRedirect("/ProductController/List");
+                response.sendRedirect("/CreateAccountController/Verity");
             }
         }
         if (request.getParameter("btnSend") != null) {
