@@ -15,61 +15,61 @@ import java.sql.Statement;
  * @author DucNHCE180015
  */
 public class CategoryDAO {
-    
-    public Category getCategory(String id){
-       Connection conn = DB.DBConnection.getConnection();
-        ResultSet rs=null;
+
+    public Category getCategory(String id) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
         Category cat = null;
-        if(conn !=null){
+        if (conn != null) {
             try {
                 String sql = "SELECT * FROM Category WHERE id = ?";
                 PreparedStatement pst = conn.prepareStatement(sql);
-                pst.setString(1,id);
+                pst.setString(1, id);
                 rs = pst.executeQuery();
-                if(rs.next()){
+                if (rs.next()) {
                     cat = new Category(Integer.parseInt(rs.getString("id")), Integer.parseInt(rs.getString("parent")), rs.getString("name"));
-                }else{
+                } else {
                     cat = null;
                 }
             } catch (Exception e) {
                 cat = null;
             }
-            
+
         }
         return cat;
     }
-    
-     public ResultSet getAllCategoriesNull(){
-       Connection conn = DB.DBConnection.getConnection();
-        ResultSet rs=null;
-        if(conn !=null){
+
+    public ResultSet getAllCategoriesNull() {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        if (conn != null) {
             try {
-                Statement st= conn.createStatement();
-                rs=st.executeQuery("SELECT * FROM category WHERE parent IS NULL");
+                Statement st = conn.createStatement();
+                rs = st.executeQuery("SELECT * FROM category WHERE parent IS NULL");
             } catch (Exception e) {
-                rs=null;
+                rs = null;
             }
-            
+
         }
         return rs;
     }
-     
-      public ResultSet getAllSubCat(String id){
-       Connection conn = DB.DBConnection.getConnection();
-        ResultSet rs=null;
-        if(conn !=null){
+
+    public ResultSet getAllSubCat(String id) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        if (conn != null) {
             try {
-                String sql ="SELECT * FROM category WHERE parent = ?";
-                PreparedStatement ps= conn.prepareStatement(sql);
+                String sql = "SELECT * FROM category WHERE parent = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, id);
-                rs=ps.executeQuery();
+                rs = ps.executeQuery();
             } catch (Exception e) {
-                rs=null;
+                rs = null;
             }
         }
         return rs;
     }
-     
+
     public ResultSet getAllProductCat(String name) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
@@ -86,26 +86,45 @@ public class CategoryDAO {
         }
         return rs;
     }
-    
-    
-    public Category getCatName(int id){
+
+    public Category getCatName(int id) {
         Connection conn = DB.DBConnection.getConnection();
         Category obj;
         try {
-            String sql="select * from category where id=?";
-            PreparedStatement pst=conn.prepareStatement(sql);
-            pst.setInt(1,id);
-            ResultSet rs=pst.executeQuery();
-            if(rs.next()){
+            String sql = "select * from category where id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
                 obj = new Category();
                 obj.setCat_name(rs.getString("name"));
-            }else{
-                obj=null;
+            } else {
+                obj = null;
             }
-       } catch (Exception e) {
-           obj=null;
-       }
-       return obj;
+        } catch (Exception e) {
+            obj = null;
+        }
+        return obj;
     }
 
+    public Category getCategorByProID(int id) {
+        Connection conn = DB.DBConnection.getConnection();
+        Category obj;
+        try {
+            String sql = "select id,[name] from category where id=(select c.parent from product p join category c on p.category_id=c.id where p.id=?)";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                obj = new Category();
+                obj.setCat_name(rs.getString("name"));
+                obj.setCat_id(rs.getInt("id"));
+            } else {
+                obj = null;
+            }
+        } catch (Exception e) {
+            obj = null;
+        }
+        return obj;
+    }
 }

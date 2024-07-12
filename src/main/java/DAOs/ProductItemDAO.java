@@ -295,6 +295,100 @@ public class ProductItemDAO {
         return json;
     }
 
+    public JSONObject getUpdatedProductOptions(String pro_id, JSONObject selectedOptions,int numOfOp) {
+        JSONObject json = new JSONObject();
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            int tmp =0;
+            StringBuilder sql = new StringBuilder("SELECT "
+                    + "    pi.id ,v.name as variation_name, vo.[value] as variation_option_value,pi.price,pi.quantity "
+                    + "FROM product as p "
+                    + "    JOIN product_item as pi "
+                    + "    on p.id = pi.product_id "
+                    + "    JOIN product_configuration as pc "
+                    + "    ON pi.id = pc.products_item_id "
+                    + "    JOIN variation_option as vo "
+                    + "    on vo.id = pc.variation_option_id "
+                    + "    JOIN variation as v "
+                    + "    on  vo.variation_id = v.id "
+                    + "where p.id = ? ");
+            for (String key : selectedOptions.keySet()) {
+                sql.append("AND EXISTS "
+                        + "( "
+                        + "    select 1 "
+                        + "    FROM product as p2 "
+                        + "    JOIN product_item as pi2 "
+                        + "    on p2.id = pi2.product_id "
+                        + "    JOIN product_configuration as pc2 "
+                        + "    ON pi2.id = pc2.products_item_id "
+                        + "    JOIN variation_option as vo2 "
+                        + "    on vo2.id = pc2.variation_option_id "
+                        + "    JOIN variation as v2 "
+                        + "    on  vo2.variation_id = v2.id "
+                        + "    where pi2.id =pi.id "
+                        + "    AND v2.name = ? AND vo2.[value] = ? "
+                        + ")");
+                tmp++;
+            }
+            ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, pro_id);
+            int index =2;
+            for(String key: selectedOptions.keySet()){
+                ps.setString(index++, key); 
+                ps.setString(index++, selectedOptions.getString(key));
+            }
+            rs = ps.executeQuery();
+            
+            Map<String,JSONArray> variations = new HashMap<>();
+            long price  =0 ;
+            int quan =0;
+            String id ="";
+            System.out.println(numOfOp);
+            System.out.println(tmp);
+            while(rs.next()){
+                String variationName = rs.getString("variation_name");
+                String variationOption = rs.getString("variation_option_value");
+                if(numOfOp==tmp){
+                    price = rs.getLong("price");
+                    quan = rs.getInt("quantity");
+                    id = rs.getString("id");
+                }
+                if(!variations.containsKey(variationName)){
+                    variations.put(variationName, new JSONArray());
+                }
+                if (!containJson(variations.get(variationName), variationOption)) {
+                    variations.get(variationName).put(variationOption);
+                }
+            }
+            json.put("price", price);
+            json.put("quan", quan);
+            json.put("id", id);
+            for(Map.Entry<String,JSONArray> entry : variations.entrySet()){
+                json.put(entry.getKey(), entry.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return json;
+    }
+
+
     public ResultSet getProductItemFromProduct(String id) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;

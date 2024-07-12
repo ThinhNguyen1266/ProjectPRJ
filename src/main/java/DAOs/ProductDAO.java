@@ -110,6 +110,23 @@ public class ProductDAO {
         }
         return product;
     }
+    public String getProductName(String id) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        
+        try {
+            String sql = "SELECT * FROM Product WHERE ID = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, id);
+            rs = pst.executeQuery();
+            if(rs.next()){
+                return rs.getString("name");
+            }
+        } catch (Exception e) {
+             return null;
+        }
+        return null;
+    }
 
     public void add(Product product) {
         try {
@@ -166,4 +183,5 @@ public class ProductDAO {
         }
         return count;
     }
+   
 }

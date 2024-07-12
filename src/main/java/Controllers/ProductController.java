@@ -90,7 +90,7 @@ public class ProductController extends HttpServlet {
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
         boolean coke = false;
-        if (path.equals("/") || path.equals("/ProductController/List")) {
+        if (path.equals("/ProductController/List")) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
