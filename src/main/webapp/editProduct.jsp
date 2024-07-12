@@ -213,7 +213,7 @@
                                                     selected = "selected";
                                                 }
                                         %>
-                                        <option value="<%= rs.getString("id") %>" <%= selected %>><%= catName%></option>
+                                        <option value="<%= rs.getString("id")%>" <%= selected%>><%= catName%></option>
                                         <%}%>
                                     </select>
                                 </div>
@@ -223,49 +223,50 @@
                         </form>
                     </div>
                 </div>
+                <%
+                    if (!parentName.equals("Accessories")){
+                %>
                 <div class="list-container">
                     <h3>Manage Products</h3>
                     <table>
                         <thead>
                             <tr>
-                                <th>Product ID</th>
-                                <th>Product Name</th>
-                                <th>Description</th>
-                                <th>Image</th>
-                                <th>Price</th>
+                                <th>Product Item ID</th>
+                                <th>Option</th>
                                 <th>Quantity</th>
-                                <th>Category</th>
-                                <th>Actions</th>
+                                <th>Price</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <%
-                                ProductItemDAO pidao = new ProductItemDAO();
-                                rs  = pidao.getAllAdmin();
+                                    ProductItemDAO 
+                                
+                                pidao = new ProductItemDAO();
+                                rs = pidao.getProductItemFromProduct(String.valueOf(product.getPro_id()));
 
-                                while (rs.next () 
-                                    ) {
+                                while (rs.next()) {
                             %>
                             <tr>
-                                <td><%= rs.getString("pro_id")%></td>
-                                <td><%= rs.getString("pro_name")%></td>
-                                <td><%= rs.getString("description")%></td>
-                                <td><img src="<%= rs.getString("image")%>"
-                                         alt="Product Image" width="60"
-                                         height="60"></td>
-                                <td><%= rs.getString("price")%></td>
-                                <td><%= rs.getString("quantity")%></td>
-                                <td><%= rs.getString("cat_name")%></td>
+                                <td><%= rs.getString("proItemID")%></td>
+
                                 <td>
+                                    <%
+                                        ResultSet rs2 = pidao.getProductVariance(rs.getString("proItemID"));
+                                        while (rs2.next()) {
+                                    %>
+                                    <%= rs2.getString("variane_name")%> : <%= rs2.getString("variance_value")%> <br/><br/>
+                                    <%
+                                        }
+                                    %>
+                                </td>
+                                <td><%= rs.getString("quantity")%></td>
+                                <td><%= rs.getString("price")%></td>
+                                <td>
+
+                                    <a href="/ProductController/EditProductItem/<%= rs.getString("proItemID")%>" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</a>
                                     <form
-                                        action="ProductController/Edit/<%= rs.getString("pro_id")%>"
-                                        method="post">
-                                        <button type="submit"
-                                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
-                                                onclick="setProductId('<%= rs.getString("pro_id")%>')">Edit</button>
-                                    </form>
-                                    <form
-                                        action="ProductController/Delete/<%= rs.getString("pro_id")%>"
+                                        action="ProductController/DeleteProductItem/<%= rs.getString("proItemID")%>"
                                         method="post">
                                         <button type="submit"
                                                 class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
@@ -276,6 +277,7 @@
                         </tbody>
                     </table>
                 </div>
+                        <%}%>
 
                 <script>
                     var productId = '';
