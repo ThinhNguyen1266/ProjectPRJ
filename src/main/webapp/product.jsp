@@ -308,8 +308,6 @@
             <div class="container" style="padding: 10px">
                 <%
                     ProductItemDAO pidao = new ProductItemDAO();
-
-                    System.out.println(id);
                     ResultSet rs = null;
                     if (id != null) {
                         rs = pidao.getProductView(id);
@@ -323,7 +321,7 @@
                     <div class="img-container">
                         <img src="<%= rs.getString("image")%>" alt="Product Image">
                     </div>
-
+                    <div id="variation"></div>
                     <div class="price" id="price"><%= rs.getString("price")%></div>
 
                     <div class="quantity-selector flex items-center">
