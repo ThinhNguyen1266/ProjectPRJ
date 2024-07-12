@@ -224,9 +224,12 @@
                     </div>
                 </div>
                 <%
-                    if (!parentName.equals("Accessories")){
+                    if (!parentName.equals("Accessories")) {
+                        ProductItemDAO pidao = new ProductItemDAO();
+                        rs = pidao.getProductItemFromProduct(String.valueOf(product.getPro_id()));
                 %>
                 <div class="list-container">
+                    <a href="/ProductController/ProductItem/AddNew/<%= product.getPro_id() %>">Add New</a>
                     <h3>Manage Products</h3>
                     <table>
                         <thead>
@@ -240,10 +243,6 @@
                         </thead>
                         <tbody>
                             <%
-                                    ProductItemDAO 
-                                
-                                pidao = new ProductItemDAO();
-                                rs = pidao.getProductItemFromProduct(String.valueOf(product.getPro_id()));
 
                                 while (rs.next()) {
                             %>
@@ -265,19 +264,14 @@
                                 <td>
 
                                     <a href="/ProductController/EditProductItem/<%= rs.getString("proItemID")%>" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</a>
-                                    <form
-                                        action="ProductController/DeleteProductItem/<%= rs.getString("proItemID")%>"
-                                        method="post">
-                                        <button type="submit"
-                                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
-                                    </form>
+                                    <a href="/ProductController/DeleteProductItem/<%= rs.getString("proItemID")%>/<%= product.getPro_id() %>" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Delete</a>
                                 </td>
                             </tr>
                             <% }%>
                         </tbody>
                     </table>
                 </div>
-                        <%}%>
+                <%}%>
 
                 <script>
                     var productId = '';

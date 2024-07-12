@@ -26,7 +26,7 @@ import org.json.JSONObject;
 public class ProductItemDAO {
 
     public String getProduct_itemID() {
-        String id = "149999"; // Default value if no id is found
+        String id = "210000"; // Default value if no id is found
         try ( Connection conn = DBConnection.getConnection();  Statement st = conn.createStatement();  ResultSet rs = st.executeQuery("SELECT TOP 1 id FROM [product_item] ORDER BY id DESC")) {
 
             if (rs.next()) {
@@ -234,6 +234,21 @@ public class ProductItemDAO {
             }
         }
 
+        return count;
+    }
+    
+    public int deleteProductItem(String id){
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        int count = 0;
+        try{
+            String sql = "DELETE FROM product_item WHERE id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, id);
+            count = pst.executeUpdate();
+        }catch(Exception e){
+            count = 0;
+        }
         return count;
     }
 
