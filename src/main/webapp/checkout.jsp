@@ -113,10 +113,7 @@
     </header>
     <%
         User obj = (User) session.getAttribute("userinformation");
-        if (obj == null) {
-            response.sendRedirect("/AccountController/Login"); // Redirect to login page if user is not logged in
-            return;
-        }
+        
     %>
 
     <!-- Checkout Section -->

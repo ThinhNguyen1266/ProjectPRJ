@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -125,6 +126,22 @@ public class ProductController extends HttpServlet {
                 request.getRequestDispatcher("/cart.jsp").forward(request, response);
             }
         } else if (path.equals("/ProductController/Checkout")) {
+             Cookie[] cookies = request.getCookies();
+             String id="";
+           if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("username")) {
+                        id=cookie.getValue();
+                        break;
+                    }
+                }
+            }
+            AccountDAO dao = new AccountDAO();
+            User user = null;
+            user = new User();
+            UserDAO userDAO = new UserDAO();
+            user = userDAO.getUserWithId(id);
+            session.setAttribute("userinformation", user);
             request.getRequestDispatcher("/checkout.jsp").forward(request, response);
         } else if (path.startsWith("/ProductController/Category")) {
             String[] s = path.split("/");
@@ -172,6 +189,11 @@ public class ProductController extends HttpServlet {
             String id = s[s.length - 1];
             request.setAttribute("proId", id);
             request.getRequestDispatcher("/product.jsp").forward(request, response);
+
+        } else if (path.equals("/ProductController/Sort")) {
+
+            request.getRequestDispatcher("/sorted_product.jsp").forward(request, response);
+
         } else if (path.startsWith("/ProductController/EditProductItem/")) {
             String[] s = path.split("/");
             String id = s[s.length - 1];
@@ -432,6 +454,17 @@ public class ProductController extends HttpServlet {
                 }
             }
             response.sendRedirect("/ProductController/Edit/" + pi.getPro_id());
+        }
+        if (request.getParameter("btnSort") != null) {
+
+            String price = request.getParameter("price");
+            String type = request.getParameter("sortType");
+
+            session.setAttribute("type", type);
+
+            session.setAttribute("price", price);
+            response.sendRedirect("/ProductController/Sort");
+
         }
     }
 
