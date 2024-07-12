@@ -84,7 +84,7 @@ public class ProductController extends HttpServlet {
         String path = request.getRequestURI();
         HttpSession session = request.getSession();
         boolean coke = false;
-        if (path.equals("/") || path.equals("/ProductController/List")) {
+        if (path.equals("/ProductController/List")) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
@@ -278,6 +278,26 @@ public class ProductController extends HttpServlet {
             Product product = new Product(maxID, name, des, imageUrl, Integer.parseInt(quan), category);
             pdao.add(product);
             request.getRequestDispatcher("/admin.jsp").forward(request, response);
+        }
+        
+        if(request.getParameter("btnUpdate")!=null){
+            String id = request.getParameter("proID");
+            String name = request.getParameter("proName");
+            String des = request.getParameter("proDes");
+            String subCat = request.getParameter("proSubCat");
+            
+            Product obj = new Product();
+            obj.setPro_id(Integer.parseInt(id));
+            obj.setPro_name(name);
+            obj.setPro_des(des);
+            Category cat = new Category(Integer.parseInt(subCat));
+            obj.setCategory(cat);
+            
+            ProductDAO pDAO = new ProductDAO();
+            int count = pDAO.editProduct(obj);
+            if(count != 0) {
+                response.sendRedirect("/Admin_profile");
+            }
         }
     }
 

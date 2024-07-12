@@ -67,22 +67,31 @@ public class AccountController extends HttpServlet {
         String path = request.getRequestURI();
         Cookie[] cookies = request.getCookies();
         HttpSession session = request.getSession();
-
         if (path.equals("/")) {
+            boolean isAdmin = false;
+            boolean isUser = false;
+
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                     if (cookie.getName().equals("adminName")) {
+                    if (cookie.getName().equals("adminName")) {
                         session.setAttribute("adminName", cookie.getValue());
-                        request.getRequestDispatcher("/admin.jsp").forward(request, response);
+                        isAdmin = true;
                     }
                     if (cookie.getName().equals("username")) {
                         session.setAttribute("customername", cookie.getValue());
-                        request.getRequestDispatcher("/index.jsp").forward(request, response);
+                        isUser = true;
                     }
                 }
             }
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
 
+            // Forward to the appropriate page based on the session attributes
+            if (isAdmin) {
+                request.getRequestDispatcher("/admin.jsp").forward(request, response);
+            } else if (isUser) {
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            } else {
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            }
         } else if (path.equals("/Login") || path.equals("/AccountController/Login")) {
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else if (path.equals("/Index") || path.equals("/AccountController/Index")) {
@@ -176,15 +185,15 @@ public class AccountController extends HttpServlet {
                 session.setAttribute("customername", username);
                 response.sendRedirect("/ProductController/List");
             } else {
-                    request.setAttribute("error", "Invalid username or password");
-                    request.getRequestDispatcher("/login.jsp").forward(request, response);
+                request.setAttribute("error", "Invalid username or password");
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
             }
 
-        }else if (request.getParameter("btnSearch") != null) {
+        } else if (request.getParameter("btnSearch") != null) {
             String name = request.getParameter("txtSearchName");
             session.setAttribute("Searchname", name);
             response.sendRedirect("/Search");
-        }else if (request.getParameter("btnSave") != null) {
+        } else if (request.getParameter("btnSave") != null) {
             String id = request.getParameter("txtId");
             String email = request.getParameter("txtEmail");
             String name = request.getParameter("txtName");

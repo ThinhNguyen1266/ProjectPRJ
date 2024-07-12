@@ -1,3 +1,6 @@
+<%@page import="DAOs.CategoryDAO"%>
+<%@page import="Models.Product"%>
+<%@page import="DAOs.ProductDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductItemDAO"%>
 <!DOCTYPE html>
@@ -148,11 +151,16 @@
     </head>
 
     <body>
+        <%
+            String id = (String) request.getAttribute("editID");
+            ProductDAO pDao = new ProductDAO();
+            Product product = pDao.getProduct(id);
+        %>
         <div class="container">
             <div class="content-container">
                 <div class="form-container">
                     <div class="img-container">
-                        <img src="https://via.placeholder.com/600"
+                        <img style="width: 500px; height: 500px" src="<%= product.getPro_img()%>"
                              alt="Product Image">
                     </div>
                     <div class="form-content">
@@ -161,68 +169,57 @@
                             <label for="product-ID">Product ID</label>
                             <input id="product-ID" type="text"
                                    placeholder="Product ID" name="proID"
-                                   value="Pre-filled Product ID" readonly>
+                                   value="<%= product.getPro_id()%>" readonly>
 
                             <label for="product-name">Product Name</label>
                             <input id="product-name" type="text"
                                    placeholder="Product Name" name="proName"
-                                   value="Pre-filled Product Name">
+                                   value="<%= product.getPro_name()%>">
 
                             <label for="product-description">Product
                                 Description</label>
-                            <textarea id="product-description"
-                                      placeholder="Product Description"
-                                      name="proDes">Pre-filled Product Description</textarea>
-
-                            <label for="product-quantity">Product
-                                Quantity</label>
-                            <input id="product-quantity" type="number"
-                                   placeholder="Product Quantity" name="proQuan"
-                                   value="Pre-filled Product Quantity">
-
-                            <label for="product-price">Product Price</label>
-                            <input id="product-price" type="number"
-                                   placeholder="Product price" name="proPri"
-                                   value="Pre-filled Product price">
+                            <input id="product-description"
+                                   placeholder="Product Description"
+                                   name="proDes"
+                                   value="<%= product.getPro_des()%>"
+                                   />
 
                             <div class="flex-container">
+
                                 <div>
                                     <label for="product-category">Product
                                         Category</label>
-                                    <select id="product-category" name="proCat"
-                                            data-nextcombo="#product-subcategory">
-                                        <option value>Select Category</option>
-                                        <option value="1"
-                                                data-option="-1">Category 1</option>
-                                        <option value="2"
-                                                data-option="-1">Category 2</option>
-                                        <option value="3"
-                                                data-option="-1">Category 3</option>
+
+                                    <select name="cat" disabled="">
+                                        <%
+                                            CategoryDAO cDAO = new CategoryDAO();
+                                            String parentName = cDAO.getCatName(product.getCategory().getParent()).getCat_name();
+                                            int parentId = product.getCategory().getParent();
+                                        %>
+                                        <option value="<%= parentId%>" selected><%= parentName%></option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="product-subcategory">Product
                                         Subcategory</label>
-                                    <select id="product-subcategory"
-                                            name="proSubCat" disabled>
-                                        <option value>Select
-                                            Subcategory</option>
-                                        <option value="1"
-                                                data-option="1">Subcategory
-                                            1-1</option>
-                                        <option value="2"
-                                                data-option="1">Subcategory
-                                            1-2</option>
-                                        <option value="3"
-                                                data-option="2">Subcategory
-                                            2-1</option>
-                                        <option value="4"
-                                                data-option="3">Subcategory
-                                            3-1</option>
+                                    <select
+                                        name="proSubCat">
+                                        <%
+                                            ResultSet rs = cDAO.getAllSubCat(String.valueOf(product.getCategory().getParent()));
+                                            while (rs.next()) {
+                                                String catName = rs.getString("name");
+                                                String selected = "";
+                                                if (product.getCategory().getCat_name().equals(catName)) {
+                                                    selected = "selected";
+                                                }
+                                        %>
+                                        <option value="<%= rs.getString("id") %>" <%= selected %>><%= catName%></option>
+                                        <%}%>
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit">Update Product</button>
+                            <a href="/Admin_profile" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Back</a>
+                            <button type="submit" name="btnUpdate">Update Product</button>
                         </form>
                     </div>
                 </div>
@@ -244,8 +241,10 @@
                         <tbody>
                             <%
                                 ProductItemDAO pidao = new ProductItemDAO();
-                                ResultSet rs = pidao.getAllAdmin();
-                                while (rs.next()) {
+                                rs  = pidao.getAllAdmin();
+
+                                while (rs.next () 
+                                    ) {
                             %>
                             <tr>
                                 <td><%= rs.getString("pro_id")%></td>
