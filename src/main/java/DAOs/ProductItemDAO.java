@@ -5,6 +5,8 @@
 package DAOs;
 
 import DB.DBConnection;
+import Models.Category;
+import Models.Product;
 import Models.Product_item;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,7 +43,7 @@ public class ProductItemDAO {
         ResultSet rs = null;
         Product_item obj = null;
         try {
-            String sql = "SELECT pi.id as proItem_id, p.id as pro_id, p.name as pro_name, pi.price as price, p.[image] as image\n"
+            String sql = "SELECT pi.id as proItem_id, p.id as pro_id, p.name as pro_name, pi.price as price, p.[image] as image, pi.quantity as quantity, p.category_id as categoryID\n"
                     + "FROM product as p\n"
                     + "JOIN product_item as pi\n"
                     + "on p.id = pi.product_id where pi.id = ?";
@@ -48,7 +51,9 @@ public class ProductItemDAO {
             pst.setString(1, id);
             rs = pst.executeQuery();
             if (rs.next()) {
-                obj = new Product_item(rs.getInt("proItem_id"), rs.getInt("pro_id"), rs.getInt("price"), rs.getString("image"), rs.getString("pro_name"));
+                CategoryDAO cDAO = new CategoryDAO();
+                Category cat = cDAO.getCategory(rs.getString("categoryID"));
+                obj = new Product_item(rs.getInt("proItem_id"), rs.getInt("pro_id"), rs.getInt("price"), rs.getString("image"), rs.getString("pro_name"), rs.getInt("quantity"), cat);
             } else {
                 obj = null;
             }
@@ -56,6 +61,24 @@ public class ProductItemDAO {
             obj = null;
         }
         return obj;
+    }
+
+    public ResultSet getDropDownListVariation(String variationID) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT vo.id, va.name as name, vo.value as value\n"
+                    + "	FROM variation va JOIN variation_option vo ON va.id = vo.variation_id\n"
+                    + "	where va.id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, variationID);
+            rs = pst.executeQuery();
+        } catch (Exception e) {
+            rs = null;
+        }
+
+        return rs;
     }
 
     public ResultSet getAllAdmin() {
@@ -280,7 +303,7 @@ public class ProductItemDAO {
         try {
             int tmp =0;
             StringBuilder sql = new StringBuilder("SELECT "
-                    + "    v.name as variation_name, vo.[value] as variation_option_value,pi.price,pi.quantity "
+                    + "    pi.id ,v.name as variation_name, vo.[value] as variation_option_value,pi.price,pi.quantity "
                     + "FROM product as p "
                     + "    JOIN product_item as pi "
                     + "    on p.id = pi.product_id "
@@ -321,6 +344,7 @@ public class ProductItemDAO {
             Map<String,JSONArray> variations = new HashMap<>();
             long price  =0 ;
             int quan =0;
+            String id ="";
             System.out.println(numOfOp);
             System.out.println(tmp);
             while(rs.next()){
@@ -329,6 +353,7 @@ public class ProductItemDAO {
                 if(numOfOp==tmp){
                     price = rs.getLong("price");
                     quan = rs.getInt("quantity");
+                    id = rs.getString("id");
                 }
                 if(!variations.containsKey(variationName)){
                     variations.put(variationName, new JSONArray());
@@ -339,6 +364,7 @@ public class ProductItemDAO {
             }
             json.put("price", price);
             json.put("quan", quan);
+            json.put("id", id);
             for(Map.Entry<String,JSONArray> entry : variations.entrySet()){
                 json.put(entry.getKey(), entry.getValue());
             }
@@ -346,14 +372,150 @@ public class ProductItemDAO {
             e.printStackTrace();
         }finally{
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return json;
+    }
+
+
+    public ResultSet getProductItemFromProduct(String id) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT pi.id AS proItemID, pi.quantity as quantity, pi.price as price \n"
+                    + "FROM product p JOIN product_item pi ON p.id = pi.product_id \n"
+                    + "WHERE p.id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, Integer.parseInt(id));
+            rs = pst.executeQuery();
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
+    public ResultSet getProductVariance(String proItemId) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT pc.products_item_id AS proItemID, va.id as variationID, vo.id as variationOptionID, va.name as variane_name, vo.value as variance_value\n"
+                    + "	FROM product_configuration pc\n"
+                    + "	JOIN variation_option vo ON pc.variation_option_id = vo.id\n"
+                    + "	JOIN variation va ON va.id = vo.variation_id\n"
+                    + "	WHERE pc.products_item_id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, Integer.parseInt(proItemId));
+            rs = pst.executeQuery();
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
+    public int checkUpdate(Product_item proItem, List<String[]> option) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT\n"
+                    + "    v.name as variation_name, vo.[value] as variation_option_value, pi.price, pi.quantity\n"
+                    + "FROM product as p\n"
+                    + "    JOIN product_item as pi\n"
+                    + "    on p.id = pi.product_id\n"
+                    + "    JOIN product_configuration as pc\n"
+                    + "    ON pi.id = pc.products_item_id\n"
+                    + "    JOIN variation_option as vo\n"
+                    + "    on vo.id = pc.variation_option_id\n"
+                    + "    JOIN variation as v\n"
+                    + "    on  vo.variation_id = v.id\n"
+                    + "where p.id = ? ");
+            ProductItemDAO piDAO = new ProductItemDAO();
+            int Lindex = 0;
+            while (Lindex++ < option.size()) {
+                sb.append("AND EXISTS\n"
+                        + "(\n"
+                        + "    select 1\n"
+                        + "    FROM product as p2\n"
+                        + "        JOIN product_item as pi2\n"
+                        + "        on p2.id = pi2.product_id\n"
+                        + "        JOIN product_configuration as pc2\n"
+                        + "        ON pi2.id = pc2.products_item_id\n"
+                        + "        JOIN variation_option as vo2\n"
+                        + "        on vo2.id = pc2.variation_option_id\n"
+                        + "        JOIN variation as v2\n"
+                        + "        on  vo2.variation_id = v2.id\n"
+                        + "    where pi2.id =pi.id\n"
+                        + "        AND v2.name = ? AND vo2.[value] = ?\n"
+                        + ")");
+            }
+            String sql = sb.toString();
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, proItem.getPro_id());
+            int index = 2;
+            
+            for(String[] pair : option){
+                pst.setString(index++, pair[0]);
+                pst.setString(index++, pair[1]);
+            }
+
+            rs = pst.executeQuery();
+            if(rs.next()){
+                return 0;
+            }else
+                return 1;
+
+        } catch (Exception e) {
+            count = 0;
+        }
+        return count;
+    }
+    
+    public int updateProductItemVariation(Product_item proItem, String oldVariationOP, String newVariationOP){
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        int count = 0;
+        try{
+        String sql = "UPDATE product_configuration SET variation_option_id = ?"
+                + " WHERE products_item_id = ? AND variation_option_id = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, newVariationOP);
+        pst.setString(2, String.valueOf(proItem.getItem_id()));
+        pst.setString(3, oldVariationOP);
+        count = pst.executeUpdate();
+        }catch(Exception e){
+            count = 0;
+        }
+        return count;
+    }
+    
+    public int updateProductItem(Product_item proItem, String quantity, String price){
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        int count = 0;
+        try{
+        String sql = "UPDATE product_item SET quantity = ?, price = ? "
+                + " WHERE id = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, quantity);
+        pst.setString(2, price);
+        pst.setString(3, String.valueOf(proItem.getItem_id()));
+        count = pst.executeUpdate();
+        }catch(Exception e){
+            count = 0;
+        }
+        return count;
     }
 
     private boolean containJson(JSONArray jsona, String value) {

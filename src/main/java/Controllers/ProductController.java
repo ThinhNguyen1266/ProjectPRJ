@@ -11,12 +11,14 @@ import DAOs.CategoryDAO;
 import DAOs.ProductDAO;
 import DAOs.ProductItemDAO;
 import DAOs.UserDAO;
+import DAOs.VariationDAO;
 import Models.Cart;
 import Models.Cart_item;
 import Models.Category;
 import Models.Product;
 import Models.Product_item;
 import Models.User;
+import Models.Variation;
 import com.mycompany.projectprjgroup1.AzureBlobStorageUtil;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -32,10 +34,14 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -172,7 +178,7 @@ public class ProductController extends HttpServlet {
             // Update the cartList in the session
             session.setAttribute("cartList", cartList);
             response.sendRedirect("/ProductController/Cart");
-        } else if (path.startsWith("/ProductController/Edit")) {
+        } else if (path.startsWith("/ProductController/Edit/")) {
             String[] s = path.split("/");
             String id = s[s.length - 1];
             request.setAttribute("editID", id);
@@ -182,9 +188,17 @@ public class ProductController extends HttpServlet {
             String id = s[s.length - 1];
             request.setAttribute("proId", id);
             request.getRequestDispatcher("/product.jsp").forward(request, response);
+
         } else if (path.equals("/ProductController/Sort")) {
 
             request.getRequestDispatcher("/sorted_product.jsp").forward(request, response);
+
+        } else if (path.startsWith("/ProductController/EditProductItem/")) {
+            String[] s = path.split("/");
+            String id = s[s.length - 1];
+            request.setAttribute("ProItemID", id);
+            request.getRequestDispatcher("/editProductItem.jsp").forward(request, response);
+
         } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
@@ -318,6 +332,66 @@ public class ProductController extends HttpServlet {
             if (count != 0) {
                 response.sendRedirect("/Admin_profile");
             }
+        } else if (request.getParameter("btnEditProItem") != null) {
+            String proItemID = request.getParameter("TxtProItemID");
+            String quantity = request.getParameter("TxtQuantity");
+            String price = request.getParameter("TxtPrice");
+            ProductItemDAO pDAO = new ProductItemDAO();
+            Product_item pi = pDAO.getProductItem(proItemID);
+            CategoryDAO cDAO = new CategoryDAO();
+            String catParent = cDAO.getCatName(pi.getCategory().getParent()).getCat_name();
+            List<String[]> option = new ArrayList<>();
+            List<String[]> ProItemVariation = new ArrayList<>();
+            ResultSet rs = pDAO.getProductVariance(proItemID);
+            if (catParent.equals("Laptops")) {
+                String Storage = request.getParameter("txtStorage");
+                String RAM = request.getParameter("txtRAM");
+                option.add(new String[]{"Storage", Storage});
+                option.add(new String[]{"RAM", RAM});
+                try {
+                    while (rs.next()) {
+                        String proItemVariationName = rs.getString("variane_name");
+                        String proItemVariationValue = rs.getString("variance_value");
+                        if (proItemVariationName.equals("Storage") || proItemVariationName.equals("RAM")) {
+                            ProItemVariation.add(new String[]{proItemVariationName, proItemVariationValue});
+                        }
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                String Storage = request.getParameter("txtStorage");
+                String RAM = request.getParameter("txtRAM");
+                String Color = request.getParameter("txtColor");
+                option.add(new String[]{"Color", Color});
+                option.add(new String[]{"Storage", Storage});
+                option.add(new String[]{"RAM", RAM});
+                try {
+                    while (rs.next()) {
+                        String proItemVariationName = rs.getString("variane_name");
+                        String proItemVariationValue = rs.getString("variance_value");
+                        if (proItemVariationName.equals("Storage") || proItemVariationName.equals("RAM")) {
+                            ProItemVariation.add(new String[]{proItemVariationName, proItemVariationValue});
+                        }
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (pDAO.checkUpdate(pi, option) == 1) {
+                VariationDAO vDAO = new VariationDAO();
+                int index = 0;
+                for (String[] pair : option) {
+                    String variationID = vDAO.getVariationID(pair[0], String.valueOf(pi.getCategory().getParent()));
+                    String newVariationOpID = vDAO.getVariationOpID(pair[1], variationID);
+                    String oldVariationOpID = vDAO.getVariationOpID(ProItemVariation.get(index++)[1], variationID);
+                    if (!oldVariationOpID.equals(newVariationOpID)) {
+                        pDAO.updateProductItemVariation(pi, oldVariationOpID, newVariationOpID);
+                    }
+                }
+                pDAO.updateProductItem(pi, quantity, price);
+            }
+            response.sendRedirect("/ProductController/Edit/" + pi.getPro_id());
         }
         if (request.getParameter("btnSort") != null) {
 
