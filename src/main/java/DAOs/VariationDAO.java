@@ -14,6 +14,28 @@ import java.sql.ResultSet;
  */
 public class VariationDAO {
 
+    public ResultSet getVariationIDByCatParentName(String catParentID) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        String top = (catParentID.equals("300000"))? "2" : "3";
+        try {
+            String sql;
+            if(top.equals("2"))
+             sql = "SELECT Distinct top 2 va.id, va.name FROM variation va JOIN variation_option vo ON va.id = vo.variation_id\n"
+                    + "WHERE va.category_id = ? group BY va.id, va.name";
+            else
+                sql = "SELECT Distinct top 3 va.id, va.name FROM variation va JOIN variation_option vo ON va.id = vo.variation_id\n"
+                    + "WHERE va.category_id = ? group BY va.id, va.name";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, catParentID);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
     public String getVariationID(String name, String catParentID) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;

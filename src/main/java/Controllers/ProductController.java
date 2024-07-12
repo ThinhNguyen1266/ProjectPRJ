@@ -10,6 +10,7 @@ import DAOs.Cart_itemDAO;
 import DAOs.CategoryDAO;
 import DAOs.ProductDAO;
 import DAOs.ProductItemDAO;
+import DAOs.Product_configurationDAO;
 import DAOs.UserDAO;
 import DAOs.VariationDAO;
 import Models.Cart;
@@ -156,7 +157,7 @@ public class ProductController extends HttpServlet {
         } else if (path.equals("/ProductController/PlaceOrder")) {
 
             response.sendRedirect("/ProductController/List");
-        } else if (path.startsWith("/ProductController/Delete")) {
+        } else if (path.startsWith("/ProductController/Delete/")) {
             String[] s = path.split("/");
             String id = s[s.length - 1];
             Cart_itemDAO cdao = new Cart_itemDAO();
@@ -198,7 +199,22 @@ public class ProductController extends HttpServlet {
             String id = s[s.length - 1];
             request.setAttribute("ProItemID", id);
             request.getRequestDispatcher("/editProductItem.jsp").forward(request, response);
-
+        } else if (path.startsWith("/ProductController/ProductItem/AddNew/")) {
+            String[] s = path.split("/");
+            String id = s[s.length - 1];
+            ProductDAO pDAO = new ProductDAO();
+            Product obj = pDAO.getProduct(id);
+            request.setAttribute("product", obj);
+            request.getRequestDispatcher("/createProductItem.jsp").forward(request, response);
+        } else if (path.startsWith("/ProductController/DeleteProductItem/")) {
+            String[] s = path.split("/");
+            String proItemId = s[s.length - 2];
+            String proId = s[s.length - 1];
+            ProductItemDAO piDAO = new ProductItemDAO();
+            Product_configurationDAO pcDAO = new Product_configurationDAO();
+            pcDAO.delete(proItemId);
+            piDAO.deleteProductItem(proItemId);
+            response.sendRedirect("/ProductController/Edit/" + proId);
         } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
@@ -370,7 +386,7 @@ public class ProductController extends HttpServlet {
                     while (rs.next()) {
                         String proItemVariationName = rs.getString("variane_name");
                         String proItemVariationValue = rs.getString("variance_value");
-                        if (proItemVariationName.equals("Storage") || proItemVariationName.equals("RAM")) {
+                        if (proItemVariationName.equals("Color") || proItemVariationName.equals("Storage") || proItemVariationName.equals("RAM")) {
                             ProItemVariation.add(new String[]{proItemVariationName, proItemVariationValue});
                         }
                     }
@@ -389,7 +405,53 @@ public class ProductController extends HttpServlet {
                         pDAO.updateProductItemVariation(pi, oldVariationOpID, newVariationOpID);
                     }
                 }
-                pDAO.updateProductItem(pi, quantity, price);
+            }
+            pDAO.updateProductItem(pi, quantity, price);
+
+            response.sendRedirect("/ProductController/Edit/" + pi.getPro_id());
+        } else if (request.getParameter("btnAddNewProItem") != null) {
+            String proItemID = request.getParameter("txtProItemID");
+            String quantity = request.getParameter("txtProItemQuantity");
+            String price = request.getParameter("txtProItemPrice");
+
+            String productID = request.getParameter("txtProductID");
+            ProductDAO pDAO = new ProductDAO();
+            Product product = pDAO.getProduct(productID);
+            String catParentID = String.valueOf(product.getCategory().getParent());
+            ProductItemDAO piDAO = new ProductItemDAO();
+            Product_item pi = new Product_item();
+            pi.setItem_id(Integer.parseInt(proItemID));
+            pi.setPro_id(product.getPro_id());
+            pi.setItem_quan(Integer.parseInt(quantity));
+            pi.setPrice(Long.parseLong(price));
+            
+
+            List<String[]> option = new ArrayList<>();
+
+            CategoryDAO cDAO = new CategoryDAO();
+            String catParentName = cDAO.getCatName(Integer.parseInt(catParentID)).getCat_name();
+            if (catParentName.equals("Laptops")) {
+                String Storage = request.getParameter("txtStorage");
+                String RAM = request.getParameter("txtRAM");
+                option.add(new String[]{"Storage", Storage});
+                option.add(new String[]{"RAM", RAM});
+            } else {
+                String Storage = request.getParameter("txtStorage");
+                String RAM = request.getParameter("txtRAM");
+                String Color = request.getParameter("txtColor");
+                option.add(new String[]{"Storage", Storage});
+                option.add(new String[]{"RAM", RAM});
+                option.add(new String[]{"Color", Color});
+            }
+            VariationDAO vDAO = new VariationDAO();
+            Product_configurationDAO pcDAO = new Product_configurationDAO();
+            if (piDAO.checkUpdate(pi, option) == 1) {
+                int count = piDAO.addNewProductItem(pi);
+                for (String[] pair : option) {
+                    String VariationID = vDAO.getVariationID(pair[0], catParentID);
+                    String VariationOPID = vDAO.getVariationOpID(pair[1], VariationID);
+                    count = pcDAO.Addnew(String.valueOf(pi.getItem_id()), VariationOPID);
+                }
             }
             response.sendRedirect("/ProductController/Edit/" + pi.getPro_id());
         }
