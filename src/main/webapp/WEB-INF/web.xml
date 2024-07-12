@@ -20,6 +20,10 @@
         <servlet-name>GetProductOptions</servlet-name>
         <servlet-class>Controllers.GetProductOptions</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateOptions</servlet-name>
+        <servlet-class>Controllers.UpdateOptions</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountController</servlet-name>
         <url-pattern>/AccountController/*</url-pattern>
@@ -40,6 +44,10 @@
     <servlet-mapping>
         <servlet-name>GetProductOptions</servlet-name>
         <url-pattern>/GetProductOptions</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateOptions</servlet-name>
+        <url-pattern>/UpdateOptions</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
