@@ -129,10 +129,11 @@
                     },
                     success: function (response) {
                         Object.keys(response).forEach(function (variation) {
-                            var group = $('<div class="option-group" id="' + variation + '-group"></div>');
-                            group.append('<label for="' + variation + '-group">' + variation + ':</label> ');
+                            var safeVariation = variation.replace(/\s+/g, '-'); // Thay thế khoảng trắng bằng dấu gạch ngang
+                            var group = $('<div class="option-group" id="' + safeVariation + '-group"></div>');
+                            group.append('<label for="' + safeVariation + '-group">' + variation + ':</label> ');
                             response[variation].forEach(function (option) {
-                                group.append('<div class="option" data-type="' + variation + '" data-value="' + option + '">' + option + '</div>');
+                                group.append('<div class="option" data-type="' + safeVariation + '" data-value="' + option + '">' + option + '</div>');
                             });
                             $('#variation').append(group);
                         });
@@ -144,12 +145,13 @@
 
             function bindOptionClickEvents() {
                 $('.option').off('click').on('click', function () {
+                    var product_ID = $('#product_ID').val();
                     if ($(this).hasClass('disabled'))
                         return;
 
                     var type = $(this).data('type');
                     var value = $(this).data('value');
-                    
+
                     if ($(this).hasClass('selected')) {
                         $(this).removeClass('selected');
                     } else {
@@ -161,6 +163,41 @@
                     $('.option.selected').each(function () {
                         selectedOptions[$(this).data('type')] = $(this).data('value');
                     });
+                    $.ajax({
+                        url: "/UpdateOptions",
+                        type: 'POST',
+                        data: {
+                            productID: product_ID,
+                            selectedOptions: JSON.stringify(selectedOptions),
+                            numOfOp: numOfOp
+                        },
+                        success: function (response) {
+                            updateOptions(response)
+                            if (response.price !== 0) {
+                                $('#price').text(  response.price);
+                            }
+                            if (response.quan !== 0) {
+                                $('#quan').text(response.quan + ' in storage')
+
+                            }
+                        }
+                    });
+                });
+            }
+
+            function updateOptions(response) {
+                Object.keys(response).forEach(function (type) {
+                    if (type !== "price" && type !== "quan") {
+                        var safeType = type.replace(/\s+/g, '-'); // Thay thế khoảng trắng bằng dấu gạch ngang
+                        $('.option[data-type=' + safeType + ']').each(function () {
+                            var value = $(this).data('value');
+                            if (response[type].includes(value)) {
+                                $(this).removeClass('disabled');
+                            } else {
+                                $(this).addClass('disabled');
+                            }
+                        });
+                    }
                 });
             }
         </script>
@@ -259,7 +296,7 @@
         %>
         <div class="container">
             <div class="flex">
-                <input type="hidden" id="product_ID" value="<%= id%>"/>
+                <input type="hidden" id="product_ID" value="<%=id%>"/>
                 <div class="img-container">
                     <img src="<%= rs.getString("image")%>"
                          alt="Product Image">
@@ -282,7 +319,7 @@
                                class="w-12 text-center mx-2 border border-gray-300">
                         <button type="button" onclick="addNum1()"
                                 class="px-2 py-1 border border-gray-300">+</button>
-                        <div class="stock-status ml-4"><%= rs.getString("quantity")%> in storage</div>
+                        <div class="stock-status ml-4" id="quan"><%= rs.getString("quantity")%> in storage</div>
                     </div>
                     <script>
                         function addNum1() {
