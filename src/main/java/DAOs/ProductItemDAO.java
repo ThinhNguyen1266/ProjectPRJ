@@ -280,7 +280,7 @@ public class ProductItemDAO {
         try {
             int tmp =0;
             StringBuilder sql = new StringBuilder("SELECT "
-                    + "    v.name as variation_name, vo.[value] as variation_option_value,pi.price,pi.quantity "
+                    + "    pi.id ,v.name as variation_name, vo.[value] as variation_option_value,pi.price,pi.quantity "
                     + "FROM product as p "
                     + "    JOIN product_item as pi "
                     + "    on p.id = pi.product_id "
@@ -321,6 +321,7 @@ public class ProductItemDAO {
             Map<String,JSONArray> variations = new HashMap<>();
             long price  =0 ;
             int quan =0;
+            String id ="";
             System.out.println(numOfOp);
             System.out.println(tmp);
             while(rs.next()){
@@ -329,6 +330,7 @@ public class ProductItemDAO {
                 if(numOfOp==tmp){
                     price = rs.getLong("price");
                     quan = rs.getInt("quantity");
+                    id = rs.getString("id");
                 }
                 if(!variations.containsKey(variationName)){
                     variations.put(variationName, new JSONArray());
@@ -339,6 +341,7 @@ public class ProductItemDAO {
             }
             json.put("price", price);
             json.put("quan", quan);
+            json.put("id", id);
             for(Map.Entry<String,JSONArray> entry : variations.entrySet()){
                 json.put(entry.getKey(), entry.getValue());
             }
