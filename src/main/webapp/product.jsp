@@ -4,6 +4,9 @@
     Author     : Thinh
 --%>
 
+<%@page import="DAOs.ProductDAO"%>
+<%@page import="Models.Category"%>
+<%@page import="DAOs.CategoryDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProductItemDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -172,15 +175,9 @@
                    class="text-2xl font-bold text-gray-900">ShopName</a>
 
                 <form method="post" class="search-container">
-
-                    <form method="post" class="search-container"
-                          action="/ProductController/Search">
-
-                        <input type="text" name="txtSearchName"
-                               placeholder="Search..">
-                        <button type="submit" name="btnSearch"><i
-                                class="fa fa-search"></i></button>
-                    </form>
+                    <input type="text" name="txtSearchName" placeholder="Search..">
+                    <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
+                </form> 
                     <div class="flex space-x-4">
                         <a href="/ProductController/About-Contact"
                            class="text-gray-800 hover:text-gray-600">About/Contact</a>
@@ -237,17 +234,25 @@
             </div>
         </header>
         <br><br><br>
+        <% 
+         String id = (String) request.getAttribute("proId");
+         CategoryDAO caDAO= new CategoryDAO();
+         ProductDAO pDAO= new ProductDAO();
+         Category obj;
+         obj=caDAO.getCategorByProID(Integer.parseInt(id));
+         String pro_name=pDAO.getProductName(id);
+        %>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Laptop</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Items</li>
+                <li class="breadcrumb-item"><a href="/ProductController/List">Home</a></li>
+                <li class="breadcrumb-item"><a href="/ProductController/Category/<%= obj.getCat_id()%>"><%= obj.getCat_name()%></a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= pro_name%></li>
             </ol>
         </nav>
         <%
 
             ProductItemDAO pidao = new ProductItemDAO();
-            String id = (String) request.getAttribute("proId");
+           
             System.out.println(id);
             ResultSet rs = null;
             if (id != null) {
