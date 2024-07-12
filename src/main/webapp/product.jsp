@@ -144,6 +144,8 @@
                     }
                 });
 
+
+
             });
 
             function bindOptionClickEvents() {
@@ -177,11 +179,14 @@
                         success: function (response) {
                             updateOptions(response)
                             if (response.price !== 0) {
-                                $('#price').text(  response.price);
+                                $('#price').text(response.price);
                             }
                             if (response.quan !== 0) {
                                 $('#quan').text(response.quan + ' in storage')
-
+                            }
+                            if (response.id !== "") {
+                                $('#cartProductID').attr("value", response.id);
+                                $('#orderProductID').attr("value", response.id);
                             }
                         }
                     });
@@ -331,6 +336,8 @@
                             var newValue = Number(document.getElementById('firstvalue').value);
                             newValue += 1;
                             document.getElementById('firstvalue').value = newValue;
+                            $('#cartQuan').val(newValue);
+                            $('#orderQuan').val(newValue);
                         }
 
                         function minusNum1() {
@@ -338,16 +345,28 @@
                             if (subNum > 1) {
                                 subNum -= 1;
                                 document.getElementById('firstvalue').value = subNum;
+                                $('#cartQuan').val(subNum);
+                                $('#orderQuan').val(subNum);
                             }
                         }
                     </script>
                     <div class="actions">
-                        <button type="button" class="add-to-cart">
-                            <i class="fa fa-shopping-cart"></i>
-                            Add to Cart
-                        </button>
+                        <form action="ProductController/Cart" method="post">
+                            <input type="hidden" name="productItemID" id="cartProductID" value=""/>
+                            <input type="hidden" id="cartQuan" name="quantity" value="1"
+                                   class="w-12 text-center mx-2 border border-gray-300">
+                            <button type="submit" class="add-to-cart">
+                                <i class="fa fa-shopping-cart"></i>
+                                Add to Cart
+                            </button>
+                        </form>
+                        <form action="ProductController/Order" method="post">
+                            <input type="hidden" name="productItemID" id="orderProductID" value=""/>
+                            <input type="hidden" id="orderQuan" name="quantity" value="1"
+                                   class="w-12 text-center mx-2 border border-gray-300">
+                            <button type="button" class="buy-now">Buy Now</button>
+                        </form>
 
-                        <button type="button" class="buy-now">Buy Now</button>
                     </div>
                 </div>
             </div>
