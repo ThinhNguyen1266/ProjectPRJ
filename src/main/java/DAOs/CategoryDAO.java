@@ -111,7 +111,7 @@ public class CategoryDAO {
         Connection conn = DB.DBConnection.getConnection();
         Category obj;
         try {
-            String sql = "select id,[name] from category where id=(select c.parent from product p join category c on p.category_id=c.id where p.id=?)";
+            String sql = "select id,[name], parent from category where id=(select c.parent from product p join category c on p.category_id=c.id where p.id=?)";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
@@ -119,6 +119,7 @@ public class CategoryDAO {
                 obj = new Category();
                 obj.setCat_name(rs.getString("name"));
                 obj.setCat_id(rs.getInt("id"));
+                obj.setParent(rs.getInt("parent"));
             } else {
                 obj = null;
             }

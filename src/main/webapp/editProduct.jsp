@@ -66,7 +66,7 @@
                 font-size: 16px;
             }
 
-            .form-container button {
+            .form-container .btn {
                 background: #007bff;
                 color: #fff;
                 border: none;
@@ -75,9 +75,12 @@
                 font-size: 16px;
                 border-radius: 4px;
                 transition: background 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+                text-align: center;
             }
 
-            .form-container button:hover {
+            .form-container .btn:hover {
                 background: #0056b3;
             }
 
@@ -117,8 +120,14 @@
                 background-color: #f2f2f2;
             }
 
-            .actions button {
-                margin-right: 5px;
+            .actions {
+                display: flex;
+                gap: 5px;
+            }
+
+            .actions .btn {
+                padding: 5px 10px;
+                font-size: 14px;
             }
 
             @media (min-width: 768px) {
@@ -135,14 +144,17 @@
                     margin-left: 20px;
                 }
             }
+
             .flex-container {
                 display: flex;
                 gap: 10px; /* Adjust the gap as needed */
             }
+
             .flex-container div {
                 margin: 0;
                 padding: 0;
             }
+
             label {
                 display: block;
                 margin-bottom: 5px;
@@ -218,18 +230,21 @@
                                     </select>
                                 </div>
                             </div>
-                            <a href="/Admin_profile" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Back</a>
-                            <button type="submit" name="btnUpdate">Update Product</button>
+                            <a href="/Admin_profile" class="btn">Back</a>
+                            <button type="submit" name="btnUpdate" class="btn">Update Product</button>
                         </form>
                     </div>
                 </div>
                 <%
-                    if (!parentName.equals("Accessories")) {
                         ProductItemDAO pidao = new ProductItemDAO();
                         rs = pidao.getProductItemFromProduct(String.valueOf(product.getPro_id()));
                 %>
                 <div class="list-container">
-                    <a href="/ProductController/ProductItem/AddNew/<%= product.getPro_id() %>">Add New</a>
+                    <%
+                    if(!pidao.checkCreateNewProItem(String.valueOf(product.getPro_id()))){
+                    %>
+                    <a href="/ProductController/ProductItem/AddNew/<%= product.getPro_id() %>" class="btn">Add New</a>
+                    <%}%>
                     <h3>Manage Products</h3>
                     <table>
                         <thead>
@@ -261,17 +276,15 @@
                                 </td>
                                 <td><%= rs.getString("quantity")%></td>
                                 <td><%= rs.getString("price")%></td>
-                                <td>
-
-                                    <a href="/ProductController/EditProductItem/<%= rs.getString("proItemID")%>" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</a>
-                                    <a href="/ProductController/DeleteProductItem/<%= rs.getString("proItemID")%>/<%= product.getPro_id() %>" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Delete</a>
+                                <td class="actions">
+                                    <a href="/ProductController/EditProductItem/<%= rs.getString("proItemID")%>" class="btn">Edit</a>
+                                    <a href="/ProductController/DeleteProductItem/<%= rs.getString("proItemID")%>/<%= product.getPro_id() %>" class="btn">Delete</a>
                                 </td>
                             </tr>
                             <% }%>
                         </tbody>
                     </table>
                 </div>
-                <%}%>
 
                 <script>
                     var productId = '';
