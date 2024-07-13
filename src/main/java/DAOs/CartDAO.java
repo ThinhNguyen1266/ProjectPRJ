@@ -18,7 +18,7 @@ import java.sql.Statement;
 public class CartDAO {
     
      public String getCartID() {
-        String id = "169999"; // Default value if no id is found
+        String id = "129999"; // Default value if no id is found
         try ( Connection conn = DBConnection.getConnection();  Statement st = conn.createStatement();  ResultSet rs = st.executeQuery("SELECT TOP 1 id FROM [cart] ORDER BY id DESC")) {
 
             if (rs.next()) {

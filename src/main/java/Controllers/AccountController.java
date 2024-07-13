@@ -5,6 +5,7 @@
 package Controllers;
 
 import DAOs.AccountDAO;
+import DAOs.CartDAO;
 import DAOs.ProvinceDAO;
 import DAOs.UserDAO;
 import Models.Account;
@@ -183,6 +184,7 @@ public class AccountController extends HttpServlet {
                 usernameCookie.setPath("/");
                 response.addCookie(usernameCookie);
                 session.setAttribute("customername", username);
+                
                 response.sendRedirect("/ProductController/List");
             } else {
                 request.setAttribute("error", "Invalid username or password");
