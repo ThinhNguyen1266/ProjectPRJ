@@ -101,33 +101,72 @@
                 </script>
             </div>
         </header>
-        <div class="container mx-auto mt-24">
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <h4 class="text-xl font-semibold mb-4">Account settings</h4>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="col-span-1">
-                        <div class="list-group list-group-flush account-settings-links">
-                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
-                        </div>
-                    </div>
-                    <div class="col-span-3">
-                        <div class="tab-content">
-                            <div class="tab-pane fade active show" id="account-general">
-                                <hr class="border-light m-0">
-                                <div class="profile-section p-4">
-                                    <p><strong>Name:</strong> <%= (user == null) ? "" : user.getName()%></p>
-                                    <p><strong>Email:</strong> <%= (user == null) ? "" : user.getEmails()%></p>
-                                    <p><strong>Phone Number:</strong> <%= (user == null) ? "" : user.getPhoneNumber()%></p>
-                                    <p><strong>Default Address:</strong> <%= (user == null) ? "" : user.getAddress().getAddress()%></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-end mt-4">
-                    <a class="btn btn-secondary mr-2" style="padding-right: 20px" href="/AccountController/Edit/<%= customerName%>">Edit</a>
-                    <a class="btn btn-default" href="/ProductController/List">Cancel</a>
-                </div>
+
+        <div class="container">
+            <div class="header">
+                <h1>User Profile</h1>
+            </div>
+
+            <!-- User Information Section -->
+            <div class="profile-section">
+                
+                <div class="section-header">Profile Information</div>
+                
+                <a class="btn btn-secondary" href="/AccountController/Edit/<%= customerName%>">Edit</a>
+                 <a class="btn btn-secondary" href="/AccountController/AddAddress/<%= customerName%>">Edit Address</a>
+                <p><strong>Name:<%= (user==null) ? "": user.getName() %></strong> <!-- User Name --></p>
+                <p><strong>Email: :<%= (user==null) ? "": user.getEmails() %></strong> <!-- User Email --></p>
+                <p><strong>Phone Number: :<%= (user==null) ? "": user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
+                <% 
+                    UserDAO dao = new UserDAO();
+                    String userID=dao.getUserID(customerName);
+                     String address=dao.getUserDefaultAddress(Integer.parseInt(userID));
+                %>
+                <p><strong>Default Address: <%= address %></strong>
+                    <!-- User Default Address --></p>
+                
+            </div>
+
+            <!-- Order Information Section -->
+            <div class="order-section">
+                <div class="section-header">Recent Orders</div>
+                <table>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Order Date</th>
+                        <th>Total Price</th>
+                        <th>Shipping Address</th>
+                        <th>Status</th>
+                    </tr>
+                    <!-- Loop through orders -->
+                    <tr>
+                        <td><!-- Order ID --></td>
+                        <td><!-- Order Date --></td>
+                        <td><!-- Total Price --></td>
+                        <td><!-- Shipping Address --></td>
+                        <td><!-- Order Status --></td>
+                    </tr>
+                    <!-- End loop -->
+                </table>
+            </div>
+
+            <!-- Cart Information Section -->
+            <div class="cart-section">
+                <div class="section-header">Cart Items</div>
+                <table>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                    <!-- Loop through cart items -->
+                    <tr>
+                        <td><!-- Product Name --></td>
+                        <td><!-- Quantity --></td>
+                        <td><!-- Price --></td>
+                    </tr>
+                    <!-- End loop -->
+                </table>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
