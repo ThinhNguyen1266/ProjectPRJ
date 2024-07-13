@@ -18,20 +18,18 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Product Display</title>
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link
-            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-            rel="stylesheet">
-        <link rel="stylesheet"
-              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script
-        src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloud flare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <style>
@@ -159,9 +157,8 @@
                 margin-bottom: 5px;
             }
             .breadcrumb-container {
-                margin-top: 50px;
+                margin-top: 15px;
                 margin-left: 20px;
-                padding: 10px;
             }
             .product-card {
                 display: flex;
@@ -287,6 +284,11 @@
                     }
                 });
             }
+
+            function showLoginAlert() {
+                alert("Login before order or add to cart");
+                location.href = "/AccountController/Login"
+            }
         </script>
     </head>
     <body>
@@ -344,12 +346,10 @@
                             }
                         }
                     </script>
-
             </div>
         </header>
         <br><br><br>
-        <div class="breadcrumb-container">
-
+        <div class="breadcrumb-container" style="padding: 10px">
             <%
                 String id = (String) request.getAttribute("proId");
                 CategoryDAO caDAO = new CategoryDAO();
@@ -359,11 +359,7 @@
                 String pro_name = pDAO.getProductName(id);
             %>
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/ProductController/List">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/ProductController/Category/<%= obj.getCat_id()%>"><%= obj.getCat_name()%></a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><%= pro_name%></li>
-                </ol>
+                <dev><a href="/ProductController/List">Home/<a href="/ProductController/Category/<%= obj.getCat_id()%>"><%= obj.getCat_name()%>/<%= pro_name%></a></a></dev>
             </nav>
         </div>
         <main class="pt-10">
@@ -426,20 +422,33 @@
                                 }
                             }
                         </script>
+                        <%
+                            if (customerName != null) {
+                        %>
                         <div style="display: inline-block; margin-right: 10px;">
-                            <form action="ProductController/Cart" method="post">
+                            <form action="/CartController" method="post" >
                                 <input type="hidden" name="productItemID" id="cartProductID" value=""/>
                                 <input type="hidden" id="cartQuan" name="quantity" value="1">
-                                <button type="submit" class="add-to-cart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
+                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID") %>">
+                                <button type="submit" class="add-to-cart" name="btnAddToCart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
                             </form>
                         </div>
                         <div style="display: inline-block; margin-right: 10px;">
-                            <form action="ProductController/Order" method="post">
+                            <form action="/ProductController" method="post">
                                 <input type="hidden" name="productItemID" id="orderProductID" value=""/>
                                 <input type="hidden" id="orderQuan" name="quantity" value="1">
-                                <button type="button" class="buy-now">Buy Now</button>
+                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID") %>">
+                                <button type="submit" class="buy-now">Buy Now</button>
                             </form>
                         </div>
+                        <% } else { %>
+                        <div style="display: inline-block; margin-right: 10px;">
+                            <button type="submit" class="add-to-cart" onclick="showLoginAlert()"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
+                        </div>
+                        <div style="display: inline-block; margin-right: 10px;">
+                            <button type="button" class="buy-now" onclick="showLoginAlert()">Buy Now</button>
+                        </div>
+                        <% } %>
                     </div>
                 </div>
             </div>

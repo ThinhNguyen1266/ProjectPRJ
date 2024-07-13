@@ -43,17 +43,16 @@ public class ProductItemDAO {
         ResultSet rs = null;
         Product_item obj = null;
         try {
-            String sql = "SELECT pi.id as proItem_id, p.id as pro_id, p.name as pro_name, pi.price as price, p.[image] as image, pi.quantity as quantity, p.category_id as categoryID\n"
-                    + "FROM product as p\n"
-                    + "JOIN product_item as pi\n"
-                    + "on p.id = pi.product_id where pi.id = ?";
+            String sql = "SELECT *\n"
+                    + "FROM product_item \n"
+                    + "where id = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, id);
             rs = pst.executeQuery();
             if (rs.next()) {
-                CategoryDAO cDAO = new CategoryDAO();
-                Category cat = cDAO.getCategory(rs.getString("categoryID"));
-                obj = new Product_item(rs.getInt("proItem_id"), rs.getInt("pro_id"), rs.getInt("price"), rs.getString("image"), rs.getString("pro_name"), rs.getInt("quantity"), cat);
+                obj = new Product_item();
+                obj.setItem_id(rs.getInt("id"));
+                obj.setPrice(rs.getLong("price"));
             } else {
                 obj = null;
             }
