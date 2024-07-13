@@ -5,7 +5,6 @@
 package DAOs;
 
 import DB.DBConnection;
-import Models.Cart;
 import Models.Cart_item;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

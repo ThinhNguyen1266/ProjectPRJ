@@ -287,6 +287,11 @@
                     }
                 });
             }
+
+            function showLoginAlert() {
+                alert("Login before order or add to cart");
+                location.href = "/AccountController/Login"
+            }
         </script>
     </head>
     <body>
@@ -426,20 +431,33 @@
                                 }
                             }
                         </script>
+                        <%
+                            if (customerName != null) {
+                        %>
                         <div style="display: inline-block; margin-right: 10px;">
-                            <form action="ProductController/Cart" method="post">
+                            <form action="/CartController" method="post" >
                                 <input type="hidden" name="productItemID" id="cartProductID" value=""/>
                                 <input type="hidden" id="cartQuan" name="quantity" value="1">
-                                <button type="submit" class="add-to-cart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
+                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID") %>">
+                                <button type="submit" class="add-to-cart" name="btnAddToCart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
                             </form>
                         </div>
                         <div style="display: inline-block; margin-right: 10px;">
-                            <form action="ProductController/Order" method="post">
+                            <form action="/ProductController" method="post">
                                 <input type="hidden" name="productItemID" id="orderProductID" value=""/>
                                 <input type="hidden" id="orderQuan" name="quantity" value="1">
-                                <button type="button" class="buy-now">Buy Now</button>
+                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID") %>">
+                                <button type="submit" class="buy-now">Buy Now</button>
                             </form>
                         </div>
+                        <% } else { %>
+                        <div style="display: inline-block; margin-right: 10px;">
+                            <button type="submit" class="add-to-cart" onclick="showLoginAlert()"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
+                        </div>
+                        <div style="display: inline-block; margin-right: 10px;">
+                            <button type="button" class="buy-now" onclick="showLoginAlert()">Buy Now</button>
+                        </div>
+                        <% } %>
                     </div>
                 </div>
             </div>
