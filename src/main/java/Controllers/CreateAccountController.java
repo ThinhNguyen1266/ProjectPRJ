@@ -194,7 +194,7 @@ public class CreateAccountController extends HttpServlet {
                             
                             String cartID = cartDAO.getCartID();
                             
-                            Cart cart =  new Cart(Integer.parseInt(cartID), user);
+                            Cart cart =  new Cart((Integer.parseInt(cartID) + 1), user);
                             
                             cartDAO.addNewCart(cart);
                             

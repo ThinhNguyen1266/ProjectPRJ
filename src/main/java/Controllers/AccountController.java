@@ -183,8 +183,7 @@ public class AccountController extends HttpServlet {
                 usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
                 usernameCookie.setPath("/");
                 response.addCookie(usernameCookie);
-                session.setAttribute("customername", username);
-                
+                session.setAttribute("customername", username);                
                 response.sendRedirect("/ProductController/List");
             } else {
                 request.setAttribute("error", "Invalid username or password");
