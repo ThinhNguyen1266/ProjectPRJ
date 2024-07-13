@@ -139,7 +139,7 @@ public class UserDAO {
         String id = "";
         try {
             conn = DB.DBConnection.getConnection();
-            String sql = "Select a.id from address a join user_address ua on a.id=ua.address_id where ua.user_id=?";
+            String sql = "Select a.id from address a join user_address ua on a.id=ua.address_id where ua.user_id=? and ua.is_default='1'";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, userid);
             rs = pst.executeQuery();
