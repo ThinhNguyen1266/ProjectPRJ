@@ -359,7 +359,7 @@
                 String pro_name = pDAO.getProductName(id);
             %>
             <nav aria-label="breadcrumb">
-                <dev><a href="/ProductController/List">Home/<a href="/ProductController/Category/<%= obj.getCat_id()%>"><%= obj.getCat_name()%>/<%= pro_name%></a></a></dev>
+                <dev><a href="/ProductController/List">Home</a><a href="/ProductController/Category/<%= obj.getCat_id()%>"><%= obj.getCat_name()%></a>/<%= pro_name%></a></dev>
             </nav>
         </div>
         <main class="pt-10">
@@ -429,7 +429,7 @@
                             <form action="/CartController" method="post" >
                                 <input type="hidden" name="productItemID" id="cartProductID" value=""/>
                                 <input type="hidden" id="cartQuan" name="quantity" value="1">
-                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID") %>">
+                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID")%>">
                                 <button type="submit" class="add-to-cart" name="btnAddToCart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
                             </form>
                         </div>
@@ -437,7 +437,7 @@
                             <form action="/ProductController" method="post">
                                 <input type="hidden" name="productItemID" id="orderProductID" value=""/>
                                 <input type="hidden" id="orderQuan" name="quantity" value="1">
-                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID") %>">
+                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID")%>">
                                 <button type="submit" class="buy-now">Buy Now</button>
                             </form>
                         </div>
@@ -498,7 +498,23 @@
                 </div>
             </div>
         </section>
+        <script>
+            function formatPrice(price) {
+                let parts = price.toString().split(".");
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return parts.join(".");
+            }
 
+            document.addEventListener("DOMContentLoaded", function () {
+                // This will run when the page is fully loaded
+                let priceElements = document.querySelectorAll('.product-price');
+                priceElements.forEach(function (priceElement) {
+                    let priceText = priceElement.innerText.trim(); // Assuming price is in innerText
+                    let formattedPrice = formatPrice(priceText);
+                    priceElement.innerText = formattedPrice;
+                });
+            });
+        </script>
         <footer class="bg-gray-800 text-white py-8">
             <div class="mx-auto px-4 text-center">
                 <p>&copy; 2024 ShopName. All rights reserved.</p>

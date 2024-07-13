@@ -248,8 +248,6 @@
                         rs = pidao.getAllInMenu();
                         while (rs.next()) {
                             String price = rs.getString("price"); // Assuming price is fetched from ResultSet rs
-
-
                     %>
                     <script>
                         function formatPrice(price) {
