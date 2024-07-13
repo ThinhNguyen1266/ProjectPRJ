@@ -5,11 +5,13 @@
 package Controllers;
 
 import DAOs.AccountDAO;
+import DAOs.CartDAO;
 import DAOs.CreateAccountDAO;
 import DAOs.ProvinceDAO;
 import DB.mailutil;
 import Models.Account;
 import Models.Address;
+import Models.Cart;
 import Models.Province;
 import Models.User;
 import java.io.IOException;
@@ -70,7 +72,7 @@ public class CreateAccountController extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         if (path.contains("/CreateAccountController/Verity")) {
-            
+
             request.getRequestDispatcher("/otp_verity.jsp").forward(request, response);
         }
     }
@@ -188,6 +190,14 @@ public class CreateAccountController extends HttpServlet {
                             count = caDAO.addNewUser(user);
                             count = caDAO.addNewAddress(address);
                             count = caDAO.addNewUserAddress(address, acc);
+                            CartDAO cartDAO = new CartDAO();
+                            
+                            String cartID = cartDAO.getCartID();
+                            
+                            Cart cart =  new Cart((Integer.parseInt(cartID) + 1), user);
+                            
+                            cartDAO.addNewCart(cart);
+                            
                             if (cookies != null) {
                                 for (Cookie cookie : cookies) {
                                     if (cookie.getName().equals("RegisterName")) {

@@ -60,43 +60,44 @@
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a> 
-                <form method="post" class="search-container">
+                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
+                <form method="post" class="search-container" action="/ProductController/Search">
                     <input type="text" name="txtSearchName" placeholder="Search..">
                     <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
-                </form> 
+                </form>
                 <div class="flex space-x-4">
-                    <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">About/Contact</a>
-                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">Cart</a>
-                    <%
-                        String customerName = (String) session.getAttribute("customername");
-                        if (customerName != null) {
-                    %>
-
-
-
+                    <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
+                        <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
+                    </a>
+                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">
+                        <i class="fa fa-shopping-cart"></i> Cart
+                    </a>
+                    <% String customerName = (String) session.getAttribute("customername");
+                        if (customerName != null) {%>
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
-                            <%= customerName%>
+                            <i class="fa fa-user-circle-o"></i> <%= customerName%>
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                            <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                            <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</a>
+                            <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                <i class='fas fa-user-alt'></i> Profile
+                            </a>
+                            <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                <i class="fa fa-sign-out"></i> Sign Out
+                            </a>
                         </div>
                     </div>
-
                     <% } else { %>
-                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">Login</a>
+                    <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">
+                        <i class="fa fa-sign-in"></i> Login
+                    </a>
                     <% }%>
                 </div>
-
                 <script>
                     function toggleDropdown() {
                         var dropdownMenu = document.getElementById("dropdownMenu");
                         dropdownMenu.classList.toggle("hidden");
                     }
-
-                    // Close the dropdown if the user clicks outside of it
                     window.onclick = function (event) {
                         if (!event.target.matches('button')) {
                             var dropdowns = document.getElementsByClassName("dropdown-menu");
@@ -109,7 +110,6 @@
                         }
                     }
                 </script>
-
             </div>
         </header>
 
@@ -118,175 +118,73 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Your
                     Cart</h2>
-                    <% if (session.getAttribute("product") == null && session.getAttribute("cartList") == null) {
-                    %>
-                <h2 style="text-align: center" class="text-2xl font-bold text-gray-800 text-center">EMPTY</h2>
-                <a href="/ProductController/List" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Back to list</a>
-                <%
-                } else {
-                %>
                 <div class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
                     <table class="min-w-full leading-normal">
                         <thead>
                             <tr>
-                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
-                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
-                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
-                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
                             </tr>
                         </thead>
-                        <%
-                            // Buy 1 product
-                            Product_item proItem = null;
-                            String imgSrc = "https://via.placeholder.com/300";
-                            if (session.getAttribute("product") != null) {
-                                proItem = (Product_item) session.getAttribute("product");
-                                ProductDAO pDao = new ProductDAO();
-                                Product obj = pDao.getProduct(String.valueOf(proItem.getPro_id()));
-                                imgSrc = obj.getPro_img();
-                        %>
                         <tbody>
-
                             <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td
+                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 w-10 h-10">
-                                            <img class="w-full h-full rounded-full" src="<%= imgSrc%>" alt="Product Image">
+                                            <img
+                                                class="w-full h-full rounded-full"
+                                                src="https://via.placeholder.com/150"
+                                                alt="Product Image">
                                         </div>
                                         <div class="ml-3">
-                                            <p class="text-gray-900 whitespace-no-wrap"><%= (obj == null) ? "Product name" : obj.getPro_name()%></p>
+                                            <p
+                                                class="text-gray-900 whitespace-no-wrap">Product
+                                                Name</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <input type="number" min="1" value="1" id="quantity-input" class="w-16 py-2 px-3 border rounded text-gray-700" oninput="updateHiddenQuantity()" oninput="updateTotalPrice()">
+                                <td
+                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <input type="number" value="1"
+                                           class="w-16 py-2 px-3 border rounded text-gray-700">
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap" id="price"><%= proItem.getPrice()%> VND</p>
+                                <td
+                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p
+                                        class="text-gray-900 whitespace-no-wrap">$10.00</p>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"><%= proItem.getPrice()%> VND</p>
+                                <td
+                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p
+                                        class="text-gray-900 whitespace-no-wrap">$10.00</p>
                                 </td>
-                        <script>
-                            document.getElementById('quantity-input').addEventListener('input', updateTotalPrice);
-
-                            function updateTotalPrice() {
-                                var quantity = document.getElementById('quantity-input').value;
-                                var price = parseFloat('<%= proItem.getPrice()%>');
-                                var totalPrice = quantity * price;
-                                document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' VND';
-                            }
-
-                            // Initialize the total price on page load
-                            updateTotalPrice();
-                        </script>
-                        </tr>
+                                <td
+                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                                    <button
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
+                                </td>
+                            </tr>
+                            <!-- Repeat for other products -->
                         </tbody>
                     </table>
                 </div>
-
-
-
-                <% if (obj != null) {%>
                 <div class="mt-8 flex justify-end">
-                    <form action="/ProductController" method="post" style="margin-right: 10px">
-                        <input type="hidden" name="proItemId" value="<%= proItem.getItem_id()%>">
-                        <input type="hidden" id="hidden-quantity" name="quantity" value="1"> <!-- Adjust as needed -->
-                        <button type="submit" class="bg-blue-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" name="btnAddToCart">Add to cart</button>
-                    </form>
-                    <a href="/ProductController/List" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Back to Shop</a>
-                    <a href="/ProductController/Checkout/<%= customerName%>" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed to Checkout</a>
+                    <a href="checkout.html"
+                       class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
+                        to Checkout</a>
                 </div>
-                <% } %>
-
-                <%} else if (session.getAttribute("cartList") != null) { //List all product that have bought
-                    List<Cart_item> cartList = (List<Cart_item>) session.getAttribute("cartList");
-                    int index = 0;
-                    while (index < cartList.size()) {
-                        Cart_item cart_item;
-                        int id = cartList.get(index).getCart_item_id();
-                        int quantity = cartList.get(index).getQuantity();
-                        index++;
-                        Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
-
-                        cart_item = cart_itemDAO.getCartItem(String.valueOf(id));
-
-                        ProductItemDAO piDAO = new ProductItemDAO();
-
-                        Product_item pItem = cart_item.getProduct_item();
-                %>
-                </tbody>
-                <tr>
-                    <td
-                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 w-10 h-10">
-                                <img
-                                    class="w-full h-full rounded-full"
-                                    src="<%= pItem.getPro_img()%>"
-                                    alt="Product Image">
-                            </div>
-                            <div class="ml-3">
-
-                                <p
-                                    class="text-gray-900 whitespace-no-wrap"><%= pItem.getPro_name()%></p>
-                            </div>
-                        </div>
-                    </td>
-                    <td
-                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <input type="number" id="quantity-input" value="<%= cart_item.getQuantity()%>" oninput="updateTotalPrice()"
-                               class="w-16 py-2 px-3 border rounded text-gray-700">
-                    </td>
-                    <td
-                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p
-                            class="text-gray-900 whitespace-no-wrap" id="price"><%= pItem.getPrice()%> VND</p>
-                    </td>
-                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"><%= pItem.getPrice()%> VND</p>
-                    </td>
-                <script>
-                    document.getElementById('quantity-input').addEventListener('input', updateTotalPrice);
-
-                    function updateTotalPrice() {
-                        var quantity = document.getElementById('quantity-input').value;
-                        var price = parseFloat('<%= pItem.getPrice()%>');
-                        var totalPrice = quantity * price;
-                        document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' VND';
-                    }
-
-                    // Initialize the total price on page load
-                    updateTotalPrice();
-                </script>
-                <td
-                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                    <a href="/ProductController/Delete/<%=id%>" class="btn btn-danger btn-sm">Remove</a>
-                </td>
-                </tr>
-                <%}%>
-                </tbody>
-                </table>
             </div>
-            <div class="mt-8 flex justify-end">
-                <a href="/ProductController/List"
-                   class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Back to list</a>
-                <a href="/ProductController/Checkout"
-                   class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
-                    to Checkout</a>
-
-            </div>
-            <%
-                }
-            %>
-
-
-
-            <%}%>
         </section>
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
         <!-- Footer -->
         <footer class="bg-gray-800 text-white py-8">
             <div class="container mx-auto px-4 text-center">
@@ -297,18 +195,5 @@
                 </div>
             </div>
         </footer>
-
-        <script>
-            function updateHiddenQuantity() {
-                var quantity = document.getElementById('quantity-input').value;
-                document.getElementById('hidden-quantity').value = quantity;
-            }
-
-            function updateTotalPrice() {
-                var quantity = document.getElementById('quantity-input').value;
-                var price = document.getElementById('price').value;
-                document.getElementById('totalPrice').value = quantity * price;
-            }
-        </script>
     </body>
 </html>

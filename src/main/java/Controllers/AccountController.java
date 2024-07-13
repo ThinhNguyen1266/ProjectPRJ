@@ -5,7 +5,11 @@
 package Controllers;
 
 import DAOs.AccountDAO;
+
 import DAOs.CreateAccountDAO;
+
+import DAOs.CartDAO;
+
 import DAOs.ProvinceDAO;
 import DAOs.UserDAO;
 import Models.Account;
@@ -81,6 +85,10 @@ public class AccountController extends HttpServlet {
                     if (cookie.getName().equals("username")) {
                         session.setAttribute("customername", cookie.getValue());
                         isUser = true;
+                    }
+                    if(cookie.getName().equals("userID")){
+                        session.setAttribute("customerID", cookie.getValue());
+                        isUser = true;                        
                     }
                 }
             }
@@ -189,6 +197,7 @@ public class AccountController extends HttpServlet {
             acc.setPassword(password);
             AccountDAO dao = new AccountDAO();
             if (dao.loginAdmin(acc)) {
+
                 Cookie adminCookie = new Cookie("adminName", username);
                 adminCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
                 adminCookie.setPath("/");
@@ -197,11 +206,17 @@ public class AccountController extends HttpServlet {
                 response.sendRedirect("/Admin_profile");
             } else if (dao.login(acc)) {
                 // Tạo cookie cho username
+                String id = dao.getAccountID(acc);
                 Cookie usernameCookie = new Cookie("username", username);
-                usernameCookie.setMaxAge(24 * 60 * 60 * 3); // Thời gian sống của cookie (ở đây là 3 ngày)
+                Cookie userIDCookie = new Cookie("userID", id);
+                usernameCookie.setMaxAge(24 * 60 * 60 * 3);
+                userIDCookie.setMaxAge(24 * 60 * 60 * 3);
                 usernameCookie.setPath("/");
+                userIDCookie.setPath("/");
                 response.addCookie(usernameCookie);
+                response.addCookie(userIDCookie);
                 session.setAttribute("customername", username);
+                session.setAttribute("customerID", id);
                 response.sendRedirect("/ProductController/List");
             } else {
                 request.setAttribute("error", "Invalid username or password");

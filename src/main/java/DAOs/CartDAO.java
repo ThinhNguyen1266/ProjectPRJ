@@ -18,7 +18,7 @@ import java.sql.Statement;
 public class CartDAO {
     
      public String getCartID() {
-        String id = "169999"; // Default value if no id is found
+        String id = "129999"; // Default value if no id is found
         try ( Connection conn = DBConnection.getConnection();  Statement st = conn.createStatement();  ResultSet rs = st.executeQuery("SELECT TOP 1 id FROM [cart] ORDER BY id DESC")) {
 
             if (rs.next()) {
@@ -26,6 +26,23 @@ public class CartDAO {
             }
         } catch (Exception e) {
             e.printStackTrace(); // Print the stack trace for debugging
+        }
+        return id;
+    }
+     
+     public int getCartIDByUserID(String userID) {
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement ps =null;
+        ResultSet rs = null;
+        int id = 0;
+        try {
+            String sql = "SELECT * FROM cart WHERE cart.user_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, userID);
+            rs = ps.executeQuery();
+            if(rs.next()) id = rs.getInt("id");
+        } catch (Exception e) {
+            id = 0;
         }
         return id;
     }
