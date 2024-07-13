@@ -194,7 +194,7 @@
                                     <form action="ProductController/Edit/<%=rs.getString("pro_id")%>" >
                                         <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</button>
                                     </form>
-                                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>
+                                    <!--<button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>-->
                                 </td>
                             </tr>
                             <!-- More rows as needed -->
