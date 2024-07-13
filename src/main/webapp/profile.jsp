@@ -114,11 +114,18 @@
                 <div class="section-header">Profile Information</div>
                 
                 <a class="btn btn-secondary" href="/AccountController/Edit/<%= customerName%>">Edit</a>
+                 <a class="btn btn-secondary" href="/AccountController/AddAddress/<%= customerName%>">Edit Address</a>
                 <p><strong>Name:<%= (user==null) ? "": user.getName() %></strong> <!-- User Name --></p>
                 <p><strong>Email: :<%= (user==null) ? "": user.getEmails() %></strong> <!-- User Email --></p>
                 <p><strong>Phone Number: :<%= (user==null) ? "": user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
-                <p><strong>Default Address: :<%= (user==null) ? "": user.getAddress().getAddress() %></strong>
+                <% 
+                    UserDAO dao = new UserDAO();
+                    String userID=dao.getUserID(customerName);
+                     String address=dao.getUserDefaultAddress(Integer.parseInt(userID));
+                %>
+                <p><strong>Default Address: <%= address %></strong>
                     <!-- User Default Address --></p>
+                
             </div>
 
             <!-- Order Information Section -->

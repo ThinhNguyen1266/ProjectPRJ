@@ -133,6 +133,22 @@ public class CreateAccountDAO {
 
         return count;
     }
+    public int addNewUserAddressAl(Address address, int id) {
+        Connection conn = DBConnection.getConnection();
+        int count = 0;
+        try {
+            String sql = "Insert into user_address(user_id, address_id, is_default) values(?,?,?)";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            pst.setInt(2, address.getAddressId());
+            pst.setInt(3, 0);
+            count = pst.executeUpdate();
+        } catch (Exception e) {
+            count = 0;
+        }
+
+        return count;
+    }
 
     public int addNewAddress(Address address) {
         Connection conn = DBConnection.getConnection();
@@ -160,5 +176,43 @@ public class CreateAccountDAO {
             randomString.append(CHARACTERS.charAt(randomIndex));
         }
         return randomString.toString();
+    }
+     public boolean checkDefault(int userId) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean isDefault = false;
+
+        try {
+            String sql = "SELECT is_default FROM user_address WHERE user_id = ? AND is_default = '1'";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+
+            // If the result set has any rows, it means there is a default address
+            if (rs.next()) {
+                isDefault = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            isDefault = false;
+        } finally {
+            // Close resources
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return isDefault;
     }
 }

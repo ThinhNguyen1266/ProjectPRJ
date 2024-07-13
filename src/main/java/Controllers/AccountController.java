@@ -5,6 +5,7 @@
 package Controllers;
 
 import DAOs.AccountDAO;
+import DAOs.CreateAccountDAO;
 import DAOs.ProvinceDAO;
 import DAOs.UserDAO;
 import Models.Account;
@@ -101,6 +102,13 @@ public class AccountController extends HttpServlet {
         } else if (path.equals("/Create_profile") || path.equals("/AccountController/Create_profile")) {
             request.getRequestDispatcher("/create-account-profile.jsp").forward(request, response);
         } else if (path.equals("/profile") || path.equals("/AccountController/Profile")) {
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {                  
+                    if (cookie.getName().equals("username")) {
+                        session.setAttribute("customername", cookie.getValue());
+                    }
+                }
+            }
             request.getRequestDispatcher("/profile.jsp").forward(request, response);
         } else if (path.equals("/Admin_profile") || path.equals("/AccountController/Admin_profile")) {
             if (cookies != null) {
@@ -144,6 +152,17 @@ public class AccountController extends HttpServlet {
             session.setAttribute("userinformation", user);
 
             request.getRequestDispatcher("/editProfile.jsp").forward(request, response);
+        } else if (path.startsWith("/AccountController/AddAddress")) {
+            String[] s = path.split("/");
+            String id = s[s.length - 1];
+            AccountDAO dao = new AccountDAO();
+            User user = null;
+            user = new User();
+            UserDAO userDAO = new UserDAO();
+            user = userDAO.getUserWithId(id);
+            session.setAttribute("userinformation", user);
+
+            request.getRequestDispatcher("/add_address.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
@@ -211,6 +230,33 @@ public class AccountController extends HttpServlet {
             uDAO.editUser(Integer.parseInt(id), newinfo);
             uDAO.editUserEmail(Integer.parseInt(id), newinfo);
             uDAO.editUserAddress(address, newinfo);
+            response.sendRedirect("/AccountController/Profile");
+        } else if (request.getParameter("btnSaveAddress") != null) {
+            CreateAccountDAO caDAO= new CreateAccountDAO();
+            String id = request.getParameter("txtId");
+            String def=request.getParameter("txtDefault");
+            String addressDraw = request.getParameter("txtAddress");
+            String provinceDraw = request.getParameter("txtProvince");
+            
+            ProvinceDAO provinceDAO = new ProvinceDAO();
+            int provinceID = Integer.parseInt(provinceDAO.getProvinceID(provinceDraw));
+            Province province = new Province(provinceID, provinceDraw);
+            String addressIDDraw = caDAO.getAddressID();
+            int addressID = Integer.parseInt(addressIDDraw) + 1;
+            Address address = new Address(addressID, provinceID, addressDraw, province);
+
+            int count = caDAO.addNewAddress(address);
+            count = caDAO.addNewUserAddressAl(address, Integer.parseInt(id));
+
+            response.sendRedirect("/AccountController/Profile");
+        }else if (request.getParameter("btnSetDefault") != null) {
+           UserDAO udao = new UserDAO();
+           String normal_id=request.getParameter("txtAddressID");
+           String default_id=request.getParameter("txtDefault_Id");
+           int count=udao.setAddressNormal(Integer.parseInt(default_id));
+           if(count!=0){
+               count=udao.setAddressDefault(Integer.parseInt(normal_id));
+           }
             response.sendRedirect("/AccountController/Profile");
         }
     }
