@@ -153,14 +153,6 @@
                                 <div class="container mx-auto px-4">
                                     <ul class="space-y-4">
                                         <li>
-                                            <label for="sort" class="block text-black">Sắp xếp theo</label>
-                                            <select id="sort" name="sort" class="filter-select" onchange="showSortValue()">
-                                                <option value="default">Sắp xếp theo</option>
-                                                <option value="asc">Ascending</option>
-                                                <option value="desc">Descending</option>
-                                            </select>
-                                        </li>
-                                        <li>
                                             <label class="block text-black">RAM</label>
                                             <div>
                                                 <input type="checkbox" id="ram-8GB" name="ram" value="8GB" onchange="showFilterValue('ram')">
@@ -174,50 +166,43 @@
                                                 <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
                                                 <label for="ram-32GB">32GB</label>
                                             </div>
+                                            <div>
+                                                <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
+                                                <label for="ram-32GB">64GB</label>
+                                            </div>
                                         </li>
                                         <li>
-                                            <label class="block text-black">CPU</label>
+                                            <label class="block text-black">Storage</label>
                                             <div>
                                                 <input type="checkbox" id="cpu-i5" name="cpu" value="i5" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i5">Intel i5</label>
+                                                <label for="cpu-i5">256GB</label>
                                             </div>
                                             <div>
                                                 <input type="checkbox" id="cpu-i7" name="cpu" value="i7" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i7">Intel i7</label>
+                                                <label for="cpu-i7">512GB</label>
                                             </div>
                                             <div>
                                                 <input type="checkbox" id="cpu-i9" name="cpu" value="i9" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i9">Intel i9</label>
+                                                <label for="cpu-i9">1T</label>
+                                            </div>
+                                            <div>
+                                                <input type="checkbox" id="cpu-i9" name="cpu" value="i9" onchange="showFilterValue('cpu')">
+                                                <label for="cpu-i9">2T</label>
                                             </div>
                                         </li>
                                         <li>
-                                            <label class="block text-black">GPU</label>
-                                            <div>
-                                                <input type="checkbox" id="gpu-GTX1650" name="gpu" value="GTX1650" onchange="showFilterValue('gpu')">
-                                                <label for="gpu-GTX1650">NVIDIA GTX 1650</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="gpu-RTX2060" name="gpu" value="RTX2060" onchange="showFilterValue('gpu')">
-                                                <label for="gpu-RTX2060">NVIDIA RTX 2060</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="gpu-RTX3080" name="gpu" value="RTX3080" onchange="showFilterValue('gpu')">
-                                                <label for="gpu-RTX3080">NVIDIA RTX 3080</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">Giá</label>
+                                            <label class="block text-black">Price</label>
                                             <div>
                                                 <input type="checkbox" id="price-0-1000" name="price" value="0-1000" onchange="showFilterValue('price')">
-                                                <label for="price-0-1000">0-1000</label>
+                                                <label for="price-0-1000">0-10M VND</label>
                                             </div>
                                             <div>
                                                 <input type="checkbox" id="price-1000-2000" name="price" value="1000-2000" onchange="showFilterValue('price')">
-                                                <label for="price-1000-2000">1000-2000</label>
+                                                <label for="price-1000-2000">10M VND-20M VND</label>
                                             </div>
                                             <div>
                                                 <input type="checkbox" id="price-2000-3000" name="price" value="2000-3000" onchange="showFilterValue('price')">
-                                                <label for="price-2000-3000">2000-3000</label>
+                                                <label for="price-2000-3000">20M VND-50M VND</label>
                                             </div>
                                         </li>
                                     </ul>
