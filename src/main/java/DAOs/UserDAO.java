@@ -80,7 +80,7 @@ public class UserDAO {
                     + "    JOIN [user] u ON acc.id = u.account_id\n"
                     + "                    JOIN user_address ua ON u.account_id = ua.user_id\n"
                     + "                    JOIN [address] a ON ua.address_id = a.id \n"
-                    + "                    WHERE acc.name = ?";
+                    + "                    WHERE acc.name = ? and ua.is_default='1'";
             pst = conn.prepareStatement(sql);
             pst.setString(1, name);
             rs = pst.executeQuery();
