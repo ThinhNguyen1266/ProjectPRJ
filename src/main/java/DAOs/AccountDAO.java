@@ -37,7 +37,26 @@ public class AccountDAO {
         }
         return false;
     }
-
+    
+    public String getAccountID (Account acc){
+        Connection conn = DB.DBConnection.getConnection();
+        String id = null;
+        try {
+            String hashedPassword = getMD5Hash(acc.getPassword());
+            String sql = "SELECT * FROM account WHERE name = ? AND password = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, acc.getUsername());
+            pst.setString(2, hashedPassword);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                id = rs.getString("id");
+            }
+        } catch (Exception e) {
+           id = null;
+        }
+        return id;
+    }
+    
     public boolean loginAdmin(Account acc) {
         Connection conn = DB.DBConnection.getConnection();
         try {

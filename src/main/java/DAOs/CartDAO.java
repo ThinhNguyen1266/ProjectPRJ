@@ -29,6 +29,23 @@ public class CartDAO {
         }
         return id;
     }
+     
+     public int getCartIDByUserID(String userID) {
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement ps =null;
+        ResultSet rs = null;
+        int id = 0;
+        try {
+            String sql = "SELECT * FROM cart WHERE cart.user_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, userID);
+            rs = ps.executeQuery();
+            if(rs.next()) id = rs.getInt("id");
+        } catch (Exception e) {
+            id = 0;
+        }
+        return id;
+    }
     
     public int addNewCart(Cart obj){
         Connection conn = DBConnection.getConnection();
