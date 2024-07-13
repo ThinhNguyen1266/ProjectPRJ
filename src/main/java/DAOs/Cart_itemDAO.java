@@ -81,4 +81,17 @@ public class Cart_itemDAO {
         }
         return count;
     }
+    
+    public ResultSet getAllCartProductItem(String userID){
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement ps= null;
+        ResultSet rs = null;
+        try {
+            String sql =  "";
+        } catch (Exception e) {
+        }
+        return null;
+    }
+    
+    
 }

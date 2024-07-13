@@ -122,20 +122,16 @@
                     <table class="min-w-full leading-normal">
                         <thead>
                             <tr>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
-                                <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">.</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td><input type="checkbox" class="form-check-input" data-price="10.00"></td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
@@ -163,11 +159,6 @@
                                         class="text-gray-900 whitespace-no-wrap">$10.00</p>
                                 </td>
                                 <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap">$10.00</p>
-                                </td>
-                                <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
                                     <button
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
@@ -178,9 +169,8 @@
                     </table>
                 </div>
                 <div class="mt-8 flex justify-end">
-                    <a href="checkout.html"
-                       class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Proceed
-                        to Checkout</a>
+                    <h4 class="text-xl font-bold">Total: $<span id="totalPrice">0.00</span></h4>
+                    <a href="checkout.html" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-4">Proceed to Checkout</a>
                 </div>
             </div>
         </section>
