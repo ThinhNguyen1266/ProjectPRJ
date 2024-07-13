@@ -78,6 +78,8 @@ public class ProductDAO {
         }
         return obj;
     }
+    
+    
 
     public ResultSet getAllProductByName(String name) {
         Connection conn = DB.DBConnection.getConnection();
@@ -183,5 +185,34 @@ public class ProductDAO {
         }
         return count;
     }
+    
+    public ResultSet getProItemIDByProID(String proID){
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        try{
+            String sql = "SELECT pi.id AS proItemID FROM product p JOIN product_item pi ON p.id = pi.product_id WHERE p.id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, proID);
+            rs = pst.executeQuery();
+        }catch(Exception e){
+            rs= null;
+        }
+        return rs;
+    }
    
+    public int deleteProduct(String proID){
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        int count = 0;
+        
+        try {
+            String sql = "DELETE FROM product WHERE id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, proID);
+            count = pst.executeUpdate();
+        } catch (Exception e) {
+            count = 0;
+        }
+        return count;
+    }
 }
