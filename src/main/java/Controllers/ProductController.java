@@ -416,7 +416,7 @@ public class ProductController extends HttpServlet {
                 VariationDAO vDAO = new VariationDAO();
                 int index = 0;
                 for (String[] pair : option) {
-                    String variationID = vDAO.getVariationID(pair[0], String.valueOf(pi.getCategory().getParent()));
+                    String variationID = vDAO.getVariationID(pair[0], String.valueOf(pi.getCategory().getCat_id()));
                     String newVariationOpID = vDAO.getVariationOpID(pair[1], variationID);
                     String oldVariationOpID = vDAO.getVariationOpID(ProItemVariation.get(index++)[1], variationID);
                     if (!oldVariationOpID.equals(newVariationOpID)) {
