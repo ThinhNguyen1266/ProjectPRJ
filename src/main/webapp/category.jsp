@@ -1,9 +1,6 @@
-<%-- 
-    Document   : Category
-    Created on : Jul 1, 2024, 9:30:50 PM
-    Author     : AnhNLCE181837
---%>
-
+<%@page import="Models.Category"%>
+<%@page import="Models.Product"%>
+<%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.ProductItemDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.CategoryDAO"%>
@@ -16,6 +13,8 @@
         <title>Products</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
             .search-container {
                 display: flex;
@@ -85,6 +84,61 @@
                 align-self: center; /* Center button horizontally */
                 margin-top: 1em; /* Add some margin to separate it from details */
             }
+
+            .footer {
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                background-color: #2d3748;
+                color: white;
+                position: relative;
+                bottom: 0;
+                width: 100%;
+            }
+
+            .footer-column {
+                flex: 1;
+                margin: 0 10px;
+            }
+
+            .footer-column h3 {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+
+            .footer-column ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .footer-column ul li {
+                margin-bottom: 5px;
+            }
+
+            .footer-column ul li a {
+                text-decoration: none;
+                color: white;
+            }
+
+            .footer-column ul li a:hover {
+                text-decoration: underline;
+            }
+
+            .payment-methods i {
+                font-size: 24px;
+                margin-right: 10px;
+            }
+
+            .main-content {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            .content {
+                flex: 1;
+                display: flex;
+            }
         </style>
     </head>
     <body class="bg-gray-100">
@@ -143,190 +197,151 @@
                 </script>
             </div>
         </header>
-        <div class="container mx-auto px-4 py-8 mt-20">
-            <aside class="fixed inset-y-0 left-0 w-60 bg-gray-800 text-black shadow-lg h-screen">
-                <div class="p-4">
-                    <h2 class="text-xl font-bold mb-4">Laptop Filters</h2>
-                    <ul class="space-y-2">
-                        <li>
-                            <section class="bg-white shadow-md py-4 mt-16">
-                                <div class="container mx-auto px-4">
-                                    <ul class="space-y-4">
-                                        <li>
-                                            <label for="sort" class="block text-black">Sắp xếp theo</label>
-                                            <select id="sort" name="sort" class="filter-select" onchange="showSortValue()">
-                                                <option value="default">Sắp xếp theo</option>
-                                                <option value="asc">Ascending</option>
-                                                <option value="desc">Descending</option>
-                                            </select>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">RAM</label>
-                                            <div>
-                                                <input type="checkbox" id="ram-8GB" name="ram" value="8GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-8GB">8GB</label>
+        <div class="main-content">
+            <div class="content container mx-auto px-4 py-8 mt-20">
+                <aside class="fixed inset-y-0 left-0 w-60 bg-gray-800 text-white shadow-lg h-screen">
+                    <div class="p-4" style="padding-top: 100px">
+                        <h2 class="text-xl font-bold mb-4">Laptop Filters</h2>
+                        <form id="filter-form" action="ProductController" method="post">
+                            <ul class="space-y-4">
+                                <li>
+                                    <section class="bg-white shadow-md py-4">
+                                        <div class="container mx-auto px-4">
+                                            <h3 class="text-lg font-semibold text-black mb-2">Laptop Brands</h3>
+                                            <ul class="space-y-2">
+                                                <%
+                                                    String id = "";
+                                                    ResultSet rs = null, subCat = null;
+                                                    if (session.getAttribute("resultsetCategory") != null) {
+                                                        id = (String) session.getAttribute("resultsetCategory");
+                                                    }
+
+                                                    ProductItemDAO pidao = new ProductItemDAO();
+                                                    ProductDAO pDAO = new ProductDAO();
+                                                    CategoryDAO cDAO = new CategoryDAO();
+                                                    Product p = new Product();
+                                                    Category cat = cDAO.getCatName(Integer.parseInt(id));
+                                                    if (!id.equals("300000") && !id.equals("301000") && !id.equals("302000")) {
+                                                        rs = pDAO.getProductBySubCategory(cat.getCat_name(), String.valueOf(cat.getParent()));
+                                                        subCat = cDAO.getAllSubCat(String.valueOf(cat.getParent()));
+                                                    } else {
+                                                        rs = pidao.getAllByCatParent(id);
+                                                        subCat = cDAO.getAllSubCat(id);
+                                                    }
+                                                    session.removeAttribute("resultsetCategory");
+                                                    while (subCat.next()) {
+                                                %>
+                                                <li>
+                                                    <div class="flex items-center">
+                                                        <input type="radio" name="brand" value="<%= subCat.getString("id")%>" class="mr-2">
+                                                        <label class="text-black"><%= subCat.getString("name")%></label>
+                                                    </div>
+                                                </li>
+                                                <% }%>
+                                            </ul>
+                                            <div class="mt-4">
+                                                <input type="submit" value="Sort" name="btnSortProduct" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded">
+                                                <a href="/ProductController/Category/<%= cat.getParent()%>" class="ml-4 text-blue-500 underline">Show All</a>
                                             </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-16GB" name="ram" value="16GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-16GB">16GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-32GB">32GB</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">CPU</label>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i5" name="cpu" value="i5" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i5">Intel i5</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i7" name="cpu" value="i7" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i7">Intel i7</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i9" name="cpu" value="i9" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i9">Intel i9</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">GPU</label>
-                                            <div>
-                                                <input type="checkbox" id="gpu-GTX1650" name="gpu" value="GTX1650" onchange="showFilterValue('gpu')">
-                                                <label for="gpu-GTX1650">NVIDIA GTX 1650</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="gpu-RTX2060" name="gpu" value="RTX2060" onchange="showFilterValue('gpu')">
-                                                <label for="gpu-RTX2060">NVIDIA RTX 2060</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="gpu-RTX3080" name="gpu" value="RTX3080" onchange="showFilterValue('gpu')">
-                                                <label for="gpu-RTX3080">NVIDIA RTX 3080</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">Giá</label>
-                                            <div>
-                                                <input type="checkbox" id="price-0-1000" name="price" value="0-1000" onchange="showFilterValue('price')">
-                                                <label for="price-0-1000">0-1000</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="price-1000-2000" name="price" value="1000-2000" onchange="showFilterValue('price')">
-                                                <label for="price-1000-2000">1000-2000</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="price-2000-3000" name="price" value="2000-3000" onchange="showFilterValue('price')">
-                                                <label for="price-2000-3000">2000-3000</label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div id="sort-value" class="mt-4 text-sm font-semibold text-black"></div>
-                                    <div id="filter-values" class="mt-4 text-sm font-semibold text-black"></div>
+                                        </div>
+                                    </section>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </aside>
+                <style>
+                    .filter-select {
+                        padding: 0.5rem 1rem;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        background-color: white;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        margin-top: 0.5rem;
+                    }
+                </style>
+
+                <!-- Products Section -->
+                <section class="flex-grow ml-64 pl-8" >
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+                            <%                            //}
+                                while (rs.next()) {
+                                    String price = rs.getString("price");
+                            %>
+                            <script>
+                                function formatPrice(price) {
+                                    let parts = price.toString().split(".");
+                                    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                    return parts.join(".");
+                                }
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    // This will run when the page is fully loaded
+                                    let priceElements = document.querySelectorAll('.product-price');
+                                    priceElements.forEach(function (priceElement) {
+                                        let priceText = priceElement.innerText.trim(); // Assuming price is in innerText
+                                        let formattedPrice = formatPrice(priceText);
+                                        priceElement.innerText = formattedPrice;
+                                    });
+                                });
+                            </script>
+
+                            <div id="content" class="bg-white shadow-md rounded-lg overflow-hidden product-card">
+                                <a href="/ProductController/View/<%= rs.getString("pro_id")%>">
+                                    <div class="flex justify-center items-center h-48 w-full">
+                                        <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
+                                    </div>
+                                </a>
+                                <div class="p-4 product-details">
+                                    <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
+                                    <p class="product-price text-gray-600 mt-2"><%= price%> vnd</p>
                                 </div>
-                            </section>
-                        </li>
+                                <a href="/SortCategoryController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
+                            </div>
+                            <% }%>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <br><br><br><br><br><br><br><br><br><br>
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-column">
+                    <h3>Product</h3>
+                    <ul>
+                        <% CategoryDAO dao = new CategoryDAO();
+                            rs = dao.getAllCategoriesNull();
+                            while (rs.next()) {%>
+                        <li><a href="/ProductController/Category/<%= rs.getInt("id")%>"><%= rs.getString("name")%></a></li>
+                            <%}%>
                     </ul>
                 </div>
-            </aside>
-            <script>
-                function showSortValue() {
-                    const sortSelect = document.getElementById('sort');
-                    const sortValue = sortSelect.options[sortSelect.selectedIndex].text;
-                    document.getElementById('sort-value').innerText = 'Sắp xếp theo: ' + sortValue;
-                }
-
-                function showFilterValue(filterId) {
-                    const checkboxes = document.querySelectorAll(`input[name=${filterId}]:checked`);
-                    const selectedValues = Array.from(checkboxes).map(cb => cb.nextSibling.textContent.trim());
-                    const filterDisplay = document.getElementById('filter-values');
-
-                    let existingFilters = filterDisplay.innerText.split(', ').filter(Boolean);
-                    const filterText = filterId.charAt(0).toUpperCase() + filterId.slice(1) + ': ' + selectedValues.join(', ');
-
-                    const existingIndex = existingFilters.findIndex(f => f.startsWith(filterId.charAt(0).toUpperCase() + filterId.slice(1)));
-                    if (existingIndex > -1) {
-                        existingFilters[existingIndex] = filterText;
-                    } else {
-                        existingFilters.push(filterText);
-                    }
-
-                    filterDisplay.innerText = existingFilters.join(', ');
-                }
-            </script>
-            <style>
-                .filter-select {
-                    padding: 0.5rem 1rem;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    background-color: white;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    margin-top: 0.5rem;
-                }
-            </style>
-
-            <!-- Products Section -->
-            <section class="flex-grow ml-64 pl-8" >
-                <div class="container mx-auto px-4">
-                    <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-                        <%
-                            ProductItemDAO pidao = new ProductItemDAO();
-                            String id = (String) session.getAttribute("categoryid");
-                            ResultSet rs = pidao.getAllByCatParent(id); // Corrected to use category ID
-                            while (rs.next()) {
-                                String price = rs.getString("price");
-                        %>
-                        <script>
-                            function formatPrice(price) {
-                                let parts = price.toString().split(".");
-                                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                return parts.join(".");
-                            }
-
-                            document.addEventListener("DOMContentLoaded", function () {
-                                // This will run when the page is fully loaded
-                                let priceElements = document.querySelectorAll('.product-price');
-                                priceElements.forEach(function (priceElement) {
-                                    let priceText = priceElement.innerText.trim(); // Assuming price is in innerText
-                                    let formattedPrice = formatPrice(priceText);
-                                    priceElement.innerText = formattedPrice;
-                                });
-                            });
-                        </script>
-
-                        <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
-                            <a href="/ProductController/View/<%= rs.getString("pro_id")%>">
-                                <div class="flex justify-center items-center h-48 w-full">
-                                    <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
-                                </div>
-                            </a>
-                            <div class="p-4 product-details">
-                                <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
-                                <p class="product-price text-gray-600 mt-2"><%= price%> vnd</p>
-                            </div>
-                            <a href="/ProductController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
-                        </div>
-                        <% }%>
+                <div class="footer-column">
+                    <h3>Help</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="/ProductController/About-Contact">Contact Us</a></li>
+                        <li><a href="/ProductController/About-Contact">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Payment method</h3>
+                    <div class="payment-methods">
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-paypal"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                        <i class="fab fa-apple-pay"></i>
                     </div>
                 </div>
-            </section>
+            </footer>
         </div>
-
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
-
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
-            <div class="container mx-auto px-4 text-center">
-                <p>&copy; 2024 ShopName. All rights reserved.</p>
-                <div class="mt-4 space-x-4">
-                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
-                </div>
-            </div>
-        </footer>
     </body>
 </html>

@@ -1,163 +1,99 @@
+<%-- 
+    Document   : createProductItem
+    Created on : Jul 12, 2024, 4:11:30 PM
+    Author     : AnhNLCE181837
+--%>
+
+<%@page import="DAOs.ProductItemDAO"%>
+<%@page import="Models.Product"%>
+<%@page import="DAOs.VariationDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.ProvinceDAO"%>
 <!DOCTYPE html>
 <html lang="en">
 
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Create Account</title>
-        <link rel="stylesheet" href="styles.css">
-
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Create Product Item</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f4f4f4;
-            }
-
-            .container {
-                width: 100%;
-                margin: 20px auto;
-                overflow: hidden;
-            }
-
-            .content-container {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .form-container {
-                background: #fff;
-                width: 50%;
+                background-color: #f8f9fa;
                 padding: 20px;
-                border-radius: 8px;
+            }
+            .container {
+                background-color: #ffffff;
+                border-radius: 5px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                max-width: 600px;
+                margin: auto;
             }
-
-            .form-container h3 {
+            h1 {
                 margin-bottom: 20px;
-                font-size: 24px;
-                color: #333;
-            }
-
-            .form-container label {
-                display: block;
-                font-weight: bold;
-                color: #555;
-                margin-bottom: 5px;
-            }
-
-            .form-container input,
-            .form-container select {
-                width: 100%;
-                padding: 10px;
-                margin-bottom: 20px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 16px;
-            }
-
-            .form-container button {
-                background: #007bff;
-                color: #fff;
-                border: none;
-                padding: 10px 20px;
-                cursor: pointer;
-                font-size: 16px;
-                border-radius: 4px;
-                transition: background 0.3s ease;
-            }
-
-            .form-container button:hover {
-                background: #0056b3;
-            }
-
-            .flex {
-                display: flex;
-                justify-content: space-between;
-                gap: 10px;
-            }
-
-            .flex-container {
-                display: flex;
-                gap: 10px;
-            }
-
-            label {
-                display: block;
-                margin-bottom: 5px;
             }
         </style>
     </head>
 
     <body>
         <div class="container">
-            <div class="content-container">
-                <div class="form-container">
-                    <h3>Create Account</h3>
-                    <form action="CreateAccountController" method="post" onsubmit="return validateForm()">
-                        <label for="Username">Username</label>
-                        <% if (request.getAttribute("UsernameError") != null) {%>
-                        <p style="color: red"><%= (String) request.getAttribute("UsernameError")%></p>
-                        <% }%>
-                        <input id="Username" type="text" name="txtUsername" placeholder="Username"
-                               value="<%= request.getAttribute("txtUsername") != null ? (String) request.getAttribute("txtUsername") : ""%>"
-                               required>
+            <h1 class="text-center">Create Product Item</h1>
+            <form action="ProductController" method="post">
+                <%
+                    ProductItemDAO piDAO = new ProductItemDAO();
+                    VariationDAO vDAO = new VariationDAO();
 
-                        <label for="password">Password</label>
-                        <input id="password" type="password" name="txtPassword" placeholder="Password" required>
-
-                        <label for="Confirm password">Confirm password</label>
-                        <% if (request.getAttribute("PasswordError") != null) {%>
-                        <p style="color: red"><%= (String) request.getAttribute("PasswordError")%></p>
-                        <% }%>
-                        <input id="Confirm password" type="password" name="txtConfirmPassword" placeholder="Confirm password"
-                               required>
-
-                        <label for="email">Email</label>
-                        <input id="email" type="email" placeholder="Email" name="txtEmail"
-                               value="<%= request.getAttribute("txtEmail") != null ? (String) request.getAttribute("txtEmail") : ""%>"
-                               required>
-
-                        <label for="name">Name</label>
-                        <input id="name" type="text" placeholder="Name" name="txtName"
-                               value="<%= request.getAttribute("txtName") != null ? (String) request.getAttribute("txtName") : ""%>"
-                               required>
-
-                        <label for="Phone number">Phone number</label>
-                        <input id="Phone number" type="text" placeholder="Phone number" name="txtPhonenumber"
-                               value="<%= request.getAttribute("txtPhonenumber") != null ? (String) request.getAttribute("txtPhonenumber") : ""%>"
-                               required>
-
-                        <label for="Address">Address</label>
-                        <input id="Address" type="text" placeholder="Address" name="txtAddress"
-                               value="<%= request.getAttribute("txtAddress") != null ? (String) request.getAttribute("txtAddress") : ""%>"
-                               required>
-
-                        <label>Province</label>
-                        <select name="txtProvince" id="province" required>
-                            <% ProvinceDAO provinceDao = new ProvinceDAO();
-                                ResultSet rs = provinceDao.getAll();
-                                while (rs.next()) {
-                                    String provinceName = rs.getString("name");%>
-                            <option value="<%= provinceName%>"
-                                    <%= provinceName.equals(request.getAttribute("txtProvince")) ? "selected" : ""%>>
-                                <%= provinceName%></option>
-                                <% }%>
-                        </select>
-
-                        <div class="flex">
-                            <a href="/AccountController/Login"
-                               class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded inline-block text-center">Back</a>
-                            <button type="submit" name="btnSignin">Sign In</button>
-                        </div>
-                    </form>
+                    if (request.getAttribute("product") != null) {
+                        int ProItemID = Integer.parseInt(piDAO.getProduct_itemID()) + 1;
+                %>
+                <div class="form-group">
+                    <label for="txtProItemID">Product Item ID</label>
+                    <input type="number" id="txtProItemID" name="txtProItemID" class="form-control" value="<%= ProItemID%>" readonly/>
                 </div>
-            </div>
+
+                <%
+                    Product obj = (Product) request.getAttribute("product");
+                    String parentCatID = String.valueOf(obj.getCategory().getParent());
+                    ResultSet rs = vDAO.getVariationIDByCatParentName(parentCatID);
+                    while (rs.next()) {
+                %>
+                <div class="form-group">
+                    <label for="txt<%= rs.getString("name") %>"><%= rs.getString("name") %></label>
+                    <select id="txt<%= rs.getString("name") %>" name="txt<%= rs.getString("name") %>" class="form-control">
+                        <%
+                            ResultSet dropDownList = piDAO.getDropDownListVariation(rs.getString("id"));
+                            while (dropDownList.next()) {
+                        %>
+                        <option value="<%= dropDownList.getString("value") %>"><%= dropDownList.getString("value") %></option>
+                        <%
+                            }
+                        %>
+                    </select>
+                </div>
+                <%
+                    }
+                %>
+
+                <div class="form-group">
+                    <label for="txtProItemQuantity">Product Item Quantity</label>
+                    <input type="number" id="txtProItemQuantity" name="txtProItemQuantity" class="form-control" min="1" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtProItemPrice">Product Item Price</label>
+                    <input type="number" id="txtProItemPrice" name="txtProItemPrice" class="form-control" min="1" required/>
+                </div>
+
+                <input type="hidden" name="txtProductID" value="<%= obj.getPro_id() %>"/>
+                <a href="/ProductController/Edit/<%= obj.getPro_id() %>" class="btn btn-secondary">Back</a>
+                <button type="submit" name="btnAddNewProItem" class="btn btn-primary">Create</button>
+                <% } %>
+            </form>
         </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
 
 </html>

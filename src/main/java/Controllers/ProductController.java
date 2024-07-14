@@ -110,12 +110,12 @@ public class ProductController extends HttpServlet {
         } else if (path.equals("/ProductController/About-Contact")) {
             request.getRequestDispatcher("/about-contact.jsp").forward(request, response);
         } else if (path.equals("/ProductController/Checkout")) {
-             Cookie[] cookies = request.getCookies();
-             String id="";
-           if (cookies != null) {
+            Cookie[] cookies = request.getCookies();
+            String id = "";
+            if (cookies != null) {
                 for (Cookie cookie : cookies) {
                     if (cookie.getName().equals("username")) {
-                        id=cookie.getValue();
+                        id = cookie.getValue();
                         break;
                     }
                 }
@@ -126,11 +126,13 @@ public class ProductController extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             user = userDAO.getUserWithId(id);
             session.setAttribute("userinformation", user);
-            request.getRequestDispatcher("/checkout.jsp").forward(request, response);
-        } else if (path.startsWith("/ProductController/Category")) {
+            response.sendRedirect("/ProductController/Category/");
+        } else if (path.startsWith("/ProductController/Category/")) {
+            ResultSet rs = null;
             String[] s = path.split("/");
             String id = s[s.length - 1];
-            session.setAttribute("categoryid", id);
+
+            session.setAttribute("resultsetCategory", id);
             request.getRequestDispatcher("/category.jsp").forward(request, response);
         } else if (path.equals("/ProductController/Search")) {
             request.getRequestDispatcher("/searched_product.jsp").forward(request, response);
@@ -190,6 +192,23 @@ public class ProductController extends HttpServlet {
             Product obj = pDAO.getProduct(id);
             request.setAttribute("product", obj);
             request.getRequestDispatcher("/createProductItem.jsp").forward(request, response);
+        } else if (path.startsWith("/ProductController/DeleteProduct/")) {
+            String[] s = path.split("/");
+            String id = s[s.length - 1];
+            ProductDAO pDAO = new ProductDAO();
+            ProductItemDAO piDAO = new ProductItemDAO();
+            Product_configurationDAO pcDAO = new Product_configurationDAO();
+            ResultSet rs = pDAO.getProItemIDByProID(id);
+            try {
+                while (rs.next()) {
+                    pcDAO.delete(rs.getString("proItemID"));
+                    piDAO.deleteProductItem(rs.getString("proItemID"));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            pDAO.deleteProduct(id);
+            response.sendRedirect("/Admin_profile");
         } else if (path.startsWith("/ProductController/DeleteProductItem/")) {
             String[] s = path.split("/");
             String proItemId = s[s.length - 2];
@@ -279,6 +298,11 @@ public class ProductController extends HttpServlet {
             }
             response.sendRedirect("/ProductController/List");
         }
+        
+        if(request.getParameter("btnSortProduct")!=null){
+            String id = request.getParameter("brand");
+            response.sendRedirect("/ProductController/Category/"+id);
+        }
 
         if (request.getParameter("btnSearch") != null) {
             String name = request.getParameter("txtSearchName");
@@ -290,7 +314,6 @@ public class ProductController extends HttpServlet {
 
             String name = request.getParameter("proName");
             String des = request.getParameter("proDes");
-            String quan = request.getParameter("proQuan");
             String cat = request.getParameter("proCat");
             int maxID = pdao.getMaxID(Integer.parseInt(cat));
             maxID++;
@@ -309,7 +332,7 @@ public class ProductController extends HttpServlet {
             String imageUrl = azureBlobStorageUtil.uploadImage(tempFile.getPath(), fileName);
             tempFile.delete();
             Category category = new Category(Integer.parseInt(cat));
-            Product product = new Product(maxID, name, des, imageUrl, Integer.parseInt(quan), category);
+            Product product = new Product(maxID, name, des, imageUrl, 0, category);
             pdao.add(product);
             request.getRequestDispatcher("/admin.jsp").forward(request, response);
         }
@@ -339,7 +362,7 @@ public class ProductController extends HttpServlet {
             ProductItemDAO pDAO = new ProductItemDAO();
             Product_item pi = pDAO.getProductItem(proItemID);
             CategoryDAO cDAO = new CategoryDAO();
-            String catParent = cDAO.getCatName(pi.getCategory().getParent()).getCat_name();
+            String catParent = pi.getCategory().getCat_name();
             List<String[]> option = new ArrayList<>();
             List<String[]> ProItemVariation = new ArrayList<>();
             ResultSet rs = pDAO.getProductVariance(proItemID);
@@ -382,7 +405,7 @@ public class ProductController extends HttpServlet {
                 VariationDAO vDAO = new VariationDAO();
                 int index = 0;
                 for (String[] pair : option) {
-                    String variationID = vDAO.getVariationID(pair[0], String.valueOf(pi.getCategory().getParent()));
+                    String variationID = vDAO.getVariationID(pair[0], String.valueOf(pi.getCategory().getCat_id()));
                     String newVariationOpID = vDAO.getVariationOpID(pair[1], variationID);
                     String oldVariationOpID = vDAO.getVariationOpID(ProItemVariation.get(index++)[1], variationID);
                     if (!oldVariationOpID.equals(newVariationOpID)) {
@@ -408,7 +431,6 @@ public class ProductController extends HttpServlet {
             pi.setPro_id(product.getPro_id());
             pi.setItem_quan(Integer.parseInt(quantity));
             pi.setPrice(Long.parseLong(price));
-            
 
             List<String[]> option = new ArrayList<>();
 
@@ -439,14 +461,15 @@ public class ProductController extends HttpServlet {
             }
             response.sendRedirect("/ProductController/Edit/" + pi.getPro_id());
         }
-        if (request.getParameter("btnSort") != null) {
+        if (request.getParameter("btnSortS") != null) {
 
             String price = request.getParameter("price");
-            String type = request.getParameter("sortType");
+            String type = request.getParameter("type");
+            String Sname=request.getParameter("SearchName");
 
             session.setAttribute("type", type);
-
-            session.setAttribute("price", price);
+            session.setAttribute("Searchname", Sname);
+            session.setAttribute("sprice", price);
             response.sendRedirect("/ProductController/Sort");
 
         }

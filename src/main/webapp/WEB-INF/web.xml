@@ -59,7 +59,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CartController</servlet-name>
-        <url-pattern>/CartController/*</url-pattern>
+        <url-pattern>/CartController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>OrderController</servlet-name>

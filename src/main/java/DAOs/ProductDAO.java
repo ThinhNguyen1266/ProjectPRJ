@@ -32,6 +32,26 @@ public class ProductDAO {
         }
         return rs;
     }
+    
+    public ResultSet getProductBySubCategory(String catName, String catParentID) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        
+        try {
+            String sql = " SELECT p.id pro_id, p.name pro_name, p.[image], min(pi.price) AS price\n"
+                    + "    FROM product p JOIN product_item pi ON p.id = pi.product_id\n"
+                    + "    Join category c ON p.category_id = c.id\n"
+                    + "    WHERE c.name = ? AND c.parent = ?\n"
+                    + "    group by p.id, p.name, p.[image]";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, catName);
+            pst.setString(2, catParentID);
+            rs = pst.executeQuery();
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
 
     public ResultSet getAllProductAdmin() {
         Connection conn = DB.DBConnection.getConnection();
@@ -110,20 +130,21 @@ public class ProductDAO {
         }
         return product;
     }
+
     public String getProductName(String id) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
-        
+
         try {
             String sql = "SELECT * FROM Product WHERE ID = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, id);
             rs = pst.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getString("name");
             }
         } catch (Exception e) {
-             return null;
+            return null;
         }
         return null;
     }
@@ -158,19 +179,21 @@ public class ProductDAO {
                 PreparedStatement ps = conn.prepareStatement(query);
                 ps.setInt(1, category_id);
                 rs = ps.executeQuery();
-                if(rs.next()) return rs.getInt("id");
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return 0;
     }
-    
+
     public int editProduct(Product obj) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
         int count = 0;
-        try{
+        try {
             String sql = "UPDATE Product SET name = ?, description = ?, category_id = ? where id = ? ";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, obj.getPro_name());
@@ -178,10 +201,39 @@ public class ProductDAO {
             pst.setInt(3, obj.getCategory().getCat_id());
             pst.setInt(4, obj.getPro_id());
             count = pst.executeUpdate();
-        }catch(Exception e){
+        } catch (Exception e) {
             count = 0;
         }
         return count;
     }
-   
+
+    public ResultSet getProItemIDByProID(String proID) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT pi.id AS proItemID FROM product p JOIN product_item pi ON p.id = pi.product_id WHERE p.id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, proID);
+            rs = pst.executeQuery();
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
+    public int deleteProduct(String proID) {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs = null;
+        int count = 0;
+
+        try {
+            String sql = "DELETE FROM product WHERE id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, proID);
+            count = pst.executeUpdate();
+        } catch (Exception e) {
+            count = 0;
+        }
+        return count;
+    }
 }

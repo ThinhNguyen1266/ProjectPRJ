@@ -19,19 +19,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Product Display</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <!-- Tailwind CSS 2.2.19 -->
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+        <!-- Bootstrap JS -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <!-- jQuery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloud flare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+        <!-- Font Awesome 5.15.4 -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+        <!-- Google Material Icons -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
         <style>
             .search-container {
                 display: flex;
@@ -195,6 +199,39 @@
                 align-self: center;
                 margin-top: 1em;
             }
+            .footer {
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                background-color: #2d3748;
+                color: white;
+            }
+            .footer-column {
+                flex: 1;
+                margin: 0 10px;
+            }
+            .footer-column h3 {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+            .footer-column ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .footer-column ul li {
+                margin-bottom: 5px;
+            }
+            .footer-column ul li a {
+                text-decoration: none;
+                color: white;
+            }
+            .footer-column ul li a:hover {
+                text-decoration: underline;
+            }
+            .payment-methods i {
+                font-size: 24px;
+                margin-right: 10px;
+            }
         </style>
 
         <script>
@@ -357,7 +394,7 @@
                 String pro_name = pDAO.getProductName(id);
             %>
             <nav aria-label="breadcrumb">
-                <dev><a href="/ProductController/List">Home</a><a href="/ProductController/Category/<%= obj.getCat_id()%>"><%= obj.getCat_name()%></a>/<%= pro_name%></a></dev>
+                <dev><a href="/ProductController/List">Home</a>/<a href="/ProductController/Category/<%= obj.getCat_id()%>"><%= obj.getCat_name()%></a>/<%= pro_name%></a></dev>
             </nav>
         </div>
         <main class="pt-10">
@@ -475,6 +512,7 @@
                         for (int i = 0; i < 4 && i < products.size(); i++) {
                             Map<String, String> product = products.get(i);
                             String pro_id = product.get("pro_id");
+                            String price = product.get("price");
                     %>
                     <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
                         <a href="/ProductController/View/<%= pro_id%>">
@@ -484,7 +522,7 @@
                         </a>
                         <div class="p-4 product-details">
                             <h3 class="text-lg font-semibold text-gray-800 product-name"><%= product.get("pro_name")%></h3>
-                            <p class="text-gray-600 mt-2"><%= product.get("price")%>vnd</p>
+                            <p class="text-gray-600 mt-2 product-price"><%= price%>vnd</p>
                         </div>
                         <a href="/ProductController/View/<%= pro_id%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
                     </div>
@@ -502,26 +540,49 @@
             }
 
             document.addEventListener("DOMContentLoaded", function () {
-                // This will run when the page is fully loaded
                 let priceElements = document.querySelectorAll('.product-price');
                 priceElements.forEach(function (priceElement) {
-                    let priceText = priceElement.innerText.trim(); // Assuming price is in innerText
+                    let priceText = priceElement.innerText.trim();
                     let formattedPrice = formatPrice(priceText);
                     priceElement.innerText = formattedPrice;
                 });
             });
         </script>
-        <footer class="bg-gray-800 text-white py-8">
-            <div class="mx-auto px-4 text-center">
-                <p>&copy; 2024 ShopName. All rights reserved.</p>
-                <div class="mt-4 space-x-4">
-                    <a href="#" class="hover:text-gray-400">Privacy
-                        Policy</a>
-                    <a href="#" class="hover:text-gray-400">Terms of
-                        Service</a>
+
+        <footer class="footer">
+            <div class="footer-column">
+                <h3>Product</h3>
+                <ul>
+                    <% CategoryDAO dao = new CategoryDAO();
+                        rs = dao.getAllCategoriesNull();
+                        while (rs.next()) {%>
+                    <li><a href="/ProductController/Category/<%= rs.getInt("id")%>"><%= rs.getString("name")%></a></li>
+                        <%}%>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>About</h3>
+                <ul>
+                    <li><a href="/ProductController/About-Contact">Contact Us</a></li>
+                    <li><a href="/ProductController/About-Contact">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Payment method</h3>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-apple-pay"></i>
                 </div>
             </div>
         </footer>
     </body>
-
 </html>

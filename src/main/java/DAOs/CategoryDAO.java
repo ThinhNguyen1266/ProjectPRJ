@@ -86,6 +86,21 @@ public class CategoryDAO {
         }
         return rs;
     }
+    
+    public String getCatParentID(String catID){
+        Connection conn = DB.DBConnection.getConnection();
+        String catParentID = "";
+        try{
+            String sql = " SELECT * FROM category WHERE id = ? ";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, catID);
+            ResultSet rs = pst.executeQuery();
+            catParentID = rs.getString("parent");
+        }catch(Exception e){
+            catParentID = "";
+        }
+        return catParentID;
+    }
 
     public Category getCatName(int id) {
         Connection conn = DB.DBConnection.getConnection();
@@ -98,6 +113,10 @@ public class CategoryDAO {
             if (rs.next()) {
                 obj = new Category();
                 obj.setCat_name(rs.getString("name"));
+                if(rs.getString("parent")!=null)
+                    obj.setParent(Integer.parseInt(rs.getString("parent")));
+                else
+                    obj.setParent(Integer.parseInt(rs.getString("id")));
             } else {
                 obj = null;
             }
@@ -111,7 +130,7 @@ public class CategoryDAO {
         Connection conn = DB.DBConnection.getConnection();
         Category obj;
         try {
-            String sql = "select id,[name] from category where id=(select c.parent from product p join category c on p.category_id=c.id where p.id=?)";
+            String sql = "select id,[name], parent from category where id=(select c.parent from product p join category c on p.category_id=c.id where p.id=?)";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
@@ -119,6 +138,7 @@ public class CategoryDAO {
                 obj = new Category();
                 obj.setCat_name(rs.getString("name"));
                 obj.setCat_id(rs.getInt("id"));
+                obj.setParent(rs.getInt("parent"));
             } else {
                 obj = null;
             }
@@ -127,4 +147,5 @@ public class CategoryDAO {
         }
         return obj;
     }
+
 }

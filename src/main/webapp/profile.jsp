@@ -107,7 +107,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="col-span-1">
                         <div class="list-group list-group-flush account-settings-links">
-                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+                            <a class="list-group-item list-group-item-action active"  href="/AccountController/Edit/<%= customerName%>">Profile Edit</a>
+                        </div>
+                         <div class="list-group list-group-flush account-settings-links">
+                            <a class="list-group-item list-group-item-action active" href="/AccountController/AddAddress/<%= customerName%>">Address Setting</a>
                         </div>
                     </div>
                     <div class="col-span-3">
@@ -115,10 +118,17 @@
                             <div class="tab-pane fade active show" id="account-general">
                                 <hr class="border-light m-0">
                                 <div class="profile-section p-4">
-                                    <p><strong>Name:</strong> <%= (user == null) ? "" : user.getName()%></p>
-                                    <p><strong>Email:</strong> <%= (user == null) ? "" : user.getEmails()%></p>
-                                    <p><strong>Phone Number:</strong> <%= (user == null) ? "" : user.getPhoneNumber()%></p>
-                                    <p><strong>Default Address:</strong> <%= (user == null) ? "" : user.getAddress().getAddress()%></p>
+                                    
+                                    <p><strong>Name:<%= (user == null) ? "" : user.getName()%></strong> <!-- User Name --></p>
+                                    <p><strong>Email: :<%= (user == null) ? "" : user.getEmails()%></strong> <!-- User Email --></p>
+                                    <p><strong>Phone Number: :<%= (user == null) ? "" : user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
+                                    <%
+                                        UserDAO dao = new UserDAO();
+                                        String userID = dao.getUserID(customerName);
+                                        String address = dao.getUserDefaultAddress(Integer.parseInt(userID));
+                                    %>
+                                    <p><strong>Default Address: <%= address%></strong>
+                                        <!-- User Default Address --></p>
                                 </div>
                             </div>
                         </div>

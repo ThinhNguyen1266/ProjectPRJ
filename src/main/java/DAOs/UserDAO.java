@@ -80,7 +80,7 @@ public class UserDAO {
                     + "    JOIN [user] u ON acc.id = u.account_id\n"
                     + "                    JOIN user_address ua ON u.account_id = ua.user_id\n"
                     + "                    JOIN [address] a ON ua.address_id = a.id \n"
-                    + "                    WHERE acc.name = ?";
+                    + "                    WHERE acc.name = ? and ua.is_default='1'";
             pst = conn.prepareStatement(sql);
             pst.setString(1, name);
             rs = pst.executeQuery();
@@ -139,7 +139,7 @@ public class UserDAO {
         String id = "";
         try {
             conn = DB.DBConnection.getConnection();
-            String sql = "Select a.id from address a join user_address ua on a.id=ua.address_id where ua.user_id=?";
+            String sql = "Select a.id from address a join user_address ua on a.id=ua.address_id where ua.user_id=? and ua.is_default='1'";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, userid);
             rs = pst.executeQuery();
@@ -244,5 +244,101 @@ public class UserDAO {
             rs=null;
         }
         return rs;
+    }
+    public ResultSet getAllUserAddress(int id) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "select *\n"
+                    + "from user_address ua \n"
+                    + "join address a on ua.address_id=a.id \n"
+                    + "join [province] p on a.province_id=p.id\n"
+                    + "where ua.user_id=?";
+
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            return rs;
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
+
+    public int getUserDefault(int userid) {
+        Connection conn = null;
+        ResultSet rs = null;
+        int id = 0;
+        try {
+            conn = DB.DBConnection.getConnection();
+            String sql = "Select a.id from address a join user_address ua on a.id=ua.address_id where ua.user_id= ? and ua.is_default='1'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, userid);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+
+        } catch (Exception e) {
+            id = 0;
+        }
+        return id;
+    }
+
+    public int setAddressDefault(int address_id) {
+        Connection conn = DB.DBConnection.getConnection();
+        int count;
+        try {
+            String sql = "update user_address set is_default='1' where address_id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, address_id);
+            count = pst.executeUpdate();
+        } catch (Exception e) {
+            count = 0;
+        }
+        return count;
+    }
+
+    public int setAddressNormal(int address_id) {
+        Connection conn = DB.DBConnection.getConnection();
+        int count;
+        try {
+            String sql = "update user_address set is_default='0' where address_id=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, address_id);
+            count = pst.executeUpdate();
+        } catch (Exception e) {
+            count = 0;
+        }
+        return count;
+    }
+
+    public String getUserDefaultAddress(int userid) {
+        Connection conn = null;
+        ResultSet rs = null;
+        String address="";
+        String province="";
+        String fulladdress="";
+        try {
+            conn = DB.DBConnection.getConnection();
+            String sql = "Select a.id,a.address,p.name from address a \n"
+                    + "join user_address ua on a.id=ua.address_id \n"
+                    + "join province p on a.province_id=p.id\n"
+                    + "where ua.user_id= ? and ua.is_default='1'";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, userid);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                address = rs.getString("address");
+                province=rs.getString("name");
+                fulladdress=address+","+province;
+                
+            }
+
+        } catch (Exception e) {
+           fulladdress=null;
+        }
+        return fulladdress;
     }
 }

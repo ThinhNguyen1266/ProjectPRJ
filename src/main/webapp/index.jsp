@@ -8,10 +8,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shopping Website Group1</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <style>
             .search-container {
                 display: flex;
@@ -138,6 +140,39 @@
             .bg-cover {
                 background-size: cover;
                 background-position: center;
+            }
+            .footer {
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                background-color: #2d3748;
+                color: white;
+            }
+            .footer-column {
+                flex: 1;
+                margin: 0 10px;
+            }
+            .footer-column h3 {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+            .footer-column ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .footer-column ul li {
+                margin-bottom: 5px;
+            }
+            .footer-column ul li a {
+                text-decoration: none;
+                color: white;
+            }
+            .footer-column ul li a:hover {
+                text-decoration: underline;
+            }
+            .payment-methods i {
+                font-size: 24px;
+                margin-right: 10px;
             }
         </style>
     </head>
@@ -284,12 +319,38 @@
             </div>
         </section>
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
-            <div class="container mx-auto px-4 text-center">
-                <p>&copy; 2024 ShopName. All rights reserved.</p>
-                <div class="mt-4 space-x-4">
-                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+        <footer class="footer">
+            <div class="footer-column">
+                <h3>Product</h3>
+                <ul>
+                    <%  dao = new CategoryDAO();
+                         rs = dao.getAllCategoriesNull();
+                        while (rs.next()) {%>
+                    <li><a href="/ProductController/Category/<%= rs.getInt("id")%>"><%= rs.getString("name")%></a></li>
+                        <%}%>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>About</h3>
+                <ul>
+                    <li><a href="/ProductController/About-Contact">Contact Us</a></li>
+                    <li><a href="/ProductController/About-Contact">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Payment method</h3>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-apple-pay"></i>
                 </div>
             </div>
         </footer>

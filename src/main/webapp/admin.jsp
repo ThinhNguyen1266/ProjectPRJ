@@ -4,6 +4,9 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="DAOs.OrderDAO"%>
 <%@page import="DAOs.ProductItemDAO"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page import="DAOs.CategoryDAO"%>
@@ -21,6 +24,7 @@
         <title>Admin Page</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
             .hidden {
                 display: none;
@@ -52,6 +56,7 @@
                         <li><a id="link-add-product" href="javascript:void(0)" class="hover:text-gray-400">Add New Product</a></li>
                         <li><a id="link-manage-products" href="javascript:void(0)" class="hover:text-gray-400">Manage Products</a></li>
                         <li><a id="link-view-orders" href="javascript:void(0)" class="hover:text-gray-400">View Orders</a></li>
+                        <li><a id="link-statistics" href="javascript:void(0)" class="hover:text-gray-400">Statistics</a></li>
                         <li><a id="link-manage-users" href="javascript:void(0)" class="hover:text-gray-400">View Users</a></li>
                         <li><a id="link-settings" href="javascript:void(0)" class="hover:text-gray-400">Settings</a></li>
                     </ul>
@@ -71,9 +76,6 @@
 
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="product-description">Product Description</label>
                         <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-description" placeholder="Product Description" name="proDes"></textarea>
-
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="product-quantity">Product Quantity</label>
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" id="product-quantity" type="number" placeholder="Product Quantity" name="proQuan">
 
                         <div class="flex flex-wrap -mx-3 mb-6">
                             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -170,7 +172,6 @@
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product Name</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Image</th>
-                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
@@ -181,20 +182,26 @@
                                 ProductItemDAO pidao = new ProductItemDAO();
                                 rs = pidao.getAllAdmin();
                                 while (rs.next()) {
+                                    String cat_name = "";
+                                    if (rs.getString("catParent").equals("300000"))
+                                        cat_name = "Laptop " + rs.getString("cat_name");
+                                    else if (rs.getString("catParent").equals("301000"))
+                                        cat_name = rs.getString("cat_name") + " Phone";
+                                    else
+                                        cat_name = rs.getString("cat_name");
                             %>
                             <tr>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("pro_id")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("pro_name")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("description")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><img src="<%= rs.getString("image")%>" alt="Product 1 Image" class="w-16 h-16"></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("price")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("quantity")%></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("cat_name")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= cat_name%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <form action="ProductController/Edit/<%=rs.getString("pro_id")%>" >
                                         <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</button>
                                     </form>
-                                    <!--<button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Delete</button>-->
+                                    <a href="/ProductController/DeleteProduct/<%= rs.getString("pro_id")%>" onclick="return confirm('Are you sure?')" class="bg-red-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Delete</a>
                                 </td>
                             </tr>
                             <!-- More rows as needed -->
@@ -227,6 +234,56 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div id="statistics" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8 hidden">
+                    <h1>Monthly Revenue Chart</h1>
+                    <label for="yearSelect">Year:</label>
+                    <select id="yearSelect" onchange="updateChart()">
+                        <%
+                            OrderDAO oDAO = new OrderDAO();
+                            ResultSet numberOfYear = oDAO.getNumberOfYear();
+                            List<Integer> listOfYear = new ArrayList<>();
+                            while (numberOfYear.next()) {
+                                int year = Integer.parseInt(numberOfYear.getString("year"));
+                                listOfYear.add(year);
+                        %>
+                        <option value="<%= year%>"><%= year%></option>
+                        <% }%>
+                    </select>
+                    <canvas id="revenueChart" width="400" height="200"></canvas>
+                    <script>
+        const revenueData = <%= oDAO.getChartStatistics(listOfYear)%>;
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        let revenueChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                        label: 'Revenue (Million VND)',
+                        data: revenueData['2021'],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function updateChart() {
+            const selectedYear = document.getElementById('yearSelect').value;
+            revenueChart.data.datasets[0].data = revenueData[selectedYear];
+            revenueChart.update();
+        }
+                    </script>
+                </div>
+
+
 
                 <!-- Manage Users -->
                 <div id="manage-users" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8 hidden">
@@ -296,6 +353,9 @@
             }
             document.getElementById('link-view-orders').onclick = function () {
                 toggleSection('view-orders');
+            }
+            document.getElementById('link-statistics').onclick = function () {
+                toggleSection('statistics');
             }
             document.getElementById('link-manage-users').onclick = function () {
                 toggleSection('manage-users');

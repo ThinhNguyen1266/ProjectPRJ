@@ -94,39 +94,6 @@
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 margin-top: 0.5rem;
             }
-            .footer {
-                padding: 20px;
-                display: flex;
-                justify-content: space-between;
-                background-color: #2d3748;
-                color: white;
-            }
-            .footer-column {
-                flex: 1;
-                margin: 0 10px;
-            }
-            .footer-column h3 {
-                font-size: 1.2em;
-                margin-bottom: 10px;
-            }
-            .footer-column ul {
-                list-style-type: none;
-                padding: 0;
-            }
-            .footer-column ul li {
-                margin-bottom: 5px;
-            }
-            .footer-column ul li a {
-                text-decoration: none;
-                color: white;
-            }
-            .footer-column ul li a:hover {
-                text-decoration: underline;
-            }
-            .payment-methods i {
-                font-size: 24px;
-                margin-right: 10px;
-            }
         </style>
     </head>
     <body class="bg-gray-100">
@@ -142,7 +109,7 @@
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
                         <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
                     </a>
-                    <a href="/CartController" class="text-gray-800 hover:text-gray-600">
+                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
                     <% String customerName = (String) session.getAttribute("customername");
@@ -185,7 +152,7 @@
                 </script>
             </div>
         </header>
-        <section class="bg-white shadow-md py-4 mt-16">
+       <section class="bg-white shadow-md py-4 mt-16">
             <div class="container mx-auto px-4">
                 <form method="post" action="/ProductController">
                     <div class="flex space-x-4">
@@ -205,7 +172,7 @@
                                 <option value="3000">>20 000 000</option>
                             </select>
                         </div>
-                        <input id="searchname" type="hidden" name="SearchName" value="<%= session.getAttribute("Searchname")%>">
+                         <input id="searchname" type="hidden" name="SearchName" value="<%= session.getAttribute("Searchname")%>">
                         <button type="submit" name="btnSortS">Sort</button>
                     </div>
                     
@@ -220,9 +187,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
                         ProductItemDAO pidao = new ProductItemDAO();
-                        String name = (String) session.getAttribute("Searchname");
-                        System.out.println(name);
-                        ResultSet rs = pidao.getAllByName(name);// Corrected to use category ID  
+                        
+                        String type= (String) session.getAttribute("type");
+                         String Sortprice= (String) session.getAttribute("sprice");
+                         String name = (String) session.getAttribute("Searchname");
+                         
+                        
+                        ResultSet rs = pidao.SortProduct(Integer.parseInt(Sortprice), type,name);// Corrected to use category ID  
                         while (rs.next()) {
                             String price = rs.getString("price");
                     %>
@@ -262,38 +233,12 @@
         </section>
 
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-column">
-                <h3>Product</h3>
-                <ul>
-                    <% CategoryDAO dao = new CategoryDAO();
-                        rs = dao.getAllCategoriesNull();
-                        while (rs.next()) {%>
-                    <li><a href="/ProductController/Category/<%= rs.getInt("id")%>"><%= rs.getString("name")%></a></li>
-                        <%}%>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Help</h3>
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Shipping</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>About</h3>
-                <ul>
-                    <li><a href="/ProductController/About-Contact">Contact Us</a></li>
-                    <li><a href="/ProductController/About-Contact">About Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Payment method</h3>
-                <div class="payment-methods">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-paypal"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fab fa-apple-pay"></i>
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2024 ShopName. All rights reserved.</p>
+                <div class="mt-4 space-x-4">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
                 </div>
             </div>
         </footer>

@@ -6,7 +6,6 @@ package DAOs;
 
 import DB.DBConnection;
 import Models.Category;
-import Models.Product;
 import Models.Product_item;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,8 +50,13 @@ public class ProductItemDAO {
             rs = pst.executeQuery();
             if (rs.next()) {
                 obj = new Product_item();
-                obj.setItem_id(rs.getInt("id"));
-                obj.setPrice(rs.getLong("price"));
+                obj.setItem_id(Integer.parseInt(rs.getString("id")));
+                obj.setPrice(Long.parseLong(rs.getString("price")));
+                obj.setItem_quan(Integer.parseInt(rs.getString("quantity")));
+                obj.setPro_id(Integer.parseInt(rs.getString("product_id")));
+                CategoryDAO cDAO = new CategoryDAO();
+                Category cat = cDAO.getCategorByProID(obj.getPro_id());
+                obj.setCategory(cat);
             } else {
                 obj = null;
             }
@@ -85,17 +89,8 @@ public class ProductItemDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT\n"
-                    + "    p.id as pro_id, p.name as pro_name, p.[description], SUM(pi.quantity) as quantity, MIN(pi.price) as price , p.[image],\n"
-                    + "    COALESCE(pc.name + ' ', '')+c.name as cat_name\n"
-                    + "FROM product as p\n"
-                    + "    JOIN product_item as pi\n"
-                    + "    on p.id = pi.product_id\n"
-                    + "    JOIN category as c\n"
-                    + "    on p.category_id = c.id\n"
-                    + "    JOIN category as pc\n"
-                    + "    ON c.parent = pc.id\n"
-                    + "GROUP BY p.id, p.name, p.[description], p.quantity, p.[image], pc.name,c.name";
+            String sql = "SELECT p.id AS pro_id, p.name as pro_name, p.[description], p.[image], (SELECT SUM(quantity) quantity FROM product_item where product_id = p.id GROUP BY product_id)\n"
+                    + " as quantity, c.parent as catParent, c.name as cat_name FROM product p JOIN category c ON p.category_id = c.id";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             return rs;
@@ -103,6 +98,23 @@ public class ProductItemDAO {
             rs = null;
         }
         return rs;
+    }
+
+    public boolean checkCreateNewProItem(String id) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement pst = null;
+        try {
+            String sql = "SELECT * FROM product p JOIN product_item pi ON p.id = pi.product_id JOIN category c ON p.category_id = c.id WHERE c.parent = 302000 AND p.id = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, id);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
     }
 
     public ResultSet getAllInMenu() {
@@ -548,6 +560,66 @@ public class ProductItemDAO {
             count = 0;
         }
         return count;
+    }
+
+    public ResultSet SortProduct(int price, String type, String name) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sortOrder = type.equalsIgnoreCase("asc") ? "ASC" : "DESC";
+            String sql = "";
+
+            if (price == 1000) {
+                sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                        + "FROM product as p \n"
+                        + "JOIN product_item as pi \n"
+                        + "on p.id = pi.product_id\n"
+                        + "JOIN category as c \n"
+                        + "on c.id = p.category_id\n"
+                        + "where pi.price < 10000000 \n"
+                        + "AND p.name like ? \n"
+                        + "GROUP BY p.id, p.name, p.[image]\n"
+                        + "ORDER BY MIN(pi.price) " + sortOrder;
+            } else if (price == 2000) {
+                sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                        + "FROM product as p \n"
+                        + "JOIN product_item as pi \n"
+                        + "on p.id = pi.product_id\n"
+                        + "JOIN category as c \n"
+                        + "on c.id = p.category_id\n"
+                        + "where pi.price > 10000000 and pi.price < 20000000 \n"
+                        + "AND p.name like ? \n"
+                        + "GROUP BY p.id, p.name, p.[image]\n"
+                        + "ORDER BY MIN(pi.price) " + sortOrder;
+            } else if (price == 3000) {
+                sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                        + "FROM product as p \n"
+                        + "JOIN product_item as pi \n"
+                        + "on p.id = pi.product_id\n"
+                        + "JOIN category as c \n"
+                        + "on c.id = p.category_id\n"
+                        + "where pi.price > 20000000\n"
+                        + "AND p.name like ? \n"
+                        + "GROUP BY p.id, p.name, p.[image]\n"
+                        + "ORDER BY MIN(pi.price) " + sortOrder;
+            }
+
+            if (!sql.isEmpty()) {
+                System.out.println("Executing SQL: " + sql);
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%" + name + "%");
+                rs = ps.executeQuery();
+            } else {
+                System.out.println("No SQL query executed for price: " + price);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            rs = null;
+        }
+        return rs;
     }
 
     private boolean containJson(JSONArray jsona, String value) {

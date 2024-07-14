@@ -89,7 +89,7 @@ public class CreateAccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if (request.getParameter("btnSignin") != null) {
+        if (request.getParameter("bCreateAccountDAtnSignin") != null) {
             CreateAccountDAO caDAO = new CreateAccountDAO();
             HttpSession session = request.getSession();
             String username = request.getParameter("txtUsername");
