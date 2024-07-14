@@ -32,6 +32,10 @@
         <servlet-name>OrderController</servlet-name>
         <servlet-class>Controllers.OrderController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RemoveCartItem</servlet-name>
+        <servlet-class>Controllers.RemoveCartItem</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountController</servlet-name>
         <url-pattern>/AccountController/*</url-pattern>
@@ -64,6 +68,10 @@
     <servlet-mapping>
         <servlet-name>OrderController</servlet-name>
         <url-pattern>/OrderController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RemoveCartItem</servlet-name>
+        <url-pattern>/RemoveCartItem</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
