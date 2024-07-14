@@ -163,56 +163,68 @@
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
                             </tr>
                         </thead>
-
                         <tbody>
                             <%
                                 Cart_itemDAO cidao = new Cart_itemDAO();
                                 String userId = (String) session.getAttribute("customerID");
                                 ResultSet rs = cidao.getAllCartProductItem(userId);
+                            %>
+                        <script>
+                            function formatPrice(price) {
+                                let parts = price.toString().split(".");
+                                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return parts.join(".");
+                            }
+
+                            document.addEventListener("DOMContentLoaded", function () {
+                                let priceElements = document.querySelectorAll('.product-price');
+                                priceElements.forEach(function (priceElement) {
+                                    let priceText = priceElement.innerText.trim();
+                                    let formattedPrice = formatPrice(priceText);
+                                    priceElement.innerText = formattedPrice;
+                                });
+                            });
+                        </script>
+                        <tbody>
+                            <%
                                 while (rs.next()) {
+                                    String price = rs.getString("price");
                             %>
                             <tr>
-
                                 <td>
                                     <input type="checkbox" 
                                            class="form-check-input" 
                                            data-userId="<%=userId%>" 
-                                           data-price="<%= rs.getString("price")%>" 
+                                           data-price="<%= price%>" 
                                            data-id="<%= rs.getString("cart_item_id")%>"
                                            data-pro-item-id ="<%= rs.getString("pro_item_id")%>">
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 w-10 h-10">
-                                            <img
-                                                class="w-full h-full rounded-full"
-                                                src="<%= rs.getString("image")%>"
-                                                alt="Product Image">
+                                            <img class="w-full h-full rounded-full"
+                                                 src="<%= rs.getString("image")%>"
+                                                 alt="Product Image">
                                         </div>
                                         <div class="ml-3">
-                                            <p
-                                                class="text-gray-900 whitespace-no-wrap"><%= rs.getString("pro_name")%></p>
+                                            <p class="text-gray-900 whitespace-no-wrap"><%= rs.getString("pro_name")%></p>
                                         </div>
                                     </div>
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <input type="number" value="<%= rs.getString("quantity")%>"
-                                           class="w-16 py-2 px-3 border rounded text-gray-700 quantity" >
+                                           class="w-16 py-2 px-3 border rounded text-gray-700 quantity">
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p
-                                        class="text-gray-900 whitespace-no-wrap" ><%= rs.getString("price")%></p>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap product-price"><%= price%></p>
                                 </td>
-                                <td
-                                    class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                                    <button
-                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
                                 </td>
                             </tr>
-                            <% }%>
+                            <%
+                                }
+                            %> 
                             <!-- Repeat for other products -->
                         </tbody>
                     </table>
@@ -265,64 +277,57 @@
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-
-                    $(document).ready(() => {
-                        updateTotalPrice();
-                        function updateTotalPrice() {
-                            let total = 0;
-                            $('input[type="checkbox"]:checked').each(function () {
-                                const $checkbox = $(this);
-                                const price = parseInt($checkbox.data('price'));
-                                const quantity = parseInt($checkbox.closest('tr').find('.quantity').val());
-                                total += price * quantity;
-                            });
-                            $('#totalPrice').text(total);
-                            $('#totalCartPrice').val(total);
-                        }
-
-                        $('input[type="checkbox"]').on('change', function () {
-                            updateTotalPrice();
-                        });
-
-                        $('input.quantity').on('change', function () {
-                            const tr = $(this).closest('tr');
-                            const  id = tr.find(':checkbox').data('id');
-                            const quan = $(this).val();
-                            $.ajax({
-                                url: '/CartController',
-                                type: 'POST',
-                                data: {
-                                    updateQuan: 'updateQuan',
-                                    cartItemID: id,
-                                    newQuantity: quan
-                                },
-                                success: function (response) {
-                                    console.log("nice");
+                            $(document).ready(() => {
+                                updateTotalPrice();
+                                function updateTotalPrice() {
+                                    let total = 0;
+                                    $('input[type="checkbox"]:checked').each(function () {
+                                        const $checkbox = $(this);
+                                        const price = parseInt($checkbox.data('price'));
+                                        const quantity = parseInt($checkbox.closest('tr').find('.quantity').val());
+                                        total += price * quantity;
+                                    });
+                                    $('#totalPrice').text(total.toLocaleString('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0}));
+                                    $('#totalCartPrice').val(total);
                                 }
+
+                                $('input[type="checkbox"]').on('change', function () {
+                                    updateTotalPrice();
+                                });
+
+                                $('input.quantity').on('change', function () {
+                                    const tr = $(this).closest('tr');
+                                    const id = tr.find(':checkbox').data('id');
+                                    const quan = $(this).val();
+                                    $.ajax({
+                                        url: '/CartController',
+                                        type: 'POST',
+                                        data: {
+                                            updateQuan: 'updateQuan',
+                                            cartItemID: id,
+                                            newQuantity: quan
+                                        },
+                                        success: function (response) {
+                                            console.log("nice");
+                                        }
+                                    });
+                                    updateTotalPrice();
+                                });
+
+                                $('#proceedToCheckout').click(function () {
+                                    let selectedProducts = [];
+                                    $('input[type="checkbox"]:checked').each(function () {
+                                        const $checkbox = $(this);
+                                        const proItemID = $checkbox.data('pro-item-id');
+                                        const price = parseInt($checkbox.data('price'));
+                                        const quantity = parseInt($checkbox.closest('tr').find('.quantity').val());
+                                        selectedProducts.push({proItemID: proItemID, price: price, quantity: quantity});
+                                    });
+                                    const form = $('<form action="/OrderController" method="GET"></form>');
+                                    form.append($('<input type="hidden" name="selectedProducts" />').val(JSON.stringify(selectedProducts)));
+                                    $('body').append(form);
+                                    form.submit();
+                                });
                             });
-                            updateTotalPrice();
-                        });
-
-
-
-                        $('#proceedToCheckout').click(function () {
-                            let selectedProducts = [];
-                            $('input[type="checkbox"]:checked').each(function () {
-                                const $checkbox = $(this);
-                                const proItemID = $checkbox.data('pro-item-id');
-                                const price = parseInt($checkbox.data('price'));
-                                const quantity = parseInt($checkbox.closest('tr').find('.quantity').val());
-                                selectedProducts.push({ proItemID: proItemID, price: price, quantity: quantity});
-                            });
-                            const form = $('<form action="/OrderController" method="GET"></form>');
-                            form.append($('<input type="hidden" name="selectedProducts" />').val(JSON.stringify(selectedProducts)));
-                            $('body').append(form);
-                            form.submit();
-                        });
-
-
-                    });
-
-
     </script>
 </html>
