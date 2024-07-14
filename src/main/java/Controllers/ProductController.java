@@ -98,8 +98,10 @@ public class ProductController extends HttpServlet {
                 for (Cookie cookie : cookies) {
                     if (cookie.getName().equals("username")) {
                         session.setAttribute("customername", cookie.getValue());
-                        coke = true;
-                        break;
+                        coke = true;    
+                    }
+                    if(cookie.getName().equals("userID")){
+                        session.setAttribute("customerID", cookie.getValue());                      
                     }
                 }
             }
@@ -107,24 +109,6 @@ public class ProductController extends HttpServlet {
 
         } else if (path.equals("/ProductController/About-Contact")) {
             request.getRequestDispatcher("/about-contact.jsp").forward(request, response);
-        } else if (path.startsWith("/ProductController/Cart")) {
-            Cookie[] cookies = request.getCookies();
-            boolean flag = false;
-            for (Cookie c : cookies) {
-                if (c.getName().equals("username")) {
-                    flag = true;
-                }
-            }
-            if (!flag) {
-                response.sendRedirect("/AccountController/Login");
-            } else {
-                String[] s = path.split("/");
-                String id = s[s.length - 1];
-                ProductItemDAO pdao = new ProductItemDAO();
-                Product_item obj = pdao.getProductItem(id);
-                session.setAttribute("product", obj);
-                request.getRequestDispatcher("/cart.jsp").forward(request, response);
-            }
         } else if (path.equals("/ProductController/Checkout")) {
             Cookie[] cookies = request.getCookies();
             String id = "";

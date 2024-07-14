@@ -142,7 +142,7 @@
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
                         <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
                     </a>
-                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">
+                    <a href="/CartController" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
                     <% String customerName = (String) session.getAttribute("customername");
