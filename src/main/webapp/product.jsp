@@ -294,14 +294,14 @@
                             numOfOp: numOfOp
                         },
                         success: function (response) {
-                            updateOptions(response)
+                            updateOptions(response);
                             if (response.price !== 0) {
                                 $('#orderPrice').val(response.price);
                                 let formattedPrice = formatPrice(response.price);
                                 $('#price').text(formattedPrice);
                             }
                             if (response.quan !== 0) {
-                                $('#quan').text(response.quan + ' in storage')
+                                $('#quan').text(response.quan + ' in storage').attr('data-stock', response.quan);
                             }
                             if (response.id !== "") {
                                 $('#cartProductID').attr("value", response.id);
@@ -309,6 +309,7 @@
                             }
                         }
                     });
+
                 });
             }
 
@@ -455,15 +456,18 @@
                             <button type="button" onclick="minusNum1()" class="px-2 py-1 border border-gray-300">-</button>
                             <input type="text" id="firstvalue" value="1" class="w-12 text-center mx-2 border border-gray-300">
                             <button type="button" onclick="addNum1()" class="px-2 py-1 border border-gray-300">+</button>
-                            <div class="stock-status ml-4" id="quan"><%= rs.getString("quantity")%> in storage</div>
+                            <div class="stock-status ml-4" id="quan" data-stock="<%= rs.getString("quantity")%>"><%= rs.getString("quantity")%> in storage</div>
                         </div>
                         <script>
                             function addNum1() {
                                 var newValue = Number(document.getElementById('firstvalue').value);
-                                newValue += 1;
-                                document.getElementById('firstvalue').value = newValue;
-                                document.getElementById('cartQuan').value = newValue;
-                                document.getElementById('orderQuan').value = newValue;
+                                var stock = Number(document.getElementById('quan').getAttribute('data-stock'));
+                                if (newValue < stock) {
+                                    newValue += 1;
+                                    document.getElementById('firstvalue').value = newValue;
+                                    document.getElementById('cartQuan').value = newValue;
+                                    document.getElementById('orderQuan').value = newValue;
+                                }
                             }
 
                             function minusNum1() {
@@ -475,6 +479,7 @@
                                     document.getElementById('orderQuan').value = subNum;
                                 }
                             }
+
                         </script>
                         <%
                             if (customerName != null) {
