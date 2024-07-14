@@ -245,7 +245,7 @@
                     },
                     success: function (response) {
                         Object.keys(response).forEach(function (variation) {
-                            var safeVariation = variation.replace(/\s+/g, '-'); 
+                            var safeVariation = variation.replace(/\s+/g, '-');
                             var group = $('<div class="option-group" id="' + safeVariation + '-group"></div>');
                             group.append('<label for="' + safeVariation + '-group">' + variation + ':</label> ');
                             response[variation].forEach(function (option) {
@@ -258,6 +258,12 @@
                 });
 
             });
+
+            function formatPrice(price) {
+                let parts = price.toString().split(".");
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return parts.join(".");
+            }
 
             function bindOptionClickEvents() {
                 $('.option').off('click').on('click', function () {
@@ -290,7 +296,8 @@
                         success: function (response) {
                             updateOptions(response)
                             if (response.price !== 0) {
-                                $('#price').text(response.price);
+                                let formattedPrice = formatPrice(response.price);
+                                $('#price').text(formattedPrice);
                             }
                             if (response.quan !== 0) {
                                 $('#quan').text(response.quan + ' in storage')
@@ -400,7 +407,6 @@
         <main class="pt-10">
             <div class="container" style="padding: 10px">
                 <%
-
                     ProductItemDAO pidao = new ProductItemDAO();
                     ResultSet rs = null;
                     if (id != null) {
@@ -409,31 +415,45 @@
                         request.getRequestDispatcher("/").forward(request, response);
                     }
                     if (rs != null) {
+                        String moreprice = rs.getString("price");
                 %>
+                <script>
+                    function formatPrice(price) {
+                        let parts = price.toString().split(".");
+                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        return parts.join(".");
+                    }
+
+                    document.addEventListener("DOMContentLoaded", function () {
+                        let priceElements = document.querySelectorAll('.product-price');
+                        priceElements.forEach(function (priceElement) {
+                            let priceText = priceElement.innerText.trim();
+                            let formattedPrice = formatPrice(priceText);
+                            priceElement.innerText = formattedPrice;
+                        });
+                    });
+                </script>
+
                 <div class="flex">
-                    <input type="hidden" id="product_ID" value="<%=id%>" />
+                    <input type="hidden" id="product_ID" value="<%= id%>" />
                     <div class="img-container">
-                        <img src="<%= rs.getString("image")%>"
-                             alt="Product Image">
+                        <img src="<%= rs.getString("image")%>" alt="Product Image">
                     </div>
                     <div class="details-container">
                         <h3><%= rs.getString("pro_name")%></h3>
-                        <div class="des mb-4"><%=rs.getString("description")%></div>
+                        <div class="des mb-4"><%= rs.getString("description")%></div>
 
                         <div id="variation">
-
+                            <!-- Add variations here if any -->
                         </div>
 
-                        <div class="price" id="price"><%= rs.getString("price")%></div>
+                        <div class="price product-price" id="price"><%= moreprice%></div>
 
                         <div class="quantity-selector flex items-center">
                             <label for="quantity" class="mr-2">Quantity</label>
-                            <button type="button" onclick="minusNum1()"
-                                    class="px-2 py-1 border border-gray-300">-</button>
-                            <input type="text" id="firstvalue" value="1"
-                                   class="w-12 text-center mx-2 border border-gray-300">
-                            <button type="button" onclick="addNum1()"
-                                    class="px-2 py-1 border border-gray-300">+</button>
+                            <button type="button" onclick="minusNum1()" class="px-2 py-1 border border-gray-300">-</button>
+                            <input type="text" id="firstvalue" value="1" class="w-12 text-center mx-2 border border-gray-300">
+                            <button type="button" onclick="addNum1()" class="px-2 py-1 border border-gray-300">+</button>
                             <div class="stock-status ml-4" id="quan"><%= rs.getString("quantity")%> in storage</div>
                         </div>
                         <script>
@@ -441,8 +461,8 @@
                                 var newValue = Number(document.getElementById('firstvalue').value);
                                 newValue += 1;
                                 document.getElementById('firstvalue').value = newValue;
-                                $('#cartQuan').val(newValue);
-                                $('#orderQuan').val(newValue);
+                                document.getElementById('cartQuan').value = newValue;
+                                document.getElementById('orderQuan').value = newValue;
                             }
 
                             function minusNum1() {
@@ -450,8 +470,8 @@
                                 if (subNum > 1) {
                                     subNum -= 1;
                                     document.getElementById('firstvalue').value = subNum;
-                                    $('#cartQuan').val(subNum);
-                                    $('#orderQuan').val(subNum);
+                                    document.getElementById('cartQuan').value = subNum;
+                                    document.getElementById('orderQuan').value = subNum;
                                 }
                             }
                         </script>
@@ -459,8 +479,8 @@
                             if (customerName != null) {
                         %>
                         <div style="display: inline-block; margin-right: 10px;">
-                            <form action="/CartController" method="post" >
-                                <input type="hidden" name="productItemID" id="cartProductID" value="<%= rs.getString("pro_item_id") %>"/>
+                            <form action="/CartController" method="post">
+                                <input type="hidden" name="productItemID" id="cartProductID" value="<%= rs.getString("pro_item_id")%>" />
                                 <input type="hidden" id="cartQuan" name="quantity" value="1">
                                 <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID")%>">
                                 <button type="submit" class="add-to-cart" name="btnAddToCart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
@@ -468,7 +488,7 @@
                         </div>
                         <div style="display: inline-block; margin-right: 10px;">
                             <form action="/OrderController" method="post">
-                                <input type="hidden" name="productItemID" id="orderProductID" value="<%= rs.getString("pro_item_id") %>"/>
+                                <input type="hidden" name="productItemID" id="orderProductID" value="<%= rs.getString("pro_item_id")%>" />
                                 <input type="hidden" id="orderQuan" name="quantity" value="1">
                                 <input type="hidden" id="orderPrice" name="price" value="<%= rs.getString("price")%>">
                                 <button type="submit" class="buy-now" name="BuyNow">Buy Now</button>
@@ -491,6 +511,7 @@
                 }
             %>
         </main>
+
         <section class="py-12">
             <div class="container mx-auto px-4">
                 <h2 class="text-2xl font-bold text-gray-800 text-center">Recommended Products</h2>
