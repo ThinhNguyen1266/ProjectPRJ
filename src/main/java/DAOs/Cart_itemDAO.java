@@ -83,12 +83,29 @@ public class Cart_itemDAO {
         return count;
     }
 
+
+        public boolean deleteCartItem(String cartId, String proItemId) {
+             Connection conn = DBConnection.getConnection();
+            try {
+                String sql = "DELETE FROM cart_item where cart_id = ? AND product_item_id = ?";
+                PreparedStatement pst = conn.prepareStatement(sql);
+                pst.setString(1, cartId);
+                pst.setString(2, proItemId);
+                int rowsAffected = pst.executeUpdate();
+                return rowsAffected > 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    
+
     public ResultSet getAllCartProductItem(String userID) {
         Connection conn = DBConnection.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "    select ci.id as cart_item_id,pi.id as pro_item_id,  p.name as pro_name, ci.quantity as quantity, pi.price as price , p.[image]\n"
+            String sql = "    select ci.cart_id as cart_id, ci.id as cart_item_id,pi.id as pro_item_id,  p.name as pro_name, ci.quantity as quantity, pi.price as price , p.[image]\n"
                     + "    from [user] as u \n"
                     + "    join cart as c\n"
                     + "    on u.account_id = c .user_id\n"
@@ -99,19 +116,19 @@ public class Cart_itemDAO {
                     + "    join product as p \n"
                     + "    on p.id = pi.product_id\n"
                     + "    where u.account_id = ?";
-            
+
             ps = conn.prepareStatement(sql);
             ps.setString(1, userID);
-            rs = ps. executeQuery();
+            rs = ps.executeQuery();
             return rs;
         } catch (Exception e) {
             rs = null;
         }
         return rs;
     }
-    
-   public void addQuantity(String cartItemID, int quan ){
-       Connection conn = DBConnection.getConnection();
+
+    public void addQuantity(String cartItemID, int quan) {
+        Connection conn = DBConnection.getConnection();
         PreparedStatement ps = null;
         try {
             String sql = "update cart_item set quantity = quantity +  ? where id = ?";
@@ -121,9 +138,9 @@ public class Cart_itemDAO {
             ps.executeUpdate();
         } catch (Exception e) {
         }
-   }
-    
-    public void updateQuantity(String cartItemID, String newQuan){
+    }
+
+    public void updateQuantity(String cartItemID, String newQuan) {
         Connection conn = DBConnection.getConnection();
         PreparedStatement ps = null;
         try {
@@ -134,24 +151,25 @@ public class Cart_itemDAO {
             ps.executeUpdate();
         } catch (Exception e) {
         }
-    } 
-    
-    
-    public String contain(int cartID,String proItemID){
+    }
+
+    public String contain(int cartID, String proItemID) {
         Connection conn = DBConnection.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql ="SELECT id FROM cart_item where cart_id =? and product_item_id=?";
+            String sql = "SELECT id FROM cart_item where cart_id =? and product_item_id=?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1, cartID);
             ps.setString(2, proItemID);
             rs = ps.executeQuery();
-            if(rs.next()) return rs.getString("id");
+            if (rs.next()) {
+                return rs.getString("id");
+            }
         } catch (Exception e) {
             return null;
         }
         return null;
     }
-    
+
 }

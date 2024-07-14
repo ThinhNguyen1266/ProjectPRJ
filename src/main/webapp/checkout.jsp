@@ -187,6 +187,7 @@
                             <thead>
                                 <tr>
                                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Option</th>
                                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
                                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
                                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
@@ -202,32 +203,44 @@
                                         JSONObject jsonObject = products.getJSONObject(i);
                                         int quantity = jsonObject.getInt("quantity");
                                         long price = jsonObject.getLong("price");
-                                        long currentTotalprice = quantity*price;
+                                        long currentTotalprice = quantity * price;
                                         totalPrice += currentTotalprice;
                                         System.out.println(jsonObject.toString());
                                         int id = jsonObject.getInt("proItemID");
-                                        rs = pidao.getOrderProductItem(id);      
+                                        rs = pidao.getOrderProductItem(id);
                                 %>
 
                                 <tr>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 w-10 h-10">
-                                                <img class="w-full h-full rounded-full" src="<%= rs.getString("image") %>" alt="Product Image">
+                                                <img class="w-full h-full rounded-full" src="<%= rs.getString("image")%>" alt="Product Image">
                                             </div>
                                             <div class="ml-3">
-                                                <p class="text-gray-900 whitespace-no-wrap"> <%= rs.getString("product_name") %></p>
+                                                <p class="text-gray-900 whitespace-no-wrap"> <%= rs.getString("product_name")%></p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <input type="number" value="<%= quantity %>" disabled class="w-16 py-2 px-3 border rounded text-gray-700">
+                                    <td
+                                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <%
+                                            pidao = new ProductItemDAO();
+                                            ResultSet rs2 = pidao.getProductVariance(rs.getString("pro_item_id"));
+                                            while (rs2.next()) {
+                                        %>
+                                        <%= rs2.getString("variane_name")%> : <%= rs2.getString("variance_value")%> <br/><br/>
+                                        <%
+                                            }
+                                        %>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p class="text-gray-900 whitespace-no-wrap"><%= price %></p>
+                                        <input type="number" value="<%= quantity%>" disabled class="w-16 py-2 px-3 border rounded text-gray-700">
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"> <%= currentTotalprice %> VND</p>
+                                        <p class="text-gray-900 whitespace-no-wrap"><%= price%></p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"> <%= currentTotalprice%> VND</p>
                                     </td>
 
                                 </tr>
