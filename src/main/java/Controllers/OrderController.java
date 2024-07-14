@@ -4,27 +4,19 @@
  */
 package Controllers;
 
-import DAOs.CartDAO;
-import DAOs.Cart_itemDAO;
-import DAOs.ProductItemDAO;
-import Models.Cart;
-import Models.Cart_item;
-import Models.Product_item;
-import Models.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import org.json.JSONArray;
 
 /**
  *
  * @author Thinh
  */
-public class CartController extends HttpServlet {
+public class OrderController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +35,10 @@ public class CartController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CartController</title>");
+            out.println("<title>Servlet OrderController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CartController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OrderController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,10 +56,9 @@ public class CartController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if (path.equals("/CartController")) {
-            request.getRequestDispatcher("cart.jsp").forward(request, response);
-        } 
+
+        request.getRequestDispatcher("checkout.jsp").forward(request, response);
+
     }
 
     /**
@@ -81,34 +72,6 @@ public class CartController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if(request.getParameter("btnAddToCart")!=null){
-            ProductItemDAO pidao = new ProductItemDAO();
-            CartDAO cartDAO = new CartDAO();
-            Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
-            String userID = request.getParameter("userID");
-            String proItemID = request.getParameter("productItemID");
-            int quan = Integer.parseInt(request.getParameter("quantity"));
-            Product_item pi = pidao.getProductItem(proItemID);
-            int cartID = cartDAO.getCartIDByUserID(userID);
-            String tmpID=cart_itemDAO.contain(cartID, proItemID);
-            if(tmpID==null){
-                User user = new User();
-                user.setId(Integer.parseInt(userID));
-                int id = Integer.parseInt(cart_itemDAO.getCart_itemID());
-                id++;
-                Cart_item cart_item = new Cart_item(id, pi, cartID, user, quan);
-                cart_itemDAO.addNewCart_Item(cart_item);
-            }else{
-                cart_itemDAO.addQuantity(tmpID, quan);
-            }
-            response.sendRedirect("/CartController");
-        }else if(request.getParameter("updateQuan")!=null){
-            String cartItemID = request.getParameter("cartItemID");
-            String newquan = request.getParameter("newQuantity");
-            Cart_itemDAO cidao = new Cart_itemDAO();
-            cidao.updateQuantity(cartItemID, newquan);
-            response.getWriter().write("success");
-        }
         
     }
 

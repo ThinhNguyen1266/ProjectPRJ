@@ -69,7 +69,7 @@
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
                         <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
                     </a>
-                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">
+                    <a href="/CartController" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
                     <% String customerName = (String) session.getAttribute("customername");
@@ -129,34 +129,48 @@
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
                             </tr>
                         </thead>
+
                         <tbody>
+                            <%
+                                Cart_itemDAO cidao = new Cart_itemDAO();
+                                String userId = (String) session.getAttribute("customerID");
+                                ResultSet rs = cidao.getAllCartProductItem(userId);
+                                while (rs.next()) {
+                            %>
                             <tr>
-                                <td><input type="checkbox" class="form-check-input" data-price="10.00"></td>
+
+                                <td>
+                                    <input type="checkbox" 
+                                           class="form-check-input" 
+                                           data-userId="<%=userId%>" 
+                                           data-price="<%= rs.getString("price")%>" 
+                                           data-id="<%= rs.getString("cart_item_id")%>"
+                                           data-pro-item-id ="<%= rs.getString("pro_item_id")%>">
+                                </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 w-10 h-10">
                                             <img
                                                 class="w-full h-full rounded-full"
-                                                src="https://via.placeholder.com/150"
+                                                src="<%= rs.getString("image")%>"
                                                 alt="Product Image">
                                         </div>
                                         <div class="ml-3">
                                             <p
-                                                class="text-gray-900 whitespace-no-wrap">Product
-                                                Name</p>
+                                                class="text-gray-900 whitespace-no-wrap"><%= rs.getString("pro_name")%></p>
                                         </div>
                                     </div>
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <input type="number" value="1"
-                                           class="w-16 py-2 px-3 border rounded text-gray-700">
+                                    <input type="number" value="<%= rs.getString("quantity")%>"
+                                           class="w-16 py-2 px-3 border rounded text-gray-700 quantity" >
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <p
-                                        class="text-gray-900 whitespace-no-wrap">$10.00</p>
+                                        class="text-gray-900 whitespace-no-wrap" ><%= rs.getString("price")%></p>
                                 </td>
                                 <td
                                     class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
@@ -164,13 +178,16 @@
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Remove</button>
                                 </td>
                             </tr>
+                            <% }%>
                             <!-- Repeat for other products -->
                         </tbody>
                     </table>
                 </div>
                 <div class="mt-8 flex justify-end">
-                    <h4 class="text-xl font-bold">Total: $<span id="totalPrice">0.00</span></h4>
-                    <a href="checkout.html" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-4">Proceed to Checkout</a>
+                    <h4 class="text-xl font-bold">Total: <span id="totalPrice">0</span></h4>
+                    <input type="hidden" value="" name="totalCartPrice" id="totalCartPrice">
+                    <button class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-4" 
+                            id="proceedToCheckout">Proceed to Checkout</button>
                 </div>
             </div>
         </section>
@@ -186,4 +203,66 @@
             </div>
         </footer>
     </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+
+                    $(document).ready(() => {
+                        updateTotalPrice();
+                        function updateTotalPrice() {
+                            let total = 0;
+                            $('input[type="checkbox"]:checked').each(function () {
+                                const $checkbox = $(this);
+                                const price = parseInt($checkbox.data('price'));
+                                const quantity = parseInt($checkbox.closest('tr').find('.quantity').val());
+                                total += price * quantity;
+                            });
+                            $('#totalPrice').text(total);
+                            $('#totalCartPrice').val(total);
+                        }
+
+                        $('input[type="checkbox"]').on('change', function () {
+                            updateTotalPrice();
+                        });
+
+                        $('input.quantity').on('change', function () {
+                            const tr = $(this).closest('tr');
+                            const  id = tr.find(':checkbox').data('id');
+                            const quan = $(this).val();
+                            $.ajax({
+                                url: '/CartController',
+                                type: 'POST',
+                                data: {
+                                    updateQuan: 'updateQuan',
+                                    cartItemID: id,
+                                    newQuantity: quan
+                                },
+                                success: function (response) {
+                                    console.log("nice");
+                                }
+                            });
+                            updateTotalPrice();
+                        });
+
+
+
+                        $('#proceedToCheckout').click(function () {
+                            let selectedProducts = [];
+                            $('input[type="checkbox"]:checked').each(function () {
+                                const $checkbox = $(this);
+                                const proItemID = $checkbox.data('pro-item-id');
+                                const price = parseInt($checkbox.data('price'));
+                                const quantity = parseInt($checkbox.closest('tr').find('.quantity').val());
+                                selectedProducts.push({ proItemID: proItemID, price: price, quantity: quantity});
+                            });
+                            const form = $('<form action="/OrderController" method="GET"></form>');
+                            form.append($('<input type="hidden" name="selectedProducts" />').val(JSON.stringify(selectedProducts)));
+                            $('body').append(form);
+                            form.submit();
+                        });
+
+
+                    });
+
+
+    </script>
 </html>

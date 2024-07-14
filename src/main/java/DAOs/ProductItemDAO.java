@@ -180,7 +180,7 @@ public class ProductItemDAO {
         ResultSet rs = null;
         try {
             String sql = "SELECT\n"
-                    + "    p.id as pro_id, p.name as pro_name, p.[description], SUM(pi.quantity) as quantity, MIN(pi.price) as price , p.[image],\n"
+                    + "    p.id as pro_id, pi.id as pro_item_id, p.name as pro_name, p.[description], SUM(pi.quantity) as quantity, MIN(pi.price) as price , p.[image],\n"
                     + "    COALESCE(pc.name + ' ', '')+c.name as cat_name\n"
                     + "FROM product as p\n"
                     + "    JOIN product_item as pi\n"
@@ -190,7 +190,7 @@ public class ProductItemDAO {
                     + "    JOIN category as pc\n"
                     + "    ON c.parent = pc.id\n"
                     + "Where p.id = ? \n"
-                    + "GROUP BY p.id, p.name, p.[description], p.quantity, p.[image], pc.name,c.name";
+                    + "GROUP BY p.id,pi.id, p.name, p.[description], p.quantity, p.[image], pc.name,c.name";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pro_id);
             rs = ps.executeQuery();
@@ -235,17 +235,17 @@ public class ProductItemDAO {
 
         return count;
     }
-    
-    public int deleteProductItem(String id){
+
+    public int deleteProductItem(String id) {
         Connection conn = DB.DBConnection.getConnection();
         PreparedStatement ps = null;
         int count = 0;
-        try{
+        try {
             String sql = "DELETE FROM product_item WHERE id = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, id);
             count = pst.executeUpdate();
-        }catch(Exception e){
+        } catch (Exception e) {
             count = 0;
         }
         return count;
@@ -309,13 +309,13 @@ public class ProductItemDAO {
         return json;
     }
 
-    public JSONObject getUpdatedProductOptions(String pro_id, JSONObject selectedOptions,int numOfOp) {
+    public JSONObject getUpdatedProductOptions(String pro_id, JSONObject selectedOptions, int numOfOp) {
         JSONObject json = new JSONObject();
         Connection conn = DB.DBConnection.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            int tmp =0;
+            int tmp = 0;
             StringBuilder sql = new StringBuilder("SELECT "
                     + "    pi.id ,v.name as variation_name, vo.[value] as variation_option_value,pi.price,pi.quantity "
                     + "FROM product as p "
@@ -348,28 +348,26 @@ public class ProductItemDAO {
             }
             ps = conn.prepareStatement(sql.toString());
             ps.setString(1, pro_id);
-            int index =2;
-            for(String key: selectedOptions.keySet()){
-                ps.setString(index++, key); 
+            int index = 2;
+            for (String key : selectedOptions.keySet()) {
+                ps.setString(index++, key);
                 ps.setString(index++, selectedOptions.getString(key));
             }
             rs = ps.executeQuery();
-            
-            Map<String,JSONArray> variations = new HashMap<>();
-            long price  =0 ;
-            int quan =0;
-            String id ="";
-            System.out.println(numOfOp);
-            System.out.println(tmp);
-            while(rs.next()){
+
+            Map<String, JSONArray> variations = new HashMap<>();
+            long price = 0;
+            int quan = 0;
+            String id = "";
+            while (rs.next()) {
                 String variationName = rs.getString("variation_name");
                 String variationOption = rs.getString("variation_option_value");
-                if(numOfOp==tmp){
+                if (numOfOp == tmp) {
                     price = rs.getLong("price");
                     quan = rs.getInt("quantity");
                     id = rs.getString("id");
                 }
-                if(!variations.containsKey(variationName)){
+                if (!variations.containsKey(variationName)) {
                     variations.put(variationName, new JSONArray());
                 }
                 if (!containJson(variations.get(variationName), variationOption)) {
@@ -379,12 +377,12 @@ public class ProductItemDAO {
             json.put("price", price);
             json.put("quan", quan);
             json.put("id", id);
-            for(Map.Entry<String,JSONArray> entry : variations.entrySet()){
+            for (Map.Entry<String, JSONArray> entry : variations.entrySet()) {
                 json.put(entry.getKey(), entry.getValue());
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             try {
                 if (rs != null) {
                     rs.close();
@@ -401,7 +399,6 @@ public class ProductItemDAO {
         }
         return json;
     }
-
 
     public ResultSet getProductItemFromProduct(String id) {
         Connection conn = DB.DBConnection.getConnection();
@@ -478,55 +475,76 @@ public class ProductItemDAO {
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, proItem.getPro_id());
             int index = 2;
-            
-            for(String[] pair : option){
+
+            for (String[] pair : option) {
                 pst.setString(index++, pair[0]);
                 pst.setString(index++, pair[1]);
             }
 
             rs = pst.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return 0;
-            }else
+            } else {
                 return 1;
+            }
 
         } catch (Exception e) {
             count = 0;
         }
         return count;
     }
-    
-    public int updateProductItemVariation(Product_item proItem, String oldVariationOP, String newVariationOP){
+
+    public ResultSet getOrderProductItem(int id) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "select p.name as product_name, p.[image] \n"
+                    + "from product_item pi join product p on pi.product_id = p.id\n"
+                    + "where pi.id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
+    public int updateProductItemVariation(Product_item proItem, String oldVariationOP, String newVariationOP) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
         int count = 0;
-        try{
-        String sql = "UPDATE product_configuration SET variation_option_id = ?"
-                + " WHERE products_item_id = ? AND variation_option_id = ?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, newVariationOP);
-        pst.setString(2, String.valueOf(proItem.getItem_id()));
-        pst.setString(3, oldVariationOP);
-        count = pst.executeUpdate();
-        }catch(Exception e){
+        try {
+            String sql = "UPDATE product_configuration SET variation_option_id = ?"
+                    + " WHERE products_item_id = ? AND variation_option_id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, newVariationOP);
+            pst.setString(2, String.valueOf(proItem.getItem_id()));
+            pst.setString(3, oldVariationOP);
+            count = pst.executeUpdate();
+        } catch (Exception e) {
             count = 0;
         }
         return count;
     }
-    
-    public int updateProductItem(Product_item proItem, String quantity, String price){
+
+    public int updateProductItem(Product_item proItem, String quantity, String price) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
         int count = 0;
-        try{
-        String sql = "UPDATE product_item SET quantity = ?, price = ? "
-                + " WHERE id = ?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, quantity);
-        pst.setString(2, price);
-        pst.setString(3, String.valueOf(proItem.getItem_id()));
-        count = pst.executeUpdate();
-        }catch(Exception e){
+        try {
+            String sql = "UPDATE product_item SET quantity = ?, price = ? "
+                    + " WHERE id = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, quantity);
+            pst.setString(2, price);
+            pst.setString(3, String.valueOf(proItem.getItem_id()));
+            count = pst.executeUpdate();
+        } catch (Exception e) {
             count = 0;
         }
         return count;
