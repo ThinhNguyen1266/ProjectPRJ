@@ -280,7 +280,7 @@ public class ProductItemDAO {
                     + "    on vo.id = pc.variation_option_id\n"
                     + "    JOIN variation as v\n"
                     + "    on  vo.variation_id = v.id\n"
-                    + "where p.id = ?";
+                    + "where p.id = ? ";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pro_id);
             rs = ps.executeQuery();

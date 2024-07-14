@@ -35,13 +35,27 @@ public class OrderDAO {
         return rs;
     }
 
+    public void updateOrderStatus(String orderId, String newStatus) {
+        String query = "UPDATE [order] SET status = ? WHERE id = ?";
+        Connection conn = DB.DBConnection.getConnection();
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, newStatus);
+            ps.setString(2, orderId);
+            int count = ps.executeUpdate();
+            int b= count;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Integer> getMonthlyRevenue(int year) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
         List<Integer> revenue = new ArrayList<>();
         try {
             for (int i = 1; i <= 12; i++) {
-                String sql = "SELECT SUM(total_price) as sumTotalPrice FROM [order] WHERE YEAR(order_date) = ? AND MONTH(order_date) = ? AND [status] = 'shipped'";
+                String sql = "SELECT SUM(total_price) as sumTotalPrice FROM [order] WHERE YEAR(order_date) = ? AND MONTH(order_date) = ? AND [status] = 'SHIPPED'";
                 PreparedStatement pst = conn.prepareStatement(sql);
                 pst.setInt(1, year);
                 pst.setInt(2, i);
@@ -186,7 +200,9 @@ public class OrderDAO {
             }
             ps.executeBatch();
             psu.executeBatch();
-            if(!isBuyNow)psd.executeBatch();
+            if (!isBuyNow) {
+                psd.executeBatch();
+            }
             //update order
             String updateOrderQuery = "update [order] SET total_price = ? WHERE id = ?";
             ps = conn.prepareStatement(updateOrderQuery);
