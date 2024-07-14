@@ -4,6 +4,7 @@
  */
 package Controllers;
 
+import DAOs.OrderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -72,7 +73,23 @@ public class OrderController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        if (request.getParameter("buyNow") != null) {
+            String proItemID = request.getParameter("productItemID");
+            String quantity = request.getParameter("quantity");
+            String price = request.getParameter("price");
+            String selectedProducts = String.format("[{ proItemID: %s, price: %s, quantity: %s}]", proItemID, price, quantity);
+            request.setAttribute("selectedProducts", selectedProducts);
+            request.getRequestDispatcher("/checkout.jsp").forward(request, response);
+        } else if (request.getParameter("order") != null) {
+            OrderDAO odao = new OrderDAO();
+            String addressId = request.getParameter("addressID");
+            boolean isBuyNow = Boolean.parseBoolean(request.getParameter("isBuyNow"));
+            String jsonString = request.getParameter("selectedProducts");
+            String userID = request.getParameter("userID");
+            JSONArray json = new JSONArray(jsonString);
+            odao.order(userID,addressId, isBuyNow, json);
+            response.sendRedirect("/ProductController/List");
+        }
     }
 
     /**

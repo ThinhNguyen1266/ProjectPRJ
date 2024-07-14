@@ -291,6 +291,7 @@
                             updateOptions(response)
                             if (response.price !== 0) {
                                 $('#price').text(response.price);
+                                $('#orderPrice').val(response.price);
                             }
                             if (response.quan !== 0) {
                                 $('#quan').text(response.quan + ' in storage')
@@ -471,7 +472,7 @@
                                 <input type="hidden" name="productItemID" id="orderProductID" value="<%= rs.getString("pro_item_id") %>"/>
                                 <input type="hidden" id="orderQuan" name="quantity" value="1">
                                 <input type="hidden" id="orderPrice" name="price" value="<%= rs.getString("price")%>">
-                                <button type="submit" class="buy-now" name="BuyNow">Buy Now</button>
+                                <button type="submit" class="buy-now" name="buyNow">Buy Now</button>
                             </form>
                         </div>
                         <% } else { %>
