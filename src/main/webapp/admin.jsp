@@ -224,12 +224,18 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <%
+                                OrderDAO oDAO = new OrderDAO();
+                                ResultSet orderList = oDAO.getAllOrder();
+                                while (orderList.next()) {
+                            %>
                             <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">001</td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">John Doe</td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">$50.00</td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">Shipped</td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("order_id")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("customer")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("total")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("status")%></td>
                             </tr>
+                            <%}%>
                             <!-- More rows as needed -->
                         </tbody>
                     </table>
@@ -240,47 +246,54 @@
                     <label for="yearSelect">Year:</label>
                     <select id="yearSelect" onchange="updateChart()">
                         <%
-                            OrderDAO oDAO = new OrderDAO();
                             ResultSet numberOfYear = oDAO.getNumberOfYear();
                             List<Integer> listOfYear = new ArrayList<>();
+                            boolean haveRevenue = false;
                             while (numberOfYear.next()) {
+                                haveRevenue = true;
                                 int year = Integer.parseInt(numberOfYear.getString("year"));
                                 listOfYear.add(year);
                         %>
                         <option value="<%= year%>"><%= year%></option>
                         <% }%>
                     </select>
+                    <%if (haveRevenue) {%>
                     <canvas id="revenueChart" width="400" height="200"></canvas>
                     <script>
-        const revenueData = <%= oDAO.getChartStatistics(listOfYear)%>;
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        let revenueChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                        label: 'Revenue (Million VND)',
-                        data: revenueData['2021'],
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+                        const revenueData = <%= oDAO.getChartStatistics(listOfYear)%>;
+                        const ctx = document.getElementById('revenueChart').getContext('2d');
+                        let revenueChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                                datasets: [{
+                                        label: 'Revenue (Million VND)',
+                                        data: revenueData['2021'],
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        borderWidth: 1
+                                    }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
 
-        function updateChart() {
-            const selectedYear = document.getElementById('yearSelect').value;
-            revenueChart.data.datasets[0].data = revenueData[selectedYear];
-            revenueChart.update();
-        }
+                        function updateChart() {
+                            const selectedYear = document.getElementById('yearSelect').value;
+                            revenueChart.data.datasets[0].data = revenueData[selectedYear];
+                            revenueChart.update();
+                        }
                     </script>
+                    <%} else {
+                    %>
+                    <h2 style="color: red">Sorry You don't have any ORDER yet. What a poor shop!</h2>
+                    <%
+    }%>
                 </div>
 
 
