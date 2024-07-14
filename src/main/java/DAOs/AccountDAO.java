@@ -5,6 +5,7 @@
 package DAOs;
 
 import Models.Account;
+import Models.User;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -37,8 +38,8 @@ public class AccountDAO {
         }
         return false;
     }
-    
-    public String getAccountID (Account acc){
+
+    public String getAccountID(Account acc) {
         Connection conn = DB.DBConnection.getConnection();
         String id = null;
         try {
@@ -52,11 +53,11 @@ public class AccountDAO {
                 id = rs.getString("id");
             }
         } catch (Exception e) {
-           id = null;
+            id = null;
         }
         return id;
     }
-    
+
     public boolean loginAdmin(Account acc) {
         Connection conn = DB.DBConnection.getConnection();
         try {
@@ -104,5 +105,41 @@ public class AccountDAO {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean checkEmailExist(String inputEmail) {
+        Connection conn = DB.DBConnection.getConnection();
+        try {
+
+            String sql = "SELECT * FROM account WHERE email=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, inputEmail);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+    public int CreateNewPass(String password,String email) {
+
+        int count;
+         String hashedPassword = getMD5Hash(password);
+        try {
+            Connection conn = DB.DBConnection.getConnection();
+            String sql = "UPDATE account set password=? where email=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,hashedPassword);
+             pst.setString(2,email);
+            
+
+            count = pst.executeUpdate();
+        } catch (Exception e) {
+            count = 0;
+        }
+        return count;
     }
 }

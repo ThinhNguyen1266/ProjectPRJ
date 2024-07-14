@@ -30,7 +30,7 @@
             <div class="container mx-auto px-4 max-w-md">
                 <h2
                     class="text-2xl font-bold text-gray-800 text-center">Login</h2>
-                <form action="AccountController" method="post" class="bg-white shadow-md rounded-lg p-8 mt-8">
+                <form action="/CreateAccountController" method="post" class="bg-white shadow-md rounded-lg p-8 mt-8">
                     <%
                         if (request.getAttribute("error") != null) {
                     %>
@@ -39,34 +39,21 @@
                         }
                     %>
 
-                    <div class="mb-4">
-                        <label
-                            class="block text-gray-700 text-sm font-bold mb-2"
-                            for="Username">Username</label>
-                        <input
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="Username" type="text" placeholder="Username" name="txtUsername"/>
-                    </div>
                     <div class="mb-6">
+                        <h1>Please check your email to see your OTP code</h1>
                         <label
                             class="block text-gray-700 text-sm font-bold mb-2"
-                            for="password">Password</label>
+                            for="password">OTP Input</label>
                         <input
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                            id="password" type="password"
-                            placeholder="Password" name="txtPassword"/>
+                            id="txtOtp" type="text"
+                            name="txtOtp"/>
                     </div>
                     <div class="flex items-center justify-between">
                         <input
                             class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            id="btnLogin" type="submit" name="btnLogin" value="Login"
+                            id="btnSendOTP" type="submit" name="btnSendOTP" value="SendOTP"
                             />
-                        <a href="/Create_account"
-                           class="inline-block align-baseline font-bold text-sm text-gray-800 hover:text-gray-600">Create
-                            Account</a>
-                        <a href="/CreateAccountController/Forget"
-                           class="inline-block align-baseline font-bold text-sm text-gray-800 hover:text-gray-600">Forget Password</a>
-                        
                     </div>
                 </form>
             </div>

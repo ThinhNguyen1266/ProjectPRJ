@@ -74,6 +74,14 @@ public class CreateAccountController extends HttpServlet {
         if (path.contains("/CreateAccountController/Verity")) {
 
             request.getRequestDispatcher("/otp_verity.jsp").forward(request, response);
+        } else if (path.contains("/CreateAccountController/Forget")) {
+
+            request.getRequestDispatcher("/email_input.jsp").forward(request, response);
+        } else if (path.contains("/CreateAccountController/CreatePWD")) {
+
+            request.getRequestDispatcher("/otp_verityF.jsp").forward(request, response);
+        }else if (path.contains("/CreateAccountController/CreateNewPass")) {
+            request.getRequestDispatcher("/create_new_pass.jsp").forward(request, response);
         }
     }
 
@@ -191,13 +199,13 @@ public class CreateAccountController extends HttpServlet {
                             count = caDAO.addNewAddress(address);
                             count = caDAO.addNewUserAddress(address, acc);
                             CartDAO cartDAO = new CartDAO();
-                            
+
                             String cartID = cartDAO.getCartID();
-                            
-                            Cart cart =  new Cart((Integer.parseInt(cartID) + 1), user);
-                            
+
+                            Cart cart = new Cart((Integer.parseInt(cartID) + 1), user);
+
                             cartDAO.addNewCart(cart);
-                            
+
                             if (cookies != null) {
                                 for (Cookie cookie : cookies) {
                                     if (cookie.getName().equals("RegisterName")) {
@@ -227,6 +235,76 @@ public class CreateAccountController extends HttpServlet {
                 response.sendRedirect("/AccountController/Login");
             }
 
+        }//Check Email and send otp
+        if(request.getParameter("btnSendF")!=null){
+            String inputEmail=request.getParameter("txtEmail");
+            AccountDAO accDAO = new AccountDAO();
+             CreateAccountDAO caDAO = new CreateAccountDAO();
+            boolean Emailexist=accDAO.checkEmailExist(inputEmail);
+            if(Emailexist==true){
+                String otp = caDAO.generateRandomString();
+                 Cookie OtpCook = new Cookie("OTP", otp);
+                 Cookie Email = new Cookie("FEmail", inputEmail);
+                OtpCook.setMaxAge(60 * 3); // 3 days
+                OtpCook.setPath("/");
+                response.addCookie(OtpCook);
+                Email.setMaxAge(60 * 60 * 3); // 3 days
+                Email.setPath("/");
+                response.addCookie(Email);
+                mailutil.sendVerificationEmailForget(inputEmail, otp);
+
+                response.sendRedirect("/CreateAccountController/CreatePWD");
+            }else{
+                response.sendRedirect("/CreateAccountController/Forget");
+            }
+            
+        }//Check otp for Email
+        if(request.getParameter("btnSendOTP")!=null){
+            
+             String inputOtp = request.getParameter("txtOtp");
+            Cookie[] cookies = request.getCookies();
+           
+            String CorrectOTP = null;
+            CreateAccountDAO caDAO = new CreateAccountDAO();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("OTP")) {
+                        CorrectOTP = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+            if(inputOtp.equals(CorrectOTP)){
+                response.sendRedirect("/CreateAccountController/CreateNewPass");
+            }else{
+                response.sendRedirect("/CreateAccountController/CreatePWD");
+            }
+        }//Create new Password
+        if(request.getParameter("btnSendP")!=null){
+            String password = request.getParameter("txtPassword");
+            String confirmpassword = request.getParameter("txtConfirmPassword");
+             Cookie[] cookies = request.getCookies();
+            if(password.equals(confirmpassword)){
+                String email=null;
+                AccountDAO accDAO = new AccountDAO();
+                if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("FEmail")) {
+                        email = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+                int count=accDAO.CreateNewPass(password, email);
+                if(count!=0){
+                response.sendRedirect("/AccountController/Login");
+            }else{
+                     response.sendRedirect("/CreateAccountController/CreateNewPass");
+                }
+            }else{
+                response.sendRedirect("/CreateAccountController/CreateNewPass");
+            }
+            
         }
     }
 
