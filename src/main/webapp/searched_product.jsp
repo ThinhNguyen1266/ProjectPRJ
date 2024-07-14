@@ -94,6 +94,39 @@
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 margin-top: 0.5rem;
             }
+            .footer {
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                background-color: #2d3748;
+                color: white;
+            }
+            .footer-column {
+                flex: 1;
+                margin: 0 10px;
+            }
+            .footer-column h3 {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+            .footer-column ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .footer-column ul li {
+                margin-bottom: 5px;
+            }
+            .footer-column ul li a {
+                text-decoration: none;
+                color: white;
+            }
+            .footer-column ul li a:hover {
+                text-decoration: underline;
+            }
+            .payment-methods i {
+                font-size: 24px;
+                margin-right: 10px;
+            }
         </style>
     </head>
     <body class="bg-gray-100">
@@ -233,12 +266,38 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
-            <div class="container mx-auto px-4 text-center">
-                <p>&copy; 2024 ShopName. All rights reserved.</p>
-                <div class="mt-4 space-x-4">
-                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+        <footer class="footer">
+            <div class="footer-column">
+                <h3>Product</h3>
+                <ul>
+                    <% CategoryDAO dao = new CategoryDAO();
+                        rs = dao.getAllCategoriesNull();
+                        while (rs.next()) {%>
+                    <li><a href="/ProductController/Category/<%= rs.getInt("id")%>"><%= rs.getString("name")%></a></li>
+                        <%}%>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>About</h3>
+                <ul>
+                    <li><a href="/ProductController/About-Contact">Contact Us</a></li>
+                    <li><a href="/ProductController/About-Contact">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Payment method</h3>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-apple-pay"></i>
                 </div>
             </div>
         </footer>

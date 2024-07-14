@@ -1,9 +1,3 @@
-<%-- 
-    Document   : Category
-    Created on : Jul 1, 2024, 9:30:50 PM
-    Author     : AnhNLCE181837
---%>
-
 <%@page import="DAOs.ProductItemDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.CategoryDAO"%>
@@ -85,6 +79,55 @@
                 align-self: center; /* Center button horizontally */
                 margin-top: 1em; /* Add some margin to separate it from details */
             }
+            .footer {
+                padding: 20px;
+                display: flex;
+            }
+            .footer-column {
+                flex: 1;
+                margin: 0 10px;
+            }
+            .footer-column h3 {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+            .footer-column ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .footer-column ul li {
+                margin-bottom: 5px;
+            }
+            .footer-column ul li a {
+                text-decoration: none;
+            }
+            .footer-column ul li a:hover {
+            }
+            .payment-methods img {
+                width: 40px;
+                margin-right: 5px;
+            }
+            .container-main {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            .content {
+                flex-grow: 1;
+                display: flex;
+            }
+            .sidebar {
+                width: 300px;
+                background-color: #f8f8f8;
+                padding: 20px;
+                position: sticky;
+                top: 0;
+                height: calc(100vh - 80px); /* Adjust based on your header height */
+            }
+            .main-content {
+                flex-grow: 1;
+                padding: 20px;
+            }
         </style>
     </head>
     <body class="bg-gray-100">
@@ -143,173 +186,200 @@
                 </script>
             </div>
         </header>
-        <div class="container mx-auto px-4 py-8 mt-20">
-            <aside class="fixed inset-y-0 left-0 w-60 bg-gray-800 text-black shadow-lg h-screen">
-                <div class="p-4">
-                    <h2 class="text-xl font-bold mb-4">Laptop Filters</h2>
-                    <ul class="space-y-2">
-                        <li>
-                            <section class="bg-white shadow-md py-4 mt-16">
-                                <div class="container mx-auto px-4">
-                                    <ul class="space-y-4">
-                                        <li>
-                                            <label class="block text-black">RAM</label>
-                                            <div>
-                                                <input type="checkbox" id="ram-8GB" name="ram" value="8GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-8GB">8GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-16GB" name="ram" value="16GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-16GB">16GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-32GB">32GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-32GB">64GB</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">Storage</label>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i5" name="cpu" value="i5" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i5">256GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i7" name="cpu" value="i7" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i7">512GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i9" name="cpu" value="i9" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i9">1T</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i9" name="cpu" value="i9" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i9">2T</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">Price</label>
-                                            <div>
-                                                <input type="checkbox" id="price-0-1000" name="price" value="0-1000" onchange="showFilterValue('price')">
-                                                <label for="price-0-1000">0-10M VND</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="price-1000-2000" name="price" value="1000-2000" onchange="showFilterValue('price')">
-                                                <label for="price-1000-2000">10M VND-20M VND</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="price-2000-3000" name="price" value="2000-3000" onchange="showFilterValue('price')">
-                                                <label for="price-2000-3000">20M VND-50M VND</label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div id="sort-value" class="mt-4 text-sm font-semibold text-black"></div>
-                                    <div id="filter-values" class="mt-4 text-sm font-semibold text-black"></div>
-                                </div>
-                            </section>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
-            <script>
-                function showSortValue() {
-                    const sortSelect = document.getElementById('sort');
-                    const sortValue = sortSelect.options[sortSelect.selectedIndex].text;
-                    document.getElementById('sort-value').innerText = 'Sắp xếp theo: ' + sortValue;
-                }
-
-                function showFilterValue(filterId) {
-                    const checkboxes = document.querySelectorAll(`input[name=${filterId}]:checked`);
-                    const selectedValues = Array.from(checkboxes).map(cb => cb.nextSibling.textContent.trim());
-                    const filterDisplay = document.getElementById('filter-values');
-
-                    let existingFilters = filterDisplay.innerText.split(', ').filter(Boolean);
-                    const filterText = filterId.charAt(0).toUpperCase() + filterId.slice(1) + ': ' + selectedValues.join(', ');
-
-                    const existingIndex = existingFilters.findIndex(f => f.startsWith(filterId.charAt(0).toUpperCase() + filterId.slice(1)));
-                    if (existingIndex > -1) {
-                        existingFilters[existingIndex] = filterText;
-                    } else {
-                        existingFilters.push(filterText);
+        <div class="container-main">
+            <div class="content mt-20">
+                <aside class="sidebar">
+                    <div class="p-4">
+                        <h2 class="text-xl font-bold mb-4">Laptop Filters</h2>
+                        <ul class="space-y-2">
+                            <li>
+                                <section class="bg-white shadow-md py-4 mt-16">
+                                    <div class="container mx-auto px-4">
+                                        <ul class="space-y-4">
+                                            <li>
+                                                <label class="block text-black">RAM</label>
+                                                <div>
+                                                    <input type="checkbox" id="ram-8GB" name="ram" value="8GB" onchange="showFilterValue('ram')">
+                                                    <label for="ram-8GB">8GB</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="ram-16GB" name="ram" value="16GB" onchange="showFilterValue('ram')">
+                                                    <label for="ram-16GB">16GB</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
+                                                    <label for="ram-32GB">32GB</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="ram-64GB" name="ram" value="64GB" onchange="showFilterValue('ram')">
+                                                    <label for="ram-64GB">64GB</label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <label class="block text-black">Storage</label>
+                                                <div>
+                                                    <input type="checkbox" id="storage-256GB" name="storage" value="256GB" onchange="showFilterValue('storage')">
+                                                    <label for="storage-256GB">256GB</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="storage-512GB" name="storage" value="512GB" onchange="showFilterValue('storage')">
+                                                    <label for="storage-512GB">512GB</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="storage-1TB" name="storage" value="1TB" onchange="showFilterValue('storage')">
+                                                    <label for="storage-1TB">1TB</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="storage-2TB" name="storage" value="2TB" onchange="showFilterValue('storage')">
+                                                    <label for="storage-2TB">2TB</label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <label class="block text-black">Price</label>
+                                                <div>
+                                                    <input type="checkbox" id="price-0-1000" name="price" value="0-1000" onchange="showFilterValue('price')">
+                                                    <label for="price-0-1000">0-10M VND</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="price-1000-2000" name="price" value="1000-2000" onchange="showFilterValue('price')">
+                                                    <label for="price-1000-2000">10M VND-20M VND</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" id="price-2000-3000" name="price" value="2000-3000" onchange="showFilterValue('price')">
+                                                    <label for="price-2000-3000">20M VND-50M VND</label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div id="sort-value" class="mt-4 text-sm font-semibold text-black"></div>
+                                        <div id="filter-values" class="mt-4 text-sm font-semibold text-black"></div>
+                                    </div>
+                                </section>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
+                <script>
+                    function showSortValue() {
+                        const sortSelect = document.getElementById('sort');
+                        const sortValue = sortSelect.options[sortSelect.selectedIndex].text;
+                        document.getElementById('sort-value').innerText = 'Sắp xếp theo: ' + sortValue;
                     }
 
-                    filterDisplay.innerText = existingFilters.join(', ');
-                }
-            </script>
-            <style>
-                .filter-select {
-                    padding: 0.5rem 1rem;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    background-color: white;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    margin-top: 0.5rem;
-                }
-            </style>
+                    function showFilterValue(filterId) {
+                        const checkboxes = document.querySelectorAll(`input[name=${filterId}]:checked`);
+                        const selectedValues = Array.from(checkboxes).map(cb => cb.nextSibling.textContent.trim());
+                        const filterDisplay = document.getElementById('filter-values');
 
-            <!-- Products Section -->
-            <section class="flex-grow ml-64 pl-8" >
-                <div class="container mx-auto px-4">
-                    <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-                        <%
-                            ProductItemDAO pidao = new ProductItemDAO();
-                            String id = (String) session.getAttribute("categoryid");
-                            ResultSet rs = pidao.getAllByCatParent(id); // Corrected to use category ID
-                            while (rs.next()) {
-                                String price = rs.getString("price");
-                        %>
-                        <script>
-                            function formatPrice(price) {
-                                let parts = price.toString().split(".");
-                                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                return parts.join(".");
-                            }
+                        let existingFilters = filterDisplay.innerText.split(', ').filter(Boolean);
+                        const filterText = filterId.charAt(0).toUpperCase() + filterId.slice(1) + ': ' + selectedValues.join(', ');
 
-                            document.addEventListener("DOMContentLoaded", function () {
-                                // This will run when the page is fully loaded
-                                let priceElements = document.querySelectorAll('.product-price');
-                                priceElements.forEach(function (priceElement) {
-                                    let priceText = priceElement.innerText.trim(); // Assuming price is in innerText
-                                    let formattedPrice = formatPrice(priceText);
-                                    priceElement.innerText = formattedPrice;
+                        const existingIndex = existingFilters.findIndex(f => f.startsWith(filterId.charAt(0).toUpperCase() + filterId.slice(1)));
+                        if (existingIndex > -1) {
+                            existingFilters[existingIndex] = filterText;
+                        } else {
+                            existingFilters.push(filterText);
+                        }
+
+                        filterDisplay.innerText = existingFilters.join(', ');
+                    }
+                </script>
+                <style>
+                    .filter-select {
+                        padding: 0.5rem 1rem;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        background-color: white;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        margin-top: 0.5rem;
+                    }
+                </style>
+
+                <!-- Products Section -->
+                <section class="main-content">
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+                            <%
+                                ProductItemDAO pidao = new ProductItemDAO();
+                                String id = (String) session.getAttribute("categoryid");
+                                ResultSet rs = pidao.getAllByCatParent(id); // Corrected to use category ID
+                                while (rs.next()) {
+                                    String price = rs.getString("price");
+                            %>
+                            <script>
+                                function formatPrice(price) {
+                                    let parts = price.toString().split(".");
+                                    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                    return parts.join(".");
+                                }
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    // This will run when the page is fully loaded
+                                    let priceElements = document.querySelectorAll('.product-price');
+                                    priceElements.forEach(function (priceElement) {
+                                        let priceText = priceElement.innerText.trim(); // Assuming price is in innerText
+                                        let formattedPrice = formatPrice(priceText);
+                                        priceElement.innerText = formattedPrice;
+                                    });
                                 });
-                            });
-                        </script>
+                            </script>
 
-                        <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
-                            <a href="/ProductController/View/<%= rs.getString("pro_id")%>">
-                                <div class="flex justify-center items-center h-48 w-full">
-                                    <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
+                            <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
+                                <a href="/ProductController/View/<%= rs.getString("pro_id")%>">
+                                    <div class="flex justify-center items-center h-48 w-full">
+                                        <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
+                                    </div>
+                                </a>
+                                <div class="p-4 product-details">
+                                    <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
+                                    <p class="product-price text-gray-600 mt-2"><%= price%> vnd</p>
                                 </div>
-                            </a>
-                            <div class="p-4 product-details">
-                                <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
-                                <p class="product-price text-gray-600 mt-2"><%= price%> vnd</p>
+                                <a href="/ProductController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
                             </div>
-                            <a href="/ProductController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
+                            <% }%>
                         </div>
-                        <% }%>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
         </div>
-
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white py-8">
-            <div class="container mx-auto px-4 text-center">
-                <p>&copy; 2024 ShopName. All rights reserved.</p>
-                <div class="mt-4 space-x-4">
-                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
-                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="footer-column">
+                        <h3 class="font-bold text-xl mb-4">Product</h3>
+                        <ul class="space-y-2">
+                            <% CategoryDAO dao = new CategoryDAO();
+                                rs = dao.getAllCategoriesNull();
+                                while (rs.next()) {%>
+                            <li><a href="/ProductController/Category/<%= rs.getInt("id")%>" class="hover:text-gray-400"><%= rs.getString("name")%></a></li>
+                                <%}%>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3 class="font-bold text-xl mb-4">Help</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="hover:text-gray-400">FAQ</a></li>
+                            <li><a href="#" class="hover:text-gray-400">Shipping</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3 class="font-bold text-xl mb-4">About</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/ProductController/About-Contact" class="hover:text-gray-400">Contact Us</a></li>
+                            <li><a href="/ProductController/About-Contact" class="hover:text-gray-400">About Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3 class="font-bold text-xl mb-4">Payment method</h3>
+                        <div class="payment-methods flex space-x-4">
+                            <i class="fab fa-cc-visa fa-2x"></i>
+                            <i class="fab fa-cc-paypal fa-2x"></i>
+                            <i class="fab fa-cc-mastercard fa-2x"></i>
+                            <i class="fab fa-apple-pay fa-2x"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </footer>
