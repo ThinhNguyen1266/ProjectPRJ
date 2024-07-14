@@ -6,7 +6,6 @@ package DAOs;
 
 import DB.DBConnection;
 import Models.Category;
-import Models.Product;
 import Models.Product_item;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -100,18 +99,19 @@ public class ProductItemDAO {
         }
         return rs;
     }
-    
-    public boolean checkCreateNewProItem(String id){
+
+    public boolean checkCreateNewProItem(String id) {
         Connection conn = DB.DBConnection.getConnection();
         PreparedStatement pst = null;
-        try{
+        try {
             String sql = "SELECT * FROM product p JOIN product_item pi ON p.id = pi.product_id JOIN category c ON p.category_id = c.id WHERE c.parent = 302000 AND p.id = ?";
             pst = conn.prepareStatement(sql);
             pst.setString(1, id);
             ResultSet rs = pst.executeQuery();
-            if(rs.next())
+            if (rs.next()) {
                 return true;
-        }catch(Exception e){
+            }
+        } catch (Exception e) {
             return false;
         }
         return false;
@@ -542,6 +542,66 @@ public class ProductItemDAO {
             count = 0;
         }
         return count;
+    }
+
+    public ResultSet SortProduct(int price, String type, String name) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sortOrder = type.equalsIgnoreCase("asc") ? "ASC" : "DESC";
+            String sql = "";
+
+            if (price == 1000) {
+                sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                        + "FROM product as p \n"
+                        + "JOIN product_item as pi \n"
+                        + "on p.id = pi.product_id\n"
+                        + "JOIN category as c \n"
+                        + "on c.id = p.category_id\n"
+                        + "where pi.price < 10000000 \n"
+                        + "AND p.name like ? \n"
+                        + "GROUP BY p.id, p.name, p.[image]\n"
+                        + "ORDER BY MIN(pi.price) " + sortOrder;
+            } else if (price == 2000) {
+                sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                        + "FROM product as p \n"
+                        + "JOIN product_item as pi \n"
+                        + "on p.id = pi.product_id\n"
+                        + "JOIN category as c \n"
+                        + "on c.id = p.category_id\n"
+                        + "where pi.price > 10000000 and pi.price < 20000000 \n"
+                        + "AND p.name like ? \n"
+                        + "GROUP BY p.id, p.name, p.[image]\n"
+                        + "ORDER BY MIN(pi.price) " + sortOrder;
+            } else if (price == 3000) {
+                sql = "SELECT p.id as pro_id , p.name as pro_name , MIN(price) as price , p.[image]\n"
+                        + "FROM product as p \n"
+                        + "JOIN product_item as pi \n"
+                        + "on p.id = pi.product_id\n"
+                        + "JOIN category as c \n"
+                        + "on c.id = p.category_id\n"
+                        + "where pi.price > 20000000\n"
+                        + "AND p.name like ? \n"
+                        + "GROUP BY p.id, p.name, p.[image]\n"
+                        + "ORDER BY MIN(pi.price) " + sortOrder;
+            }
+
+            if (!sql.isEmpty()) {
+                System.out.println("Executing SQL: " + sql);
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%" + name + "%");
+                rs = ps.executeQuery();
+            } else {
+                System.out.println("No SQL query executed for price: " + price);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            rs = null;
+        }
+        return rs;
     }
 
     private boolean containJson(JSONArray jsona, String value) {

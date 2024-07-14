@@ -187,33 +187,29 @@
         </header>
         <section class="bg-white shadow-md py-4 mt-16">
             <div class="container mx-auto px-4">
-                <div class="flex space-x-4">
-                    <div>
-                        <select id="sort" name="sort" class="filter-select">
-                            <option value="default">Sắp xếp theo</option>
-                        </select>
+                <form method="post" action="/ProductController">
+                    <div class="flex space-x-4">
+                        <div>
+                            <select id="sort" name="type" class="filter-select">
+                            
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <select id="price" name="price" class="filter-select">
+                              
+                                <option value="1000">0-10 000 000</option>
+                                <option value="2000">10 000 000-20 000 000</option>
+                                <option value="3000">>20 000 000</option>
+                            </select>
+                        </div>
+                        <input id="searchname" type="hidden" name="SearchName" value="<%= session.getAttribute("Searchname")%>">
+                        <button type="submit" name="btnSortS">Sort</button>
                     </div>
-                    <div>
-                        <select id="ram" name="ram" class="filter-select">
-                            <option value="default">RAM</option>
-                        </select>
-                    </div>
-                    <div>
-                        <select id="cpu" name="cpu" class="filter-select">
-                            <option value="default">CPU</option>
-                        </select>
-                    </div>
-                    <div>
-                        <select id="gpu" name="gpu" class="filter-select">
-                            <option value="default">GPU</option>
-                        </select>
-                    </div>
-                    <div>
-                        <select id="price" name="price" class="filter-select">
-                            <option value="default">Giá</option>
-                        </select>
-                    </div>
-                </div>
+                    
+                </form>
             </div>
         </section>
         <!-- Products Section -->
