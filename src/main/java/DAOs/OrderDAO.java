@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,4 +78,17 @@ public class OrderDAO {
         return json;
     }
 
+    public ResultSet getAllOrder() {
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs;
+        try {
+            String sql = "SELECT o.id AS order_id, u.name AS customer, o.total_price as total, o.[status]\n"
+                    + " FROM [order] o JOIN [user] u ON o.user_id = u.account_id ";
+            Statement st = conn.createStatement();
+            rs = st.executeQuery(sql);
+        } catch (Exception e) {
+            rs = null;
+        }
+        return rs;
+    }
 }
