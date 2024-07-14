@@ -223,6 +223,28 @@ public class UserDAO {
         return count;
     }
 
+    public ResultSet getUserShippingInfo(String userID) {
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "select a.id as address_id, a.address as address , pr.name as province_name, ua.is_default\n"
+                    + "from [user] as u \n"
+                    + "JOIN user_address as ua \n"
+                    + "on u.account_id = ua.user_id\n"
+                    + "JOIN address as a \n"
+                    + "on ua.address_id = a.id\n"
+                    + "JOIN province as pr \n"
+                    + "on a.province_id = pr.id\n"
+                    + "where u.account_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, userID);
+            rs = ps.executeQuery();
+        } catch (Exception e) {
+            rs=null;
+        }
+        return rs;
+    }
     public ResultSet getAllUserAddress(int id) {
         Connection conn = DB.DBConnection.getConnection();
         PreparedStatement ps = null;

@@ -192,7 +192,7 @@ public class ProductItemDAO {
         ResultSet rs = null;
         try {
             String sql = "SELECT\n"
-                    + "    p.id as pro_id, p.name as pro_name, p.[description], SUM(pi.quantity) as quantity, MIN(pi.price) as price , p.[image],\n"
+                    + "    p.id as pro_id, pi.id as pro_item_id, p.name as pro_name, p.[description], SUM(pi.quantity) as quantity, MIN(pi.price) as price , p.[image],\n"
                     + "    COALESCE(pc.name + ' ', '')+c.name as cat_name\n"
                     + "FROM product as p\n"
                     + "    JOIN product_item as pi\n"
@@ -202,7 +202,7 @@ public class ProductItemDAO {
                     + "    JOIN category as pc\n"
                     + "    ON c.parent = pc.id\n"
                     + "Where p.id = ? \n"
-                    + "GROUP BY p.id, p.name, p.[description], p.quantity, p.[image], pc.name,c.name";
+                    + "GROUP BY p.id,pi.id, p.name, p.[description], p.quantity, p.[image], pc.name,c.name";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pro_id);
             rs = ps.executeQuery();
@@ -371,8 +371,6 @@ public class ProductItemDAO {
             long price = 0;
             int quan = 0;
             String id = "";
-            System.out.println(numOfOp);
-            System.out.println(tmp);
             while (rs.next()) {
                 String variationName = rs.getString("variation_name");
                 String variationOption = rs.getString("variation_option_value");
@@ -506,6 +504,26 @@ public class ProductItemDAO {
             count = 0;
         }
         return count;
+    }
+
+    public ResultSet getOrderProductItem(int id) {
+        Connection conn = DB.DBConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = "select p.name as product_name, p.[image] \n"
+                    + "from product_item pi join product p on pi.product_id = p.id\n"
+                    + "where pi.id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
     }
 
     public int updateProductItemVariation(Product_item proItem, String oldVariationOP, String newVariationOP) {

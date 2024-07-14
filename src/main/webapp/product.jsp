@@ -245,7 +245,7 @@
                     },
                     success: function (response) {
                         Object.keys(response).forEach(function (variation) {
-                            var safeVariation = variation.replace(/\s+/g, '-'); // Thay thế khoảng trắng bằng dấu gạch ngang
+                            var safeVariation = variation.replace(/\s+/g, '-'); 
                             var group = $('<div class="option-group" id="' + safeVariation + '-group"></div>');
                             group.append('<label for="' + safeVariation + '-group">' + variation + ':</label> ');
                             response[variation].forEach(function (option) {
@@ -256,8 +256,6 @@
                         bindOptionClickEvents();
                     }
                 });
-
-
 
             });
 
@@ -343,7 +341,7 @@
                     </form>          
                     <div class="flex space-x-4">
                         <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600"><i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact</a>
-                        <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600"><i class="fa fa-shopping-cart"></i> Cart</a>
+                        <a href="/CartController" class="text-gray-800 hover:text-gray-600"><i class="fa fa-shopping-cart"></i> Cart</a>
                         <%
                             String customerName = (String) session.getAttribute("customername");
                             if (customerName != null) {
@@ -404,8 +402,6 @@
                 <%
 
                     ProductItemDAO pidao = new ProductItemDAO();
-
-                    System.out.println(id);
                     ResultSet rs = null;
                     if (id != null) {
                         rs = pidao.getProductView(id);
@@ -464,18 +460,18 @@
                         %>
                         <div style="display: inline-block; margin-right: 10px;">
                             <form action="/CartController" method="post" >
-                                <input type="hidden" name="productItemID" id="cartProductID" value=""/>
+                                <input type="hidden" name="productItemID" id="cartProductID" value="<%= rs.getString("pro_item_id") %>"/>
                                 <input type="hidden" id="cartQuan" name="quantity" value="1">
                                 <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID")%>">
                                 <button type="submit" class="add-to-cart" name="btnAddToCart"><i class="fa fa-shopping-cart"></i>Add to Cart</button>
                             </form>
                         </div>
                         <div style="display: inline-block; margin-right: 10px;">
-                            <form action="/ProductController" method="post">
-                                <input type="hidden" name="productItemID" id="orderProductID" value=""/>
+                            <form action="/OrderController" method="post">
+                                <input type="hidden" name="productItemID" id="orderProductID" value="<%= rs.getString("pro_item_id") %>"/>
                                 <input type="hidden" id="orderQuan" name="quantity" value="1">
-                                <input type="hidden" id="userID" name="userID" value="<%= session.getAttribute("customerID")%>">
-                                <button type="submit" class="buy-now">Buy Now</button>
+                                <input type="hidden" id="orderPrice" name="price" value="<%= rs.getString("price")%>">
+                                <button type="submit" class="buy-now" name="BuyNow">Buy Now</button>
                             </form>
                         </div>
                         <% } else { %>

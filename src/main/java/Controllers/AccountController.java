@@ -135,7 +135,7 @@ public class AccountController extends HttpServlet {
             // Remove cookies
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("username") || cookie.getName().equals("adminName")) {
+                    if (cookie.getName().equals("username") || cookie.getName().equals("adminName") || cookie.getName().equals("userID") ) {
                         cookie.setValue(null);
                         cookie.setMaxAge(0);
                         cookie.setPath("/");
