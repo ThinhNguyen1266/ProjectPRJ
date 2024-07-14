@@ -296,6 +296,7 @@
                         success: function (response) {
                             updateOptions(response)
                             if (response.price !== 0) {
+                                $('#orderPrice').val(response.price);
                                 let formattedPrice = formatPrice(response.price);
                                 $('#price').text(formattedPrice);
                             }
@@ -491,7 +492,7 @@
                                 <input type="hidden" name="productItemID" id="orderProductID" value="<%= rs.getString("pro_item_id")%>" />
                                 <input type="hidden" id="orderQuan" name="quantity" value="1">
                                 <input type="hidden" id="orderPrice" name="price" value="<%= rs.getString("price")%>">
-                                <button type="submit" class="buy-now" name="BuyNow">Buy Now</button>
+                                <button type="submit" class="buy-now" name="buyNow">Buy Now</button>
                             </form>
                         </div>
                         <% } else { %>

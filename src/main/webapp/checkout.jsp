@@ -28,6 +28,7 @@
         <title>Checkout</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <style>
             .search-container {
                 display: flex;
@@ -162,7 +163,6 @@
                         <%
                             UserDAO udao = new UserDAO();
                             String userID = (String) session.getAttribute("customerID");
-                            System.out.println(userID);
                             ResultSet rs = udao.getUserShippingInfo(userID);
                         %>
                         <h3 class="text-xl font-bold text-gray-800 mb-4">Shipping Information</h3>
@@ -170,8 +170,7 @@
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="selectedAddress">Select Address</label>
                                 <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="selectedAddress"
-                                        name="txtAddress">
+                                        id="selectedAddress">
                                     <% while (rs.next()) {%>
                                     <option value="<%= rs.getString("address_id")%>" (<%=rs.getString("is_default")%> == "1" : selected ?"")><%= rs.getString("address")%></option>
                                     <% }%>
@@ -212,7 +211,15 @@
 
                             <tbody>
                                 <%
-                                    String jsonString = request.getParameter("selectedProducts");
+                                    String jsonString;
+                                    boolean isBuyNow = false;
+
+                                    if (request.getAttribute("selectedProducts") != null) {
+                                        jsonString = (String) request.getAttribute("selectedProducts");
+                                        isBuyNow = true;
+                                    } else {
+                                        jsonString = request.getParameter("selectedProducts");
+                                    }
                                     JSONArray products = new JSONArray(jsonString);
                                     ProductItemDAO pidao = new ProductItemDAO();
                                     long totalPrice = 0;
@@ -284,7 +291,10 @@
                             <h4 class="text-xl font-bold total-price">Total: <%= totalPriceString%> VND</h4>
                             <form id="orderForm" action="OrderController" method="POST">
                                 <input type="hidden" name="selectedProducts" value='<%= jsonString%>' />
-                                <button type="submit" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Order</button>
+                                <input type="hidden" name="isBuyNow" value='<%= isBuyNow %>' />
+                                <input type="hidden" name="addressID" value='' id="addressID" />
+                                <input type="hidden" name="userID" value='<%= userID %>'  />
+                                <button type="submit" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" name="order">Order</button>
                             </form>
                         </div>
 
@@ -330,4 +340,10 @@
             </div>
         </footer>
     </body>
+    <script>
+        $('#selectedAddress').change(function (){
+            $('#addressID').val( this.value );
+        });
+        $('#addressID').val($('#selectedAddress').val())
+    </script>
 </html>
