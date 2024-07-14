@@ -174,6 +174,9 @@
                     <span id="confirmPasswordError" class="error">Passwords do not match.</span>
 
                     <label for="email">Email</label>
+                     <% if (request.getAttribute("EmailError") != null) { %>
+                    <p style="color: red"><%= (String) request.getAttribute("EmailError") %></p>
+                    <% } %>
                     <input id="email" type="email" placeholder="Email" name="txtEmail"
                            value="<%= request.getAttribute("txtEmail") != null ? (String) request.getAttribute("txtEmail") : "" %>"
                            required>

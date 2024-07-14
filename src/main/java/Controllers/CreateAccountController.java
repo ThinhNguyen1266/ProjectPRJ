@@ -98,7 +98,9 @@ public class CreateAccountController extends HttpServlet {
             throws ServletException, IOException {
 
         if (request.getParameter("bCreateAccountDAtnSignin") != null) {
+            AccountDAO accDAO = new AccountDAO();
             CreateAccountDAO caDAO = new CreateAccountDAO();
+           
             HttpSession session = request.getSession();
             String username = request.getParameter("txtUsername");
             String password = request.getParameter("txtPassword");
@@ -108,7 +110,7 @@ public class CreateAccountController extends HttpServlet {
             String phoneNumber = request.getParameter("txtPhonenumber");
             String addressDraw = request.getParameter("txtAddress");
             String provinceDraw = request.getParameter("txtProvince");
-
+             boolean Emailexist = accDAO.checkEmailExist(email);
             // Set all form values to request attributes
             request.setAttribute("txtUsername", username);
             request.setAttribute("txtEmail", email);
@@ -116,11 +118,15 @@ public class CreateAccountController extends HttpServlet {
             request.setAttribute("txtPhonenumber", phoneNumber);
             request.setAttribute("txtAddress", addressDraw);
             request.setAttribute("txtProvince", provinceDraw);
+          
             if (!caDAO.checkUsername(username)) {
                 request.setAttribute("UsernameError", "Username has already existed");
                 request.getRequestDispatcher("/create-account.jsp").forward(request, response);
             } else if (!password.equals(confirmpassword)) {
                 request.setAttribute("PasswordError", "Passwords do not match");
+                request.getRequestDispatcher("/create-account.jsp").forward(request, response);
+            } else if (Emailexist==true) {
+                request.setAttribute("EmailError", "Email has already existed");
                 request.getRequestDispatcher("/create-account.jsp").forward(request, response);
             } else {
                 // Proceed with account creation
