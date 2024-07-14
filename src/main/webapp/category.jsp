@@ -4,6 +4,9 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="Models.Category"%>
+<%@page import="Models.Product"%>
+<%@page import="DAOs.ProductDAO"%>
 <%@page import="DAOs.ProductItemDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="DAOs.CategoryDAO"%>
@@ -16,6 +19,8 @@
         <title>Products</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
             .search-container {
                 display: flex;
@@ -147,98 +152,56 @@
             <aside class="fixed inset-y-0 left-0 w-60 bg-gray-800 text-black shadow-lg h-screen">
                 <div class="p-4">
                     <h2 class="text-xl font-bold mb-4">Laptop Filters</h2>
-                    <ul class="space-y-2">
-                        <li>
-                            <section class="bg-white shadow-md py-4 mt-16">
-                                <div class="container mx-auto px-4">
-                                    <ul class="space-y-4">
-                                        <li>
-                                            <label class="block text-black">RAM</label>
-                                            <div>
-                                                <input type="checkbox" id="ram-8GB" name="ram" value="8GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-8GB">8GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-16GB" name="ram" value="16GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-16GB">16GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-32GB">32GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="ram-32GB" name="ram" value="32GB" onchange="showFilterValue('ram')">
-                                                <label for="ram-32GB">64GB</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">Storage</label>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i5" name="cpu" value="i5" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i5">256GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i7" name="cpu" value="i7" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i7">512GB</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i9" name="cpu" value="i9" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i9">1T</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="cpu-i9" name="cpu" value="i9" onchange="showFilterValue('cpu')">
-                                                <label for="cpu-i9">2T</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <label class="block text-black">Price</label>
-                                            <div>
-                                                <input type="checkbox" id="price-0-1000" name="price" value="0-1000" onchange="showFilterValue('price')">
-                                                <label for="price-0-1000">0-10M VND</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="price-1000-2000" name="price" value="1000-2000" onchange="showFilterValue('price')">
-                                                <label for="price-1000-2000">10M VND-20M VND</label>
-                                            </div>
-                                            <div>
-                                                <input type="checkbox" id="price-2000-3000" name="price" value="2000-3000" onchange="showFilterValue('price')">
-                                                <label for="price-2000-3000">20M VND-50M VND</label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div id="sort-value" class="mt-4 text-sm font-semibold text-black"></div>
-                                    <div id="filter-values" class="mt-4 text-sm font-semibold text-black"></div>
-                                </div>
-                            </section>
-                        </li>
-                    </ul>
+                    <form id="filter-form" action="ProductController" method="post">
+                        <ul class="space-y-2">
+                            <li>
+                                <section class="bg-white shadow-md py-4 mt-16">
+                                    <div class="container mx-auto px-4">
+                                        <ul class="space-y-4">
+                                            <li>
+                                                <label class="block text-black">Laptop Brands</label>
+                                                <%
+
+                                                    String id = "";
+                                                    ResultSet rs = null, subCat = null;
+                                                    if (session.getAttribute("resultsetCategory") != null) {
+                                                        id = (String) session.getAttribute("resultsetCategory");
+                                                    }
+
+                                                    ProductItemDAO pidao = new ProductItemDAO();
+                                                    ProductDAO pDAO = new ProductDAO();
+                                                    CategoryDAO cDAO = new CategoryDAO();
+                                                    Product p = new Product();
+                                                    Category cat = cDAO.getCatName(Integer.parseInt(id));
+                                                    if (!id.equals("300000") && !id.equals("301000") && !id.equals("302000")) {
+                                                        rs = pDAO.getProductBySubCategory(cat.getCat_name(), String.valueOf(cat.getParent()));
+                                                        subCat = cDAO.getAllSubCat(String.valueOf(cat.getParent()));
+                                                    } else {
+                                                        rs = pidao.getAllByCatParent(id);
+                                                        subCat = cDAO.getAllSubCat(id);
+                                                    }
+                                                    //if (session.getAttribute("resultsetCategory") != null) {
+                                                    session.removeAttribute("resultsetCategory");
+                                                    while(subCat.next()){
+                                                %>
+                                                <div>
+                                                    <input  type="radio" name="brand" value="<%= subCat.getString("id") %>">
+                                                    <label ><%= subCat.getString("name") %></label>
+                                                </div>
+                                                <%}%>
+                                            </li>
+                                        </ul>
+                                        <input type="submit" value="sort" name="btnSortProduct" class="btn btn-primary"/>
+                                        <a href="/ProductController/Category/<%= cat.getParent() %>">Show All</a>
+                                    </div>
+                                </section>
+                            </li>
+                        </ul>
+                    </form>
                 </div>
             </aside>
-            <script>
-                function showSortValue() {
-                    const sortSelect = document.getElementById('sort');
-                    const sortValue = sortSelect.options[sortSelect.selectedIndex].text;
-                    document.getElementById('sort-value').innerText = 'Sắp xếp theo: ' + sortValue;
-                }
 
-                function showFilterValue(filterId) {
-                    const checkboxes = document.querySelectorAll(`input[name=${filterId}]:checked`);
-                    const selectedValues = Array.from(checkboxes).map(cb => cb.nextSibling.textContent.trim());
-                    const filterDisplay = document.getElementById('filter-values');
 
-                    let existingFilters = filterDisplay.innerText.split(', ').filter(Boolean);
-                    const filterText = filterId.charAt(0).toUpperCase() + filterId.slice(1) + ': ' + selectedValues.join(', ');
-
-                    const existingIndex = existingFilters.findIndex(f => f.startsWith(filterId.charAt(0).toUpperCase() + filterId.slice(1)));
-                    if (existingIndex > -1) {
-                        existingFilters[existingIndex] = filterText;
-                    } else {
-                        existingFilters.push(filterText);
-                    }
-
-                    filterDisplay.innerText = existingFilters.join(', ');
-                }
-            </script>
             <style>
                 .filter-select {
                     padding: 0.5rem 1rem;
@@ -255,10 +218,7 @@
                 <div class="container mx-auto px-4">
                     <h2 class="text-2xl font-bold text-gray-800 text-center">Our Products</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-                        <%
-                            ProductItemDAO pidao = new ProductItemDAO();
-                            String id = (String) session.getAttribute("categoryid");
-                            ResultSet rs = pidao.getAllByCatParent(id); // Corrected to use category ID
+                        <%                            //}
                             while (rs.next()) {
                                 String price = rs.getString("price");
                         %>
@@ -280,7 +240,7 @@
                             });
                         </script>
 
-                        <div class="bg-white shadow-md rounded-lg overflow-hidden product-card">
+                        <div id="content" class="bg-white shadow-md rounded-lg overflow-hidden product-card">
                             <a href="/ProductController/View/<%= rs.getString("pro_id")%>">
                                 <div class="flex justify-center items-center h-48 w-full">
                                     <img src="<%= rs.getString("image")%>" alt="Product Image" class="object-cover">
@@ -290,18 +250,13 @@
                                 <h3 class="text-lg font-semibold text-gray-800 product-name"><%= rs.getString("pro_name")%></h3>
                                 <p class="product-price text-gray-600 mt-2"><%= price%> vnd</p>
                             </div>
-                            <a href="/ProductController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
+                            <a href="/SortCategoryController/View/<%= rs.getString("pro_id")%>" class="inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 add-to-cart">View</a>
                         </div>
                         <% }%>
                     </div>
                 </div>
             </section>
         </div>
-
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br>
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-white py-8">
