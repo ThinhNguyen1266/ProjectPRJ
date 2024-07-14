@@ -108,6 +108,20 @@ public class OrderDAO {
         }
         return rs;
     }
+    
+    public ResultSet getOrderByUser(String id){
+        Connection conn = DB.DBConnection.getConnection();
+        ResultSet rs;
+        try{
+            String sql = "SELECT * FROM [order] where user_id = ?";
+            PreparedStatement pst = conn.prepareCall(sql);
+            pst.setString(1, id);
+            rs = pst.executeQuery();
+        }catch(Exception e){
+            rs = null;
+        }
+        return rs;
+    }
 
     public int getCreateOrderId() {
         Connection conn = DB.DBConnection.getConnection();
