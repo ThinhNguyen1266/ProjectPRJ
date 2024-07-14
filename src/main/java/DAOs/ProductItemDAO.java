@@ -511,7 +511,7 @@ public class ProductItemDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String sql = "select p.name as product_name, p.[image] \n"
+            String sql = "select pi.id as pro_item_id, p.name as product_name, p.[image] \n"
                     + "from product_item pi join product p on pi.product_id = p.id\n"
                     + "where pi.id = ?";
             ps = conn.prepareStatement(sql);

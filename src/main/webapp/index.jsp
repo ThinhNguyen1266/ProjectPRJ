@@ -283,7 +283,7 @@
                         rs = pidao.getAllInMenu();
                         while (rs.next()) {
                             String price = rs.getString("price"); // Assuming price is fetched from ResultSet rs
-                    %>
+%>
                     <script>
                         function formatPrice(price) {
                             let parts = price.toString().split(".");
@@ -324,7 +324,7 @@
                 <h3>Product</h3>
                 <ul>
                     <%  dao = new CategoryDAO();
-                         rs = dao.getAllCategoriesNull();
+                        rs = dao.getAllCategoriesNull();
                         while (rs.next()) {%>
                     <li><a href="/ProductController/Category/<%= rs.getInt("id")%>"><%= rs.getString("name")%></a></li>
                         <%}%>

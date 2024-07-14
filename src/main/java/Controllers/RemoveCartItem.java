@@ -4,29 +4,21 @@
  */
 package Controllers;
 
-import DAOs.CartDAO;
 import DAOs.Cart_itemDAO;
-import DAOs.ProductItemDAO;
-import Models.Cart;
-import Models.Cart_item;
-import Models.Product_item;
-import Models.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import org.json.JSONObject;
 
 /**
  *
- * @author Thinh
+ * @author AnhNLCE181837
  */
-public class CartController extends HttpServlet {
+public class RemoveCartItem extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +37,10 @@ public class CartController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CartController</title>");
+            out.println("<title>Servlet RemoveCartItem</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CartController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet RemoveCartItem at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,10 +58,7 @@ public class CartController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if (path.equals("/CartController")) {
-            request.getRequestDispatcher("/cart.jsp").forward(request, response);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -83,35 +72,39 @@ public class CartController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (request.getParameter("btnAddToCart") != null) {
-            ProductItemDAO pidao = new ProductItemDAO();
-            CartDAO cartDAO = new CartDAO();
-            Cart_itemDAO cart_itemDAO = new Cart_itemDAO();
-            String userID = request.getParameter("userID");
-            String proItemID = request.getParameter("productItemID");
-            int quan = Integer.parseInt(request.getParameter("quantity"));
-            Product_item pi = pidao.getProductItem(proItemID);
-            int cartID = cartDAO.getCartIDByUserID(userID);
-            String tmpID = cart_itemDAO.contain(cartID, proItemID);
-            if (tmpID == null) {
-                User user = new User();
-                user.setId(Integer.parseInt(userID));
-                int id = Integer.parseInt(cart_itemDAO.getCart_itemID());
-                id++;
-                Cart_item cart_item = new Cart_item(id, pi, cartID, user, quan);
-                cart_itemDAO.addNewCart_Item(cart_item);
-            } else {
-                cart_itemDAO.addQuantity(tmpID, quan);
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
+
+        try {
+            // Đọc dữ liệu từ yêu cầu
+            StringBuilder sb = new StringBuilder();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
             }
-            response.sendRedirect("/CartController");
-        } else if (request.getParameter("updateQuan") != null) {
-            String cartItemID = request.getParameter("cartItemID");
-            String newquan = request.getParameter("newQuantity");
+
+            JSONObject jsonRequest = new JSONObject(sb.toString());
+            String cartId = jsonRequest.getString("cartId");
+            String proItemId = jsonRequest.getString("proItemId");
+
+            // Thực hiện câu lệnh SQL DELETE
             Cart_itemDAO cidao = new Cart_itemDAO();
-            cidao.updateQuantity(cartItemID, newquan);
-            response.getWriter().write("success");
+            boolean success = cidao.deleteCartItem(cartId, proItemId);
+
+            if (success) {
+                jsonResponse.put("success", true);
+            } else {
+                jsonResponse.put("success", false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResponse.put("success", false);
         }
 
+        out.print(jsonResponse.toString());
+        out.flush();
     }
 
     /**

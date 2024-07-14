@@ -186,11 +186,29 @@
                             <thead>
                                 <tr>
                                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Option</th>
                                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
                                     <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Selection</th>
                                 </tr>
                             </thead>
+                            <script>
+                                function formatPrice(priceString) {
+                                    let parts = priceString.toString().split(".");
+                                    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                    return parts.join(".");
+                                }
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let priceElements = document.querySelectorAll('.product-price');
+                                    priceElements.forEach(function (priceElement) {
+                                        let priceText = priceElement.innerText.trim();
+                                        let formattedPrice = formatPrice(priceText);
+                                        priceElement.innerText = formattedPrice;
+                                    });
+                                });
+                            </script>
+
                             <tbody>
                                 <%
                                     String jsonString;
@@ -209,8 +227,10 @@
                                         JSONObject jsonObject = products.getJSONObject(i);
                                         int quantity = jsonObject.getInt("quantity");
                                         long price = jsonObject.getLong("price");
-                                        long currentTotalprice = quantity * price;
-                                        totalPrice += currentTotalprice;
+                                        String priceString = String.valueOf(price);
+                                        long currentTotalPrice = quantity * price;
+                                        totalPrice += currentTotalPrice;
+                                        String currentTotalprice = String.valueOf(totalPrice);
                                         int id = jsonObject.getInt("proItemID");
                                         rs = pidao.getOrderProductItem(id);
                                 %>
@@ -230,17 +250,45 @@
                                         <input type="number" value="<%= quantity%>" disabled class="w-16 py-2 px-3 border rounded text-gray-700">
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p class="text-gray-900 whitespace-no-wrap"><%= price%></p>
+                                        <p class="text-gray-900 whitespace-no-wrap product-price"><%= priceString%></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p class="text-gray-900 whitespace-no-wrap" id="totalPrice"> <%= currentTotalprice%> VND</p>
+                                        <p class="text-gray-900 whitespace-no-wrap product-price"><%= currentTotalPrice%> VND</p>
+                                    <td
+                                        class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <%
+                                            pidao = new ProductItemDAO();
+                                            ResultSet rs2 = pidao.getProductVariance(rs.getString("pro_item_id"));
+                                            while (rs2.next()) {
+                                        %>
+                                        <%= rs2.getString("variane_name")%> : <%= rs2.getString("variance_value")%> <br/><br/>
+                                        <%
+                                            }
+                                        %>
                                     </td>
-
                                 </tr>
                                 <% }%>
                             </tbody>
                         </table>
+                        <script>
+                            function formatPrice(totalPriceString) {
+                                let parts = totalPriceString.toString().split(".");
+                                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                return parts.join(".");
+                            }
+
+                            document.addEventListener("DOMContentLoaded", function () {
+                                let totalPriceElement = document.querySelector('.total-price');
+                                if (totalPriceElement) {
+                                    let priceText = totalPriceElement.innerText.trim();
+                                    let formattedPrice = formatPrice(priceText);
+                                    totalPriceElement.innerText = formattedPrice;
+                                }
+                            });
+                        </script>
+                        <% String totalPriceString = String.valueOf(totalPrice);%>
                         <div class="mt-8 flex justify-end">
+                            <h4 class="text-xl font-bold total-price">Total: <%= totalPriceString%> VND</h4>
                             <form id="orderForm" action="OrderController" method="POST">
                                 <input type="hidden" name="selectedProducts" value='<%= jsonString%>' />
                                 <input type="hidden" name="isBuyNow" value='<%= isBuyNow %>' />
@@ -249,6 +297,7 @@
                                 <button type="submit" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" name="order">Order</button>
                             </form>
                         </div>
+
                     </div>
                 </div>
             </div>
