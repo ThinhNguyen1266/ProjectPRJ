@@ -152,7 +152,7 @@
                 </script>
             </div>
         </header>
-        <section class="bg-white shadow-md py-4 mt-16">
+       <section class="bg-white shadow-md py-4 mt-16">
             <div class="container mx-auto px-4">
                 <form method="post" action="/ProductController">
                     <div class="flex space-x-4">
@@ -172,7 +172,7 @@
                                 <option value="3000">>20 000 000</option>
                             </select>
                         </div>
-                        <input id="searchname" type="hidden" name="SearchName" value="<%= session.getAttribute("Searchname")%>">
+                         <input id="searchname" type="hidden" name="SearchName" value="<%= session.getAttribute("Searchname")%>">
                         <button type="submit" name="btnSortS">Sort</button>
                     </div>
                     
@@ -187,9 +187,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
                     <%
                         ProductItemDAO pidao = new ProductItemDAO();
-                        String name = (String) session.getAttribute("Searchname");
-                        System.out.println(name);
-                        ResultSet rs = pidao.getAllByName(name);// Corrected to use category ID  
+                        
+                        String type= (String) session.getAttribute("type");
+                         String Sortprice= (String) session.getAttribute("sprice");
+                         String name = (String) session.getAttribute("Searchname");
+                         
+                        
+                        ResultSet rs = pidao.SortProduct(Integer.parseInt(Sortprice), type,name);// Corrected to use category ID  
                         while (rs.next()) {
                             String price = rs.getString("price");
                     %>
