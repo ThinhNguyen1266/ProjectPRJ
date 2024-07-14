@@ -86,6 +86,21 @@ public class CategoryDAO {
         }
         return rs;
     }
+    
+    public String getCatParentID(String catID){
+        Connection conn = DB.DBConnection.getConnection();
+        String catParentID = "";
+        try{
+            String sql = " SELECT * FROM category WHERE id = ? ";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, catID);
+            ResultSet rs = pst.executeQuery();
+            catParentID = rs.getString("parent");
+        }catch(Exception e){
+            catParentID = "";
+        }
+        return catParentID;
+    }
 
     public Category getCatName(int id) {
         Connection conn = DB.DBConnection.getConnection();
@@ -98,6 +113,10 @@ public class CategoryDAO {
             if (rs.next()) {
                 obj = new Category();
                 obj.setCat_name(rs.getString("name"));
+                if(rs.getString("parent")!=null)
+                    obj.setParent(Integer.parseInt(rs.getString("parent")));
+                else
+                    obj.setParent(Integer.parseInt(rs.getString("id")));
             } else {
                 obj = null;
             }
@@ -128,4 +147,5 @@ public class CategoryDAO {
         }
         return obj;
     }
+
 }

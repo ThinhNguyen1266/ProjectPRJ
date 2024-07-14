@@ -6,7 +6,6 @@ package DAOs;
 
 import DB.DBConnection;
 import Models.Category;
-import Models.Product;
 import Models.Product_item;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
