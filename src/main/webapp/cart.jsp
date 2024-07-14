@@ -232,7 +232,7 @@
                 <h3>Product</h3>
                 <ul>
                     <% CategoryDAO dao = new CategoryDAO();
-                        ResultSet rs = dao.getAllCategoriesNull();
+                        rs = dao.getAllCategoriesNull();
                         while (rs.next()) {%>
                     <li><a href="/ProductController/Category/<%= rs.getInt("id")%>"><%= rs.getString("name")%></a></li>
                         <%}%>
