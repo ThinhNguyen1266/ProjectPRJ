@@ -457,13 +457,18 @@
                             <button type="button" onclick="addNum1()" class="px-2 py-1 border border-gray-300">+</button>
                             <div class="stock-status ml-4" id="quan"><%= rs.getString("quantity")%> in storage</div>
                         </div>
+
                         <script>
+                            var maxQuantity = <%= rs.getString("quantity")%>;
+                            console.log(maxQuantity);
                             function addNum1() {
                                 var newValue = Number(document.getElementById('firstvalue').value);
-                                newValue += 1;
-                                document.getElementById('firstvalue').value = newValue;
-                                document.getElementById('cartQuan').value = newValue;
-                                document.getElementById('orderQuan').value = newValue;
+                                if (newValue < maxQuantity) {
+                                    newValue += 1;
+                                    document.getElementById('firstvalue').value = newValue;
+                                    document.getElementById('cartQuan').value = newValue;
+                                    document.getElementById('orderQuan').value = newValue;
+                                }
                             }
 
                             function minusNum1() {
@@ -476,6 +481,7 @@
                                 }
                             }
                         </script>
+
                         <%
                             if (customerName != null) {
                         %>

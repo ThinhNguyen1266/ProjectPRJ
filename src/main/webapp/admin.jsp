@@ -168,6 +168,7 @@
                     <table class="min-w-full leading-normal mt-4">
                         <thead>
                             <tr>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product ID</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product Name</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
@@ -181,6 +182,7 @@
                             <%
                                 ProductItemDAO pidao = new ProductItemDAO();
                                 rs = pidao.getAllAdmin();
+                                int no = 1;
                                 while (rs.next()) {
                                     String cat_name = "";
                                     if (rs.getString("catParent").equals("300000"))
@@ -191,6 +193,7 @@
                                         cat_name = rs.getString("cat_name");
                             %>
                             <tr>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= no++%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("pro_id")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("pro_name")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= rs.getString("description")%></td>
@@ -221,33 +224,85 @@
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
                                 <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <%
+
                                 OrderDAO oDAO = new OrderDAO();
                                 ResultSet orderList = oDAO.getAllOrder();
+                                ResultSet numberOfYear = oDAO.getNumberOfYear();
+                                List<Integer> listOfYear = new ArrayList<>();
                                 while (orderList.next()) {
+                                    String orderId = orderList.getString("order_id");
+                                    String currentStatus = orderList.getString("status");
                             %>
-                            <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("order_id")%></td>
+                            <tr id="order-<%= orderId%>">
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderId%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("customer")%></td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("total")%></td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("status")%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm" id="status-<%= orderId%>"><%= currentStatus%></td>
+                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <button class="change-status bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" data-order-id="<%= orderId%>" data-current-status="<%= currentStatus%>">
+                                        Change Status
+                                    </button>
+                                </td>
                             </tr>
-                            <%}%>
-                            <!-- More rows as needed -->
+                            <% }%>
                         </tbody>
                     </table>
                 </div>
+                <script>
+                    $(document).ready(function () {
+                        $(".change-status").click(function () {
+                            var button = $(this);
+                            var orderId = button.data("order-id");
+                            var currentStatus = button.data("current-status");
+
+                            $.ajax({
+                                url: 'ChangeOrderStatusServlet',
+                                type: 'POST',
+                                data: {
+                                    order_id: orderId,
+                                    current_status: currentStatus
+                                },
+                                success: function (response) {
+                                    var newStatus = response.newStatus;
+                                    $("#status-" + orderId).text(newStatus);
+                                    button.data("current-status", newStatus);
+                                    updateChart();  // Gọi hàm updateChart khi trạng thái đơn hàng thay đổi
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log("An error occurred: " + error);
+                                }
+                            });
+                        });
+                    });
+
+                    function updateChart() {
+                        const selectedYear = document.getElementById('yearSelect').value;
+
+                        $.ajax({
+                            url: 'GetChartStatisticsServlet',
+                            type: 'GET',
+                            success: function (response) {
+                                const revenueData = response;
+                                revenueChart.data.datasets[0].data = revenueData[selectedYear];
+                                revenueChart.update();
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("An error occurred: " + error);
+                            }
+                        });
+                    }
+                </script>
 
                 <div id="statistics" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8 hidden">
                     <h1>Monthly Revenue Chart</h1>
                     <label for="yearSelect">Year:</label>
                     <select id="yearSelect" onchange="updateChart()">
-                        <%
-                            ResultSet numberOfYear = oDAO.getNumberOfYear();
-                            List<Integer> listOfYear = new ArrayList<>();
+                        <%                           
                             boolean haveRevenue = false;
                             while (numberOfYear.next()) {
                                 haveRevenue = true;
@@ -255,12 +310,11 @@
                                 listOfYear.add(year);
                         %>
                         <option value="<%= year%>"><%= year%></option>
-                        <% }%>
+                        <% } %>
                     </select>
-                    <%if (haveRevenue) {%>
+                    <% if (haveRevenue) { %>
                     <canvas id="revenueChart" width="400" height="200"></canvas>
                     <script>
-                        const revenueData = <%= oDAO.getChartStatistics(listOfYear)%>;
                         const ctx = document.getElementById('revenueChart').getContext('2d');
                         let revenueChart = new Chart(ctx, {
                             type: 'bar',
@@ -268,7 +322,7 @@
                                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                                 datasets: [{
                                         label: 'Revenue (Million VND)',
-                                        data: revenueData['2021'],
+                                        data: [], // Data will be populated through AJAX
                                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                         borderColor: 'rgba(75, 192, 192, 1)',
                                         borderWidth: 1
@@ -283,19 +337,13 @@
                             }
                         });
 
-                        function updateChart() {
-                            const selectedYear = document.getElementById('yearSelect').value;
-                            revenueChart.data.datasets[0].data = revenueData[selectedYear];
-                            revenueChart.update();
-                        }
+                        // Load initial chart data
+                        updateChart();
                     </script>
-                    <%} else {
-                    %>
+                    <% } else { %>
                     <h2 style="color: red">Sorry You don't have any ORDER yet. What a poor shop!</h2>
-                    <%
-    }%>
+                    <% } %>
                 </div>
-
 
 
                 <!-- Manage Users -->
