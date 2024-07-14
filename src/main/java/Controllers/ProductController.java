@@ -473,14 +473,15 @@ public class ProductController extends HttpServlet {
             }
             response.sendRedirect("/ProductController/Edit/" + pi.getPro_id());
         }
-        if (request.getParameter("btnSort") != null) {
+        if (request.getParameter("btnSortS") != null) {
 
             String price = request.getParameter("price");
-            String type = request.getParameter("sortType");
+            String type = request.getParameter("type");
+            String Sname=request.getParameter("SearchName");
 
             session.setAttribute("type", type);
-
-            session.setAttribute("price", price);
+            session.setAttribute("Searchname", Sname);
+            session.setAttribute("sprice", price);
             response.sendRedirect("/ProductController/Sort");
 
         }
