@@ -4,6 +4,8 @@
     Author     : AnhNLCE181837
 --%>
 
+<%@page import="java.sql.ResultSet"%>
+<%@page import="DAOs.OrderDAO"%>
 <%@page import="DAOs.UserDAO"%>
 <%@page import="Models.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -109,7 +111,7 @@
                         <div class="list-group list-group-flush account-settings-links">
                             <a class="list-group-item list-group-item-action active"  href="/AccountController/Edit/<%= customerName%>">Profile Edit</a>
                         </div>
-                         <div class="list-group list-group-flush account-settings-links">
+                        <div class="list-group list-group-flush account-settings-links">
                             <a class="list-group-item list-group-item-action active" href="/AccountController/AddAddress/<%= customerName%>">Address Setting</a>
                         </div>
                     </div>
@@ -118,7 +120,7 @@
                             <div class="tab-pane fade active show" id="account-general">
                                 <hr class="border-light m-0">
                                 <div class="profile-section p-4">
-                                    
+
                                     <p><strong>Name:<%= (user == null) ? "" : user.getName()%></strong> <!-- User Name --></p>
                                     <p><strong>Email: :<%= (user == null) ? "" : user.getEmails()%></strong> <!-- User Email --></p>
                                     <p><strong>Phone Number: :<%= (user == null) ? "" : user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
@@ -138,6 +140,36 @@
                     <a class="btn btn-secondary mr-2" style="padding-right: 20px" href="/AccountController/Edit/<%= customerName%>">Edit</a>
                     <a class="btn btn-default" href="/ProductController/List">Cancel</a>
                 </div>
+            </div>
+
+            <div id="view-orders" class="bg-white shadow-md rounded-lg overflow-hidden mb-8 p-8">
+                <h3 class="text-xl font-bold text-gray-800">View Orders</h3>
+                <table class="min-w-full leading-normal mt-4">
+                    <thead>
+                        <tr>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Order Date</th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%
+                            OrderDAO oDAO = new OrderDAO();
+                            ResultSet orderList = oDAO.getOrderByUser(userID);
+                            int no = 1;
+                            while (orderList.next()) {
+                                String currentStatus = orderList.getString("status");
+                        %>
+                        <tr id="order">
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= no++ %></td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("order_date")%></td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("total_price")%></td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= currentStatus%></td>
+                        </tr>
+                        <% }%>
+                    </tbody>
+                </table>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
