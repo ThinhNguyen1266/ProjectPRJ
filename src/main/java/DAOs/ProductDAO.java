@@ -36,6 +36,7 @@ public class ProductDAO {
     public ResultSet getProductBySubCategory(String catName, String catParentID) {
         Connection conn = DB.DBConnection.getConnection();
         ResultSet rs = null;
+        
         try {
             String sql = " SELECT p.id pro_id, p.name pro_name, p.[image], min(pi.price) AS price\n"
                     + "    FROM product p JOIN product_item pi ON p.id = pi.product_id\n"
