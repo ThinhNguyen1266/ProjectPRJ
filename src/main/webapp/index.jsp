@@ -180,7 +180,7 @@
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
+                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">Zootech</a>
                 <form method="post" class="search-container" action="/ProductController/Search">
                     <input type="text" name="txtSearchName" placeholder="Search..">
                     <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
@@ -234,10 +234,10 @@
         </header>
 
         <!-- Hero Banner -->
-        <section class="bg-cover bg-center h-96 mt-16" style="background-image: url('https://via.placeholder.com/1920x600');">
+        <section class="bg-cover bg-center h-96 mt-16" style="background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg');">
             <div class="container mx-auto h-full flex items-center justify-center text-center">
                 <div class="bg-white bg-opacity-50 p-8 rounded">
-                    <h1 class="text-4xl font-bold text-gray-800">Welcome to ShopName</h1>
+                    <h1 class="text-4xl font-bold text-gray-800">Welcome to Zootech</h1>
                     <p class="mt-4 text-gray-600">Discover the best products at amazing prices.</p>
                     <a href="/Index" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Shop Now</a>
                 </div>
