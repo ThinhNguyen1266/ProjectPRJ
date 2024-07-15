@@ -13,7 +13,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <style>
             .search-container {
                 display: flex;
@@ -176,7 +175,7 @@
             }
         </style>
     </head>
-    <body class="bg-red-100">
+    <body class="bg-white-100">
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
@@ -187,31 +186,33 @@
                 </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
-                        <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
+                        <i class="fas fa-info-circle"></i> About/Contact
                     </a>
                     <a href="/CartController" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
-                    <% String customerName = (String) session.getAttribute("customername");
-                        if (customerName != null) {%>
+                    <%
+                        String customerName = (String) session.getAttribute("customername");
+                        if (customerName != null) {
+                    %>
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
-                            <i class="fa fa-user-circle-o"></i> <%= customerName%>
+                            <i class="fa fa-user-circle"></i> <%= customerName%>
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                                 <i class='fas fa-user-alt'></i> Profile
                             </a>
                             <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                <i class="fa fa-sign-out"></i> Sign Out
+                                <i class="fa fa-sign-out-alt"></i> Sign Out
                             </a>
                         </div>
                     </div>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">
-                        <i class="fa fa-sign-in"></i> Login
+                        <i class="fa fa-sign-in-alt"></i> Login
                     </a>
-                    <% } %>
+                    <% }%>
                 </div>
                 <script>
                     function toggleDropdown() {
@@ -234,12 +235,12 @@
         </header>
 
         <!-- Hero Banner -->
-        <section class="bg-cover bg-center h-96 mt-16" style="background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg');">
+        <section class="bg-cover bg-center mt-10" style="height: 700px; background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg'); background-size: cover; background-position: top; background-repeat: no-repeat;">
             <div class="container mx-auto h-full flex items-center justify-center text-center">
-                <div class="bg-white bg-opacity-50 p-8 rounded">
+                <div class="bg-white bg-opacity-75 p-8 rounded-lg shadow-md">
                     <h1 class="text-4xl font-bold text-gray-800">Welcome to Zootech</h1>
-                    <p class="mt-4 text-gray-600">Discover the best products at amazing prices.</p>
-                    <a href="/Index" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Shop Now</a>
+                    <p class="mt-4 text-gray-700">Discover the best products at amazing prices.</p>
+                    <a href="/Index" class="mt-4 inline-block bg-gray-800 hover:bg-gray-700 text-white py-2 px-6 rounded-lg transition duration-300">Shop Now</a>
                 </div>
             </div>
         </section>

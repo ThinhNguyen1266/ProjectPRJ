@@ -6,24 +6,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>About & Contact</title>
-        <!-- Font Awesome 5.15.4 -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        
-        <!-- Tailwind CSS 2.2.19 -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-        <!-- Bootstrap JS -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-        <!-- jQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-        <!-- Font Awesome Kit -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-
-        <!-- Google Material Icons -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        
+
         <style>
             .search-container {
                 display: flex;
@@ -127,29 +115,31 @@
                 </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
-                        <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
+                        <i class="fas fa-info-circle"></i> About/Contact
                     </a>
-                    <a href="/ProductController/Cart" class="text-gray-800 hover:text-gray-600">
+                    <a href="/CartController" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
-                    <% String customerName = (String) session.getAttribute("customername");
-                        if (customerName != null) {%>
+                    <%
+                        String customerName = (String) session.getAttribute("customername");
+                        if (customerName != null) {
+                    %>
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
-                            <i class="fa fa-user-circle-o"></i> <%= customerName%>
+                            <i class="fa fa-user-circle"></i> <%= customerName%>
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                                 <i class='fas fa-user-alt'></i> Profile
                             </a>
                             <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                <i class="fa fa-sign-out"></i> Sign Out
+                                <i class="fa fa-sign-out-alt"></i> Sign Out
                             </a>
                         </div>
                     </div>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">
-                        <i class="fa fa-sign-in"></i> Login
+                        <i class="fa fa-sign-in-alt"></i> Login
                     </a>
                     <% }%>
                 </div>
@@ -213,7 +203,6 @@
                     <p class="text-gray-700 mt-2">We are excited to continue growing and evolving, and we invite you to join us on this journey. Whether you are a client, partner, or team member, we are thrilled to have you with us. Together, we can achieve great things.</p>
                 </div>
                 <div class="mt-8">
-                    <img src="imgDontTouch!/cool.png" alt="About Image" class="w-full h-64 object-cover rounded-lg shadow-md">
                 </div>
             </div>
         </section>

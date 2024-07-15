@@ -15,7 +15,6 @@
         <title>User Profile</title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <style>
             body {
@@ -53,7 +52,7 @@
                 </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
-                        <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
+                        <i class="fas fa-info-circle"></i> About/Contact
                     </a>
                     <a href="/CartController" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
@@ -67,20 +66,20 @@
                     %>
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
-                            <i class="fa fa-user-circle-o"></i> <%= customerName%>
+                            <i class="fa fa-user-circle"></i> <%= customerName%>
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                                 <i class='fas fa-user-alt'></i> Profile
                             </a>
                             <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                <i class="fa fa-sign-out"></i> Sign Out
+                                <i class="fa fa-sign-out-alt"></i> Sign Out
                             </a>
                         </div>
                     </div>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">
-                        <i class="fa fa-sign-in"></i> Login
+                        <i class="fa fa-sign-in-alt"></i> Login
                     </a>
                     <% }%>
                 </div>
@@ -109,7 +108,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="col-span-1">
                         <div class="list-group list-group-flush account-settings-links">
-                            <a class="list-group-item list-group-item-action active"  href="/AccountController/Edit/<%= customerName%>">Profile Edit</a>
+                            <a class="list-group-item list-group-item-action active" href="/AccountController/Edit/<%= customerName%>">Profile Edit</a>
                         </div>
                         <div class="list-group list-group-flush account-settings-links">
                             <a class="list-group-item list-group-item-action active" href="/AccountController/AddAddress/<%= customerName%>">Address Setting</a>
@@ -120,10 +119,9 @@
                             <div class="tab-pane fade active show" id="account-general">
                                 <hr class="border-light m-0">
                                 <div class="profile-section p-4">
-
                                     <p><strong>Name:<%= (user == null) ? "" : user.getName()%></strong> <!-- User Name --></p>
-                                    <p><strong>Email: :<%= (user == null) ? "" : user.getEmails()%></strong> <!-- User Email --></p>
-                                    <p><strong>Phone Number: :<%= (user == null) ? "" : user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
+                                    <p><strong>Email: <%= (user == null) ? "" : user.getEmails()%></strong> <!-- User Email --></p>
+                                    <p><strong>Phone Number: <%= (user == null) ? "" : user.getPhoneNumber()%></strong> <!-- User Phone Number --></p>
                                     <%
                                         UserDAO dao = new UserDAO();
                                         String userID = dao.getUserID(customerName);
@@ -153,6 +151,23 @@
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
+                    <script>
+                        function formatPrice(price) {
+                            let parts = price.toString().split(".");
+                            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            return parts.join(".");
+                        }
+
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // This will run when the page is fully loaded
+                            let priceElements = document.querySelectorAll('.product-price');
+                            priceElements.forEach(function (priceElement) {
+                                let priceText = priceElement.innerText.trim(); // Assuming price is in innerText
+                                let formattedPrice = formatPrice(priceText);
+                                priceElement.innerText = formattedPrice;
+                            });
+                        });
+                    </script>
                     <tbody>
                         <%
                             OrderDAO oDAO = new OrderDAO();
@@ -160,11 +175,13 @@
                             int no = 1;
                             while (orderList.next()) {
                                 String currentStatus = orderList.getString("status");
+                                String price = orderList.getString("total_price");
                         %>
+
                         <tr id="order">
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= no++ %></td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= no++%></td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("order_date")%></td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= orderList.getString("total_price")%></td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm product-price"><%= price%></td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><%= currentStatus%></td>
                         </tr>
                         <% }%>
@@ -175,21 +192,21 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                    function toggleDropdown() {
-                        var dropdownMenu = document.getElementById("dropdownMenu");
-                        dropdownMenu.classList.toggle("hidden");
-                    }
-                    window.onclick = function (event) {
-                        if (!event.target.matches('button')) {
-                            var dropdowns = document.getElementsByClassName("dropdown-menu");
-                            for (var i = 0; i < dropdowns.length; i++) {
-                                var openDropdown = dropdowns[i];
-                                if (!openDropdown.classList.contains('hidden')) {
-                                    openDropdown.classList.add('hidden');
-                                }
-                            }
+            function toggleDropdown() {
+                var dropdownMenu = document.getElementById("dropdownMenu");
+                dropdownMenu.classList.toggle("hidden");
+            }
+            window.onclick = function (event) {
+                if (!event.target.matches('button')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-menu");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (!openDropdown.classList.contains('hidden')) {
+                            openDropdown.classList.add('hidden');
                         }
                     }
+                }
+            }
         </script>
     </body>
 </html>
