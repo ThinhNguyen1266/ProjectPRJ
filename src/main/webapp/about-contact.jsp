@@ -203,7 +203,6 @@
                     <p class="text-gray-700 mt-2">We are excited to continue growing and evolving, and we invite you to join us on this journey. Whether you are a client, partner, or team member, we are thrilled to have you with us. Together, we can achieve great things.</p>
                 </div>
                 <div class="mt-8">
-                    <img src="imgDontTouch!/cool.png" alt="About Image" class="w-full h-64 object-cover rounded-lg shadow-md">
                 </div>
             </div>
         </section>
