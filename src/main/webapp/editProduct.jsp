@@ -278,7 +278,7 @@
                                 <td><%= rs.getString("price")%></td>
                                 <td class="actions">
                                     <a href="/ProductController/EditProductItem/<%= rs.getString("proItemID")%>" class="btn">Edit</a>
-                                    <a href="/ProductController/DeleteProductItem/<%= rs.getString("proItemID")%>/<%= product.getPro_id() %>" class="btn">Delete</a>
+                                    <!--<a href="/ProductController/DeleteProductItem/<%= rs.getString("proItemID")%>/<%= product.getPro_id() %>" class="btn">Delete</a>-->
                                 </td>
                             </tr>
                             <% }%>

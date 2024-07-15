@@ -21,7 +21,7 @@
             <div
                 class="container mx-auto px-4 py-4 flex justify-between items-center">
                 <a href="/ProductController/List"
-                   class="text-xl font-bold text-gray-800">ShopName</a>
+                   class="text-xl font-bold text-gray-800">Zootech</a>
             </div>
         </header>
 
