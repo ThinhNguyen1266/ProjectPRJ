@@ -234,7 +234,7 @@
         </header>
 
         <!-- Hero Banner -->
-        <section class="bg-cover bg-center h-96 mt-16" style="background-image: url('https://via.placeholder.com/1920x600');">
+        <section class="bg-cover bg-center h-96 mt-16" style="background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg');">
             <div class="container mx-auto h-full flex items-center justify-center text-center">
                 <div class="bg-white bg-opacity-50 p-8 rounded">
                     <h1 class="text-4xl font-bold text-gray-800">Welcome to Zootech</h1>
