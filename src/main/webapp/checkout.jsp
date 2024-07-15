@@ -107,29 +107,31 @@
                 </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
-                        <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
+                        <i class="fas fa-info-circle"></i> About/Contact
                     </a>
                     <a href="/CartController" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
-                    <% String customerName = (String) session.getAttribute("customername");
-                        if (customerName != null) {%>
+                    <%
+                        String customerName = (String) session.getAttribute("customername");
+                        if (customerName != null) {
+                    %>
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
-                            <i class="fa fa-user-circle-o"></i> <%= customerName%>
+                            <i class="fa fa-user-circle"></i> <%= customerName%>
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                                 <i class='fas fa-user-alt'></i> Profile
                             </a>
                             <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                <i class="fa fa-sign-out"></i> Sign Out
+                                <i class="fa fa-sign-out-alt"></i> Sign Out
                             </a>
                         </div>
                     </div>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">
-                        <i class="fa fa-sign-in"></i> Login
+                        <i class="fa fa-sign-in-alt"></i> Login
                     </a>
                     <% }%>
                 </div>
@@ -291,9 +293,9 @@
                             <h4 class="text-xl font-bold total-price">Total: <%= totalPriceString%> VND</h4>
                             <form id="orderForm" action="OrderController" method="POST">
                                 <input type="hidden" name="selectedProducts" value='<%= jsonString%>' />
-                                <input type="hidden" name="isBuyNow" value='<%= isBuyNow %>' />
+                                <input type="hidden" name="isBuyNow" value='<%= isBuyNow%>' />
                                 <input type="hidden" name="addressID" value='' id="addressID" />
-                                <input type="hidden" name="userID" value='<%= userID %>'  />
+                                <input type="hidden" name="userID" value='<%= userID%>'  />
                                 <button type="submit" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" name="order">Order</button>
                             </form>
                         </div>
@@ -341,8 +343,8 @@
         </footer>
     </body>
     <script>
-        $('#selectedAddress').change(function (){
-            $('#addressID').val( this.value );
+        $('#selectedAddress').change(function () {
+            $('#addressID').val(this.value);
         });
         $('#addressID').val($('#selectedAddress').val())
     </script>

@@ -15,8 +15,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Products</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <style>
             .search-container {
                 display: flex;
@@ -140,31 +143,33 @@
                 </form>
                 <div class="flex space-x-4">
                     <a href="/ProductController/About-Contact" class="text-gray-800 hover:text-gray-600">
-                        <i class="fas fa-user"></i> About/ <i class="fas fa-envelope"></i> Contact
+                        <i class="fas fa-info-circle"></i> About/Contact
                     </a>
                     <a href="/CartController" class="text-gray-800 hover:text-gray-600">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
-                    <% String customerName = (String) session.getAttribute("customername");
-                        if (customerName != null) {%>
+                    <%
+                        String customerName = (String) session.getAttribute("customername");
+                        if (customerName != null) {
+                    %>
                     <div class="relative inline-block text-left">
                         <button onclick="toggleDropdown()" class="text-gray-800 hover:text-gray-600">
-                            <i class="fa fa-user-circle-o"></i> <%= customerName%>
+                            <i class="fa fa-user-circle"></i> <%= customerName%>
                         </button>
                         <div id="dropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                             <a href="/AccountController/Profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                                 <i class='fas fa-user-alt'></i> Profile
                             </a>
                             <a href="/AccountController/Logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                <i class="fa fa-sign-out"></i> Sign Out
+                                <i class="fa fa-sign-out-alt"></i> Sign Out
                             </a>
                         </div>
                     </div>
                     <% } else { %>
                     <a href="/AccountController/Login" class="text-gray-800 hover:text-gray-600">
-                        <i class="fa fa-sign-in"></i> Login
+                        <i class="fa fa-sign-in-alt"></i> Login
                     </a>
-                    <% } %>
+                    <% }%>
                 </div>
                 <script>
                     function toggleDropdown() {
@@ -191,7 +196,7 @@
                     <div class="flex space-x-4">
                         <div>
                             <select id="sort" name="type" class="filter-select">
-                            
+
                                 <option value="asc">Ascending</option>
                                 <option value="desc">Descending</option>
                             </select>
@@ -199,7 +204,7 @@
 
                         <div>
                             <select id="price" name="price" class="filter-select">
-                              
+
                                 <option value="1000">0-10 000 000</option>
                                 <option value="2000">10 000 000-20 000 000</option>
                                 <option value="3000">>20 000 000</option>
@@ -208,7 +213,7 @@
                         <input id="searchname" type="hidden" name="SearchName" value="<%= session.getAttribute("Searchname")%>">
                         <button type="submit" name="btnSortS">Sort</button>
                     </div>
-                    
+
                 </form>
             </div>
         </section>
