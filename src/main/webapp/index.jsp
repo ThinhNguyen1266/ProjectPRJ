@@ -175,7 +175,7 @@
             }
         </style>
     </head>
-    <body class="bg-red-100">
+    <body class="bg-white-100">
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
@@ -235,7 +235,7 @@
         </header>
 
         <!-- Hero Banner -->
-        <section class="bg-cover bg-center h-96 mt-16" style="background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg');">
+        <section class="bg-cover bg-center mt-10" style="height: 400px; background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg'); background-size: cover; background-position: center top; background-repeat: no-repeat; background-size: contain;">
             <div class="container mx-auto h-full flex items-center justify-center text-center">
                 <div class="bg-white bg-opacity-50 p-8 rounded">
                     <h1 class="text-4xl font-bold text-gray-800">Welcome to Zootech</h1>
@@ -244,6 +244,7 @@
                 </div>
             </div>
         </section>
+
 
         <!-- Categories Section -->
         <section class="py-12">
@@ -284,7 +285,7 @@
                         rs = pidao.getAllInMenu();
                         while (rs.next()) {
                             String price = rs.getString("price"); // Assuming price is fetched from ResultSet rs
-                    %>
+%>
                     <script>
                         function formatPrice(price) {
                             let parts = price.toString().split(".");
