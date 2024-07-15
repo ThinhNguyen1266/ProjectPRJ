@@ -235,17 +235,15 @@
         </header>
 
         <!-- Hero Banner -->
-        <section class="bg-cover bg-center mt-10" style="height: 400px; background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg'); background-size: cover; background-position: top; background-repeat: no-repeat;">
+        <section class="bg-cover bg-center mt-10" style="height: 700px; background-image: url('https://prjassets.blob.core.windows.net/pics/logo.jpg'); background-size: cover; background-position: top; background-repeat: no-repeat;">
             <div class="container mx-auto h-full flex items-center justify-center text-center">
-                <div class="bg-white bg-opacity-50 p-8 rounded">
+                <div class="bg-white bg-opacity-75 p-8 rounded-lg shadow-md">
                     <h1 class="text-4xl font-bold text-gray-800">Welcome to Zootech</h1>
-                    <p class="mt-4 text-gray-600">Discover the best products at amazing prices.</p>
-                    <a href="/Index" class="mt-4 inline-block bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600">Shop Now</a>
+                    <p class="mt-4 text-gray-700">Discover the best products at amazing prices.</p>
+                    <a href="/Index" class="mt-4 inline-block bg-gray-800 hover:bg-gray-700 text-white py-2 px-6 rounded-lg transition duration-300">Shop Now</a>
                 </div>
             </div>
         </section>
-
-
 
         <!-- Categories Section -->
         <section class="py-12">
@@ -286,7 +284,7 @@
                         rs = pidao.getAllInMenu();
                         while (rs.next()) {
                             String price = rs.getString("price"); // Assuming price is fetched from ResultSet rs
-                    %>
+%>
                     <script>
                         function formatPrice(price) {
                             let parts = price.toString().split(".");
