@@ -37,7 +37,7 @@
                 <!-- Header -->
                 <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
                     <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                        <a href="index.html" class="text-xl font-bold text-gray-800">ShopName</a>
+                        <a href="index.html" class="text-xl font-bold text-gray-800">Zootech</a>
                         <div class="flex space-x-4">
                             <a href="/" class="text-gray-800 hover:text-gray-600">Home</a>
                             <a href="about-contact.html" class="text-gray-800 hover:text-gray-600">About/Contact</a>
@@ -204,7 +204,7 @@
                                     <form action="ProductController/Edit/<%=rs.getString("pro_id")%>" >
                                         <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Edit</button>
                                     </form>
-                                    <a href="/ProductController/DeleteProduct/<%= rs.getString("pro_id")%>" onclick="return confirm('Are you sure?')" class="bg-red-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Delete</a>
+                                    <!--<a href="/ProductController/DeleteProduct/<%= rs.getString("pro_id")%>" onclick="return confirm('Are you sure?')" class="bg-red-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Delete</a>-->
                                 </td>
                             </tr>
                             <!-- More rows as needed -->

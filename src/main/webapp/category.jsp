@@ -145,7 +145,7 @@
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
             <div class="mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">ShopName</a>
+                <a href="/ProductController/List" class="text-2xl font-bold text-gray-900">Zootech</a>
                 <form method="post" class="search-container" action="/ProductController/Search">
                     <input type="text" name="txtSearchName" placeholder="Search..">
                     <button type="submit" name="btnSearch"><i class="fa fa-search"></i></button>
@@ -203,13 +203,13 @@
             <div class="content container mx-auto px-4 py-8 mt-20">
                 <aside class="fixed inset-y-0 left-0 w-60 bg-gray-800 text-white shadow-lg h-screen">
                     <div class="p-4" style="padding-top: 100px">
-                        <h2 class="text-xl font-bold mb-4">Laptop Filters</h2>
+                        <h2 class="text-xl font-bold mb-4">Filters</h2>
                         <form id="filter-form" action="ProductController" method="post">
                             <ul class="space-y-4">
                                 <li>
                                     <section class="bg-white shadow-md py-4">
                                         <div class="container mx-auto px-4">
-                                            <h3 class="text-lg font-semibold text-black mb-2">Laptop Brands</h3>
+                                            <h3 class="text-lg font-semibold text-black mb-2">Brands</h3>
                                             <ul class="space-y-2">
                                                 <%
                                                     String id = "";

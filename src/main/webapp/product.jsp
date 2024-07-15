@@ -449,27 +449,27 @@
                         </div>
 
                         <script>
-                            var maxQuantity = <%= rs.getString("quantity")%>;
-                            console.log(maxQuantity);
-                            function addNum1() {
-                                var newValue = Number(document.getElementById('firstvalue').value);
-                                if (newValue < maxQuantity) {
-                                    newValue += 1;
-                                    document.getElementById('firstvalue').value = newValue;
-                                    document.getElementById('cartQuan').value = newValue;
-                                    document.getElementById('orderQuan').value = newValue;
-                                }
-                            }
+                                        var maxQuantity = <%= rs.getString("quantity")%>;
+                                        console.log(maxQuantity);
+                                        function addNum1() {
+                                            var newValue = Number(document.getElementById('firstvalue').value);
+                                            if (newValue < maxQuantity) {
+                                                newValue += 1;
+                                                document.getElementById('firstvalue').value = newValue;
+                                                document.getElementById('cartQuan').value = newValue;
+                                                document.getElementById('orderQuan').value = newValue;
+                                            }
+                                        }
 
-                            function minusNum1() {
-                                var subNum = Number(document.getElementById('firstvalue').value);
-                                if (subNum > 1) {
-                                    subNum -= 1;
-                                    document.getElementById('firstvalue').value = subNum;
-                                    document.getElementById('cartQuan').value = subNum;
-                                    document.getElementById('orderQuan').value = subNum;
-                                }
-                            }
+                                        function minusNum1() {
+                                            var subNum = Number(document.getElementById('firstvalue').value);
+                                            if (subNum > 1) {
+                                                subNum -= 1;
+                                                document.getElementById('firstvalue').value = subNum;
+                                                document.getElementById('cartQuan').value = subNum;
+                                                document.getElementById('orderQuan').value = subNum;
+                                            }
+                                        }
                         </script>
 
                         <%
